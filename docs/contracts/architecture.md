@@ -1,68 +1,95 @@
 # Protocol Architecture
 
-This document outlines the high-level architecture of the Sage Protocol smart contracts. The protocol is designed to be a modular and extensible system for community-owned agent instructions.
+This document outlines the high-level architecture of the Sage Protocol smart contracts. The protocol is designed as a modular and extensible system for community-owned agent instructions, with a robust architecture for both core functionality and production operations like Liquidity Bootstrapping Pools (LBPs).
 
-## Core Components
+## Core Components & Production Architecture
 
-The protocol is built around a few core components:
+The Sage protocol's architecture is composed of several core smart contracts and a production-ready system for managing key processes.
 
-- **SubDAO Factory (`SubDAOFactoryOptimized.sol`)**: This is the main entry point for creating new SubDAOs. It uses EIP-1167 minimal proxies (clones) to deploy new SubDAO instances gas-efficiently. The factory is responsible for setting up the initial configuration of a SubDAO, including its governance model, access control, and prompt registry.
+### Core Protocol Components
 
-- **SubDAO (`SubDAO.sol`)**: A SubDAO is a self-governed entity that manages a collection of prompt libraries. Each SubDAO has its own treasury, governance contract (`PromptGovernor`), and prompt registry (`PromptRegistry`).
+- **SubDAO Factory (`SubDAOFactoryOptimized.sol`)**: The main entry point for creating new SubDAOs using gas-efficient EIP-1167 minimal proxies. It sets up the initial configuration of a SubDAO, including its governance model, access control, and prompt registry.
+- **SubDAO (`SubDAO.sol`)**: A self-governed entity that manages a collection of prompt libraries, with its own treasury, governance contract (`PromptGovernor`), and prompt registry (`PromptRegistry`).
+- **Prompt Registry (`PromptRegistry.sol`)**: Stores and manages prompts, supporting versioning, forking, and attribution.
+- **Prompt Governor (`PromptGovernor.sol`)**: The governance contract for a SubDAO, allowing members to vote on proposals using the `SXXX` token.
+- **SXXX Token (`SXXX.sol`, `SXXXProper.sol`)**: The native governance token for staking, voting, and incentives.
+- **Library Registry (`LibraryRegistry.sol`)**: A global, append-only directory for discovering library manifests across the protocol.
+- **Off-chain Components**:
+    - **IPFS Worker**: A Cloudflare Worker for IPFS uploads, pinning, and managing ledgers for paid pinning and prompt commerce.
+    - **MCP Server**: The Model Context Protocol server, providing a primary interface for agents to interact with the protocol.
 
-- **Prompt Registry (`PromptRegistry.sol`)**: This contract is responsible for storing and managing prompts. It supports versioning, forking, and attribution, allowing communities to curate and evolve their prompt libraries over time.
+### Production LBP Architecture: LaunchGate & Multisig Treasury
 
-- **Prompt Governor (`PromptGovernor.sol`)**: This is the governance contract for a SubDAO. It allows members to create and vote on proposals related to the SubDAO's prompt libraries and treasury. The governor uses the `SXXX` token for voting and staking.
+For production operations like launching Liquidity Bootstrapping Pools (LBPs) on Doppler, Sage uses a secure architecture centered around the `LaunchGate.sol` contract and a multisig-managed treasury (e.g., a Gnosis Safe).
 
-- **SXXX Token (`SXXX.sol`, `SXXXProper.sol`)**: The `SXXX` token is the native governance token of the Sage Protocol. It is used for staking, voting, and participating in the protocol's incentive mechanisms.
+This system includes several key features for security and transparency:
 
-- **Library Registry (`LibraryRegistry.sol`)**: Serves as a global, append-only directory of all library manifests, solving the critical problem of library discovery across the protocol.
+- **On-chain Spend Limits**: `TreasuryWrapper` uses ARBAC roles and selector allowlists to enforce on-chain spending limits.
+- **DAO Executor Role**: The DAO timelock has a `DAO_EXECUTOR_ROLE` to trigger `LaunchGate` actions directly, while the Safe retains admin powers.
+- **Custodial Wrapper**: `TreasuryWrapper` holds the funds (USDC/ETH) for launches, ensuring all spending is transparent and on-chain.
+- **Prepare-Only CLI Flow**: The `sage` CLI produces transaction payloads for the Safe to review and approve, which then target `TreasuryWrapper`.
+- **Registry-driven Configuration**: `LaunchGate` reads configuration from the protocol registry, which is controlled by the treasury admins.
+- **Auditable Events**: `TreasuryWrapper` and `LaunchGate` emit detailed events for a full audit trail.
 
-- **IPFS Worker**: A Cloudflare Worker that handles IPFS uploads, pinning, and authentication. It also manages the credits ledger for paid pinning and the prompt commerce ledger for selling prompts.
+## System Overview
 
-- **MCP Server**: The Model Context Protocol server, which provides a stdio-safe wrapper around the CLI's MCP server. It's the main interface for agents to interact with the Sage Protocol, enabling semantic search and IDE integrations.
+```mermaid
+graph TB
+    %% Define nodes
+    CLI("Sage CLI")
+    APP("Web App")
+    MCP("MCP Server (agent-native discovery)")
+    SG("Subgraph")
+    RPC("RPC Node")
+    IPFS("IPFS / Filecoin")
+    SF("SubDAO Factory")
+    LR("LibraryRegistry")
+    SD("SubDAO")
+    GOV("Governor")
+    TL("Timelock")
+    PR("PromptRegistry")
+    TR("Treasury")
+    SAGE("SAGE Token")
 
-## Production Architecture: LaunchGate & Multisig Treasury
+    %% Define subgraphs
+    subgraph "Interfaces"
+        CLI
+        APP
+        MCP
+    end
 
-The production architecture for launching Liquidity Bootstrapping Pools (LBPs) on Doppler is centered around the `LaunchGate.sol` contract and a multisig-managed treasury (e.g., a Gnosis Safe). This setup ensures that all auction creation and migration actions are executed securely and with the approval of multiple stakeholders.
+    subgraph "Index & Storage"
+        SG
+        RPC
+        IPFS
+    end
 
-### Key Features
+    subgraph "Contracts (Base)"
+        SF
+        LR
+        SAGE
+        subgraph "Per SubDAO"
+            SD
+            GOV
+            TL
+            PR
+            TR
+        end
+    end
 
-- **On-chain Spend Limits**: TreasuryWrapper uses ARBAC roles and selector allowlists, meaning every LaunchGate call must match an approved function/limit. Policy enforcement lives on-chain instead of in an off-chain playbook.
-
-- **DAO Executor Role**: The DAO timelock is granted `DAO_EXECUTOR_ROLE` and may trigger LaunchGate actions directly. The Safe retains admin powers (can revoke limits/roles) but does not have to co-sign each DAO transaction.
-
-- **Custodial Wrapper**: TreasuryWrapper actually holds USDC/ETH required for launches. The Safe funds the wrapper, but LaunchGate executions spend wrapper-held balances, keeping treasury flows transparent on-chain.
-
-- **Prepare-Only CLI Flow**: The `sage` CLI still produces Safe payloads so operators review and approve before the Safe signs. Those payloads target TreasuryWrapper, which then invokes LaunchGate.
-
-- **Registry-driven Configuration**: LaunchGate reads factories, fee recipients, and router/token addresses from the protocol registry that TreasuryWrapper admins control.
-
-- **Auditable Events**: TreasuryWrapper and LaunchGate emit detailed events for every execution, providing a layered audit trail for subgraphs and observability pipelines.
-
-### Architecture Diagram
-
-```
-+-----------------+      +---------------------+
-| Multisig Safe   |----->|   TreasuryWrapper   |
-| (Protocol)      | owns +---------------------+
-+-----------------+      | - on-chain limits   |
-        ^                | - ARBAC roles       |
-        | funds/config   +---------------------+
-        |                      |
-+-----------------+            | owns
-| safe-payload.json|           v
-+-----------------+      +------------------+
-        ^                |   LaunchGate     |
-        | generates      +------------------+
-        |                      | calls
-+-----------------+            v
-|      CLI        |      +------------------+
-+-----------------+      |  Doppler Factory |
-                         +------------------+
-                                 |
-                                 v
-                           +-----------+
-                           |  Auction  |
-                           +-----------+
+    %% Define connections
+    CLI --> SG
+    APP --> SG
+    MCP --> SG
+    SG --> RPC
+    RPC --> SF
+    RPC --> LR
+    SF --> SD
+    SD --> GOV
+    GOV --> TL
+    TL --> PR
+    TL --> TR
+    TL --> LR
+    PR --> IPFS
+    SAGE --> GOV
 ```

@@ -2,3 +2,4 @@ mkdocs==1.6.1
 mkdocs-material==9.6.20
 mkdocs-pdf-export-plugin==0.5.10
 mkdocs-terminal==4.7.0
+mkdocs-alabaster==0.8.0

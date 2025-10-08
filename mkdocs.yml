@@ -2,12 +2,25 @@ site_name: "📜 Sage Litepaper"
 site_url: https://sageprotocol.io
 
 theme:
-  name: terminal
+  name: material
   logo: assets/scroll.png
   favicon: assets/scroll.png
+  features:
+    - content.code.mermaid
 
 extra_css:
-  - assets/styles.css
+  - assets/custom_theme.css
+
+extra_javascript:
+  - assets/mermaid_config.js
+
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 nav:
   - Introduction: index.md
@@ -26,14 +39,23 @@ nav:
       - Tokenomics: core-concepts/tokenomics.md
       - Roadmap: core-concepts/roadmap.md
       - License: core-concepts/license.md
-  - 'For Prompt Creators':
-    - 'Creating Your First Prompt Library': 'guides/creating-your-first-prompt-library.md'
-    - 'Publishing and Versioning Prompts': 'guides/publishing-and-versioning-prompts.md'
-    - 'Creating and Selling Premium Prompts': 'guides/creating-and-selling-premium-prompts.md'
-  - 'For Community Members':
-    - 'Joining a SubDAO': 'guides/joining-a-subdao.md'
-    - 'Staking and Governance': 'guides/staking-and-governance.md'
-    - 'Voting on Proposals': 'guides/voting-on-proposals.md'
+  - Guides:
+    - 'User Guides': 'guides/index.md'
+    - 'For Prompt Creators':
+      - 'Creating Your First Prompt Library': 'guides/creating-your-first-prompt-library.md'
+      - 'Publishing and Versioning Prompts': 'guides/publishing-and-versioning-prompts.md'
+      - 'Creating and Selling Premium Prompts': 'guides/creating-and-selling-premium-prompts.md'
+    - 'For Community Members':
+      - 'Joining a SubDAO': 'guides/joining-a-subdao.md'
+      - 'Staking and Governance': 'guides/staking-and-governance.md'
+      - 'Voting on Proposals': 'guides/voting-on-proposals.md'
+    - 'For SubDAO Admins':
+      - 'Creating and Configuring a SubDAO': 'guides/creating-a-subdao.md'
+      - 'Managing Members and Permissions': 'guides/managing-subdao-members.md'
+      - 'Creating Bounties for Your Community': 'guides/creating-bounties.md'
+    - 'For Agent Builders':
+      - 'Using the MCP Server': 'guides/using-the-mcp-server.md'
+      - 'Integrating the Sage SDK': 'guides/integrating-the-sage-sdk.md'
   - Command Line (CLI):
       - Get Started: cli/get-started.md
       - Doppler & LaunchGate: cli/doppler.md
@@ -43,8 +65,6 @@ nav:
   - Smart Contracts:
       - Architecture: contracts/architecture.md
       - Doppler & LaunchGate: contracts/doppler.md
-
-extra: {}
 
 plugins:
   - search

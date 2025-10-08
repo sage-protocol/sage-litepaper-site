@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --md-primary-fg-color: #5C4033; /* Dark Brown for header */
+  --md-primary-fg-color--light: #8B4513;
+  --md-primary-fg-color--dark: #3E2723;
+
+  --md-default-fg-color: #3c3c3c; /* Dark Gray for text */
+  --md-default-bg-color: #fdf6e3; /* Parchment for background */
+
+  --md-accent-fg-color: #8B4513; /* Saddle Brown for accents */
+
+  --md-typeset-font-family: 'EB Garamond', serif;
+  --md-code-font-family: 'monospace';
+}
+
+body {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.1em;
+}
+
+.md-header {
+  background-color: var(--md-primary-fg-color);
+}
+
+.md-tabs {
+  background-color: var(--md-primary-fg-color);
+}
+
+.md-typeset h1, .md-typeset h2, .md-typeset h3, .md-typeset h4 {
+  font-family: 'EB Garamond', serif;
+  font-weight: 700;
+  color: var(--md-primary-fg-color);
+}
+
+.md-typeset a {
+  color: var(--md-accent-fg-color);
+  font-weight: 700;
+}
+
+.md-typeset a:hover {
+  color: var(--md-primary-fg-color);
+}
+
+/* Clean up the layout */
+.md-sidebar--secondary {
+  display: none; /* Hide table of contents on the right for a cleaner look */
+}
+
+.md-main__inner {
+  padding-top: 0.8rem;
+}
+
+.md-content {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.md-typeset .md-code {
+  font-size: 1.1em;
+}
+
+.md-nav__link {
+  font-size: 1.1em;
+}
