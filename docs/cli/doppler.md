@@ -1,6 +1,6 @@
 # Doppler & LaunchGate
 
-Sage Protocol uses Doppler for Liquidity Bootstrapping Pool (LBP) launches. To ensure security and control, all Doppler auction launches are funneled through a `LaunchGate` contract. This contract is owned by the Treasury Safe and allows for safe, governed auction creation.
+Sage Protocol uses Doppler for Liquidity Bootstrapping Pool (LBP) launches. Production launches flow through `TreasuryWrapper` (Safe-owned) which applies on-chain spend limits before delegating to `LaunchGate`.
 
 ## Prepare-Only Auctions
 
@@ -14,10 +14,10 @@ sage doppler create --prepare-only --variant dynamic --output safe-payload.json
 
 This command will generate a `safe-payload.json` file. This file can then be uploaded to the Gnosis Safe UI for execution by the treasury owners.
 
-### LaunchGate Authority
+### TreasuryWrapper & LaunchGate Authority
 
-- All auction creation and migration actions are permissioned and executed only by the Treasury multisig (Safe).
-- The `LaunchGate` wrapper contract on Base is the sole entrypoint for new auctions.
-- The CLI never sends auction-changing transactions directly from a local EOA.
+- TreasuryWrapper (owned by the Safe) holds auction funds and enforces selector/quota limits; it then calls LaunchGate.
+- DAO timelock can execute via `DAO_EXECUTOR_ROLE`, while the Safe retains admin rights to update limits and configuration.
+- CLI never broadcasts auction-changing transactions directly from EOAs; Safe payloads are reviewed, signed, and routed through TreasuryWrapper.
 
-This prepare-only workflow ensures that even as contributors and developers stage proposals, the Treasury Safe remains the single point of execution, maintaining security and control over the protocol's liquidity events.
+This prepare-only workflow keeps execution multisig-supervised while enabling DAO-driven launches with on-chain guardrails.

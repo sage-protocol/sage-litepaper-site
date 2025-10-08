@@ -26,6 +26,14 @@ nav:
       - Tokenomics: core-concepts/tokenomics.md
       - Roadmap: core-concepts/roadmap.md
       - License: core-concepts/license.md
+  - 'For Prompt Creators':
+    - 'Creating Your First Prompt Library': 'guides/creating-your-first-prompt-library.md'
+    - 'Publishing and Versioning Prompts': 'guides/publishing-and-versioning-prompts.md'
+    - 'Creating and Selling Premium Prompts': 'guides/creating-and-selling-premium-prompts.md'
+  - 'For Community Members':
+    - 'Joining a SubDAO': 'guides/joining-a-subdao.md'
+    - 'Staking and Governance': 'guides/staking-and-governance.md'
+    - 'Voting on Proposals': 'guides/voting-on-proposals.md'
   - Command Line (CLI):
       - Get Started: cli/get-started.md
       - Doppler & LaunchGate: cli/doppler.md
