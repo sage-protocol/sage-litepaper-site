@@ -6,7 +6,35 @@ theme:
   logo: assets/scroll.png
   favicon: assets/scroll.png
   features:
+    - content.code.copy
     - content.code.mermaid
+    - content.tabs.link
+    - content.tooltips
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - search.share
+    - toc.follow
+  palette:
+    - scheme: default
+      primary: custom
+      accent: blue
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - scheme: slate
+      primary: custom
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
 
 extra_css:
   - assets/custom_theme.css
@@ -16,23 +44,55 @@ extra_javascript:
 
 
 markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
 
 nav:
-  - Introduction: index.md
+  - Home: index.md
   - Core Concepts:
-      - What is Sage?: core-concepts/what-is-sage.md
-      - Why Now?: core-concepts/why-now.md
-      - What’s Different: core-concepts/what-makes-it-different.md
-      - The Metaprompting Loop: core-concepts/metaprompting-loop.md
-      - Core Components: core-concepts/components.md
+      - Overview: core-concepts/what-is-sage.md
+      - Why Now: core-concepts/why-now.md
+      - What's Different: core-concepts/what-makes-it-different.md
+      - Metaprompting Loop: core-concepts/metaprompting-loop.md
+      - Components: core-concepts/components.md
       - Technical Overview: core-concepts/technical-overview.md
-      - Incentives and Ownership: core-concepts/incentives.md
-      - Governance Modes: core-concepts/governance-modes.md
+      - Incentives: core-concepts/incentives.md
+      - Governance: core-concepts/governance-modes.md
       - For Communities: core-concepts/for-communities.md
       - Why Base: core-concepts/why-base.md
       - Security: core-concepts/security.md
@@ -40,29 +100,29 @@ nav:
       - Roadmap: core-concepts/roadmap.md
       - License: core-concepts/license.md
   - Guides:
-    - 'User Guides': 'guides/index.md'
-    - 'For Prompt Creators':
-      - 'Creating Your First Prompt Library': 'guides/creating-your-first-prompt-library.md'
-      - 'Publishing and Versioning Prompts': 'guides/publishing-and-versioning-prompts.md'
-      - 'Creating and Selling Premium Prompts': 'guides/creating-and-selling-premium-prompts.md'
-    - 'For Community Members':
-      - 'Joining a SubDAO': 'guides/joining-a-subdao.md'
-      - 'Staking and Governance': 'guides/staking-and-governance.md'
-      - 'Voting on Proposals': 'guides/voting-on-proposals.md'
-    - 'For SubDAO Admins':
-      - 'Creating and Configuring a SubDAO': 'guides/creating-a-subdao.md'
-      - 'Managing Members and Permissions': 'guides/managing-subdao-members.md'
-      - 'Creating Bounties for Your Community': 'guides/creating-bounties.md'
-    - 'For Agent Builders':
-      - 'Using the MCP Server': 'guides/using-the-mcp-server.md'
-      - 'Integrating the Sage SDK': 'guides/integrating-the-sage-sdk.md'
-  - Command Line (CLI):
-      - Get Started: cli/get-started.md
+      - Getting Started: guides/index.md
+      - Prompt Creators:
+          - First Prompt Library: guides/creating-your-first-prompt-library.md
+          - Publishing & Versioning: guides/publishing-and-versioning-prompts.md
+          - Premium Prompts: guides/creating-and-selling-premium-prompts.md
+      - Community Members:
+          - Joining a SubDAO: guides/joining-a-subdao.md
+          - Staking & Governance: guides/staking-and-governance.md
+          - Voting: guides/voting-on-proposals.md
+      - SubDAO Admins:
+          - Creating a SubDAO: guides/creating-a-subdao.md
+          - Managing Members: guides/managing-subdao-members.md
+          - Creating Bounties: guides/creating-bounties.md
+      - Agent Builders:
+          - MCP Server: guides/using-the-mcp-server.md
+          - Sage SDK: guides/integrating-the-sage-sdk.md
+  - CLI:
+      - Getting Started: cli/get-started.md
       - Doppler & LaunchGate: cli/doppler.md
       - IPFS & Pinning: cli/ipfs.md
   - SDK:
       - Introduction: sdk/index.md
-  - Smart Contracts:
+  - Contracts:
       - Architecture: contracts/architecture.md
       - Doppler & LaunchGate: contracts/doppler.md
 

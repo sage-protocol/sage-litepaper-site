@@ -1,92 +1,132 @@
-# 📜 Sage Litepaper
+# 📜 Sage Protocol Documentation
 
 > ### The first permissionless protocol for incentivized agent context sharing.
 
-Sage is a governance-powered protocol for community-owned agent instructions. Publish once to **IPFS**, let your **SubDAO** steward upgrades, and let agents automatically discover the trusted version. As the network's distributed intelligence improves, rewards route back to the people training it. Follow the founder [@VelinusSage](https://x.com/VelinusSage) for updates.
+Clear, structured documentation to help you get started faster. Explore core concepts, guides, CLI tools, and SDK references.
 
 ---
 
-## What Sage Is
+## Explore by Category
 
-Sage is a governance layer for distributed intelligence, turning community prompt libraries into coordinated agent instructions. Publish once to **IPFS**, register the library on-chain, and let your **SubDAO** steer how agents pull, trust, and evolve that context. A manifest defines the full collection of prompts, and a single proposal upgrades the whole set. Discovery runs through a subgraph and an **MCP** server so agents can search and synchronize without manual glue code. Interfaces include a **CLI**, a web app, and Model Context Protocol (**MCP**) endpoints for agent tooling like Claude Desktop.
-
-- **Publish**: Push manifests and prompt files to **IPFS**. Immutable CIDs establish the authorized set of agent instructions.
-- **Propose**: Each manifest is one governance proposal in your **SubDAO**. Vote, queue, and execute through a Timelock.
-- **Discover**: Agents, the **CLI**, and the web app read via subgraph first and fall back to RPC for a consistent view.
-- **Use**: **MCP** tools return content by CID so agents can orchestrate tasks with the community-approved version.
-
-This approach turns simple prompt libraries into governed, self-improving agent instructions for communities of AI artists, prompt engineers, and research collectives so they can coordinate agent behavior with clear ownership.
+<div class="card-grid">
+  <div class="card">
+    <h3>📚 Core Concepts</h3>
+    <p>Learn what makes Sage different and understand the technical foundation of the protocol.</p>
+    <a href="core-concepts/what-is-sage/" class="button">Get Started →</a>
+  </div>
+  
+  <div class="card">
+    <h3>🎯 User Guides</h3>
+    <p>Step-by-step guides for prompt creators, community members, SubDAO admins, and agent builders.</p>
+    <a href="guides/" class="button">View Guides →</a>
+  </div>
+  
+  <div class="card">
+    <h3>💻 Command Line (CLI)</h3>
+    <p>Comprehensive CLI documentation to manage SubDAOs, publish libraries, and integrate with IPFS.</p>
+    <a href="cli/get-started/" class="button">CLI Docs →</a>
+  </div>
+  
+  <div class="card">
+    <h3>🔧 SDK Reference</h3>
+    <p>Developer resources for integrating the Sage SDK into your applications and agent workflows.</p>
+    <a href="sdk/" class="button">SDK Reference →</a>
+  </div>
+  
+  <div class="card">
+    <h3>⚙️ Smart Contracts</h3>
+    <p>Technical documentation on contract architecture, Doppler integration, and LaunchGate mechanics.</p>
+    <a href="contracts/architecture/" class="button">View Architecture →</a>
+  </div>
+  
+  <div class="card">
+    <h3>🗺️ Roadmap</h3>
+    <p>Stay up to date with our development roadmap, milestones, and upcoming features.</p>
+    <a href="core-concepts/roadmap/" class="button">View Roadmap →</a>
+  </div>
+</div>
 
 ---
 
-## Core Components
+## What is Sage?
 
-- **On-chain Governance & LaunchGate**  
-  The **SubDAO** Factory, Governor + Timelock, LibraryRegistry, PromptRegistry, and Treasury modules now route all auction creation through a TreasuryWrapper + LaunchGate stack. The CLI produces prepare-only Safe payloads which hit TreasuryWrapper (holding auction funds and enforcing on-chain limits) before LaunchGate finalises the Doppler call. This keeps execution multisig-supervised while letting DAO roles act directly on-chain.
+Sage is a governance layer for distributed intelligence, turning community prompt libraries into coordinated agent instructions. Publish once to **IPFS**, register the library on-chain, and let your **SubDAO** steer how agents pull, trust, and evolve that context.
 
-- **Persistent Shared Memory with Credits**  
-  **IPFS** stays the canonical store for library payloads, enforced by a managed worker that mediates uploads, pinning, and warming. A 402-based credit ledger (Phase A) lets contributors prepay for storage, while Phase B introduces an on-chain `CreditToken` + `PaymentRouter` path that burns credits as pins land, keeping incentives aligned with Treasury flows.
-
-- **Tooling for Distributed Intelligence**  
-  The **CLI**, discovery app, and **MCP** endpoints share a unified SDK adapter. New commands such as `sage ipfs credits`, `sage ipfs buy-credits`, and `sage doppler create --prepare-only` connect operators, creators, and agents to the same governed knowledge base without exposing direct write access.
+<div class="card-grid">
+  <div class="card">
+    <h3>🚀 Publish</h3>
+    <p>Push manifests and prompt files to IPFS. Immutable CIDs establish the authorized set of agent instructions.</p>
+  </div>
+  
+  <div class="card">
+    <h3>🗳️ Propose</h3>
+    <p>Each manifest is one governance proposal in your SubDAO. Vote, queue, and execute through a Timelock.</p>
+  </div>
+  
+  <div class="card">
+    <h3>🔍 Discover</h3>
+    <p>Agents, the CLI, and the web app read via subgraph first and fall back to RPC for a consistent view.</p>
+  </div>
+  
+  <div class="card">
+    <h3>⚡ Use</h3>
+    <p>MCP tools return content by CID so agents can orchestrate tasks with the community-approved version.</p>
+  </div>
+</div>
 
 ---
 
-## Get Started
+## Quick Start
 
-**Connect**
+Get up and running with Sage in minutes:
 
 ```bash
+# Connect your wallet
 sage wizard
-# or manually:
-sage wallet connect --type cast
-sage doctor
-```
 
-**Publish a library**
-
-```bash
+# Create and publish a library
 sage library scaffold-manifest
 sage library lint manifest.json
 sage library push manifest.json --pin
 sage library propose manifest.json --subdao 0xYourSubDAO
-```
 
-**Launch an Auction (via Doppler)**
-
-```bash
+# Launch an auction (via Doppler)
 sage doppler create --prepare-only --variant dynamic --output safe-payload.json
-```
 
-**Manage IPFS Credits**
-
-```bash
+# Manage IPFS credits
 sage ipfs credits
 sage ipfs buy-credits
 ```
 
 ---
 
-## Roadmap
+## Core Components
 
-- **Completed**
-  SubDAO factory, Library and Prompt registries, governance flows, **Boosts**, **Premiums**, **SBTs**, **MCP**, **CLI**, and discovery app are live on Base Sepolia.
+**On-chain Governance & LaunchGate**  
+The SubDAO Factory, Governor + Timelock, LibraryRegistry, PromptRegistry, and Treasury modules route all auction creation through a TreasuryWrapper + LaunchGate stack. The CLI produces prepare-only Safe payloads which hit TreasuryWrapper before LaunchGate finalises the Doppler call.
 
-- **Shipping (Phase A)**
-  - **Pay-to-Pin Credits**: Cloudflare Worker with Durable Object ledger, checkout webhooks, and CLI UX (`sage ipfs credits`, `buy-credits`).
-  - **Prompt Commerce**: Off-chain entitlements that reuse the Personal License + Lit flow while creators fund storage through credits.
-  - **LaunchGate Prepare-Only**: Safe payloads target TreasuryWrapper, which enforces selector/limit checks before invoking LaunchGate.
+**Persistent Shared Memory with Credits**  
+IPFS stays the canonical store for library payloads, enforced by a managed worker that mediates uploads, pinning, and warming. A 402-based credit ledger lets contributors prepay for storage.
 
-- **Next (Phase B)**
-  - **On-chain Credits**: `CreditToken` (ERC‑1155) + `PaymentRouter` on Base with Permit2 and burn-per-pin semantics.
-  - **Unified Doppler SDK**: Viem-based adapter gated by `SAGE_DOPPLER_ALPHA`, plus pricing shim for USDC pools and governance payload tooling.
-  - **Personal Library Pointers**: Finalising IPNS + ENS integration for stable, author-controlled library pointers.
+**Tooling for Distributed Intelligence**  
+The CLI, discovery app, and MCP endpoints share a unified SDK adapter. Commands like `sage ipfs credits` and `sage doppler create` connect operators, creators, and agents to the same governed knowledge base.
 
-- **Mainnet**
-  Execute the launch sequence, wire canonical liquidity (including **Doppler LBP**), and transition ownership entirely to DAO contracts with TreasuryWrapper/Safe supervision.
+---
 
-- **Growth**
-  First community libraries in creative AI, research, and agent ops, plus grants and **bounties** focused on subjective domains where human curation matters most.
+## Community & Support
+
+<div class="card-grid">
+  <div class="card">
+    <h3>💬 Join the Community</h3>
+    <p>Follow the founder <a href="https://x.com/VelinusSage" target="_blank">@VelinusSage</a> on X for updates and join our community of builders.</p>
+  </div>
+  
+  <div class="card">
+    <h3>📖 Read the Full Docs</h3>
+    <p>Dive deep into technical specifications, governance modes, tokenomics, and security considerations.</p>
+    <a href="core-concepts/what-is-sage/" class="button">View Docs →</a>
+  </div>
+</div>
 
 ---
 
