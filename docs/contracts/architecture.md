@@ -16,42 +16,46 @@ The protocol is built around a few core components:
 
 -   **SXXX Token (`SXXX.sol`, `SXXXProper.sol`)**: The `SXXX` token is the native governance token of the Sage Protocol. It is used for staking, voting, and participating in the protocol's incentive mechanisms.
 
-## Key Mechanisms
+- **Library Registry (`LibraryRegistry.sol`)**: Serves as a global, append-only directory of all library manifests, solving the critical problem of library discovery across the protocol.
 
-### LaunchGate for Doppler LBPs
+- **IPFS Worker**: A Cloudflare Worker that handles IPFS uploads, pinning, and authentication. It also manages the credits ledger for paid pinning and the prompt commerce ledger for selling prompts.
 
-The `LaunchGate.sol` contract introduces a secure and governed mechanism for launching Liquidity Bootstrapping Pools (LBPs) on Doppler. It acts as a wrapper around the Doppler factory, ensuring that all auction creation and migration actions are executed through a Gnosis Safe owned by the Treasury. This provides a single point of authority and control over the protocol's liquidity events.
+- **MCP Server**: The Model Context Protocol server, which provides a stdio-safe wrapper around the CLI's MCP server. It's the main interface for agents to interact with the Sage Protocol, enabling semantic search and IDE integrations.
 
-### On-chain Credits for Pay-to-Pin
+## Production Architecture: LaunchGate & Multisig Treasury
 
-The `CreditToken.sol` and `PaymentRouter.sol` contracts implement an on-chain credit system for pay-to-pin services. Users can purchase credits with USDC and spend them to pin content on IPFS. The revenue from these services is then split between the SubDAO treasury and the protocol treasury, creating a sustainable economic model for the protocol.
+The production architecture for launching Liquidity Bootstrapping Pools (LBPs) on Doppler is centered around the `LaunchGate.sol` contract and a multisig-managed treasury (e.g., a Gnosis Safe). This setup ensures that all auction creation and migration actions are executed securely and with the approval of multiple stakeholders.
 
-## Architecture Diagram
+### Key Features
+
+-   **Multisig-Managed Treasury**: The treasury is a Gnosis Safe controlled by a set of trusted individuals (the multisig). This provides a high level of security for managing the protocol's funds.
+
+-   **Treasury-Owned LaunchGate**: The `LaunchGate` contract is owned and controlled by the multisig treasury. This makes the treasury the single point of authority for all auction-related activities.
+
+-   **Prepare-Only CLI Flow**: The `sage-cli` prepares Safe transaction payloads for auction creation, which are then executed by the multisig. This prevents direct write access from local wallets, enhancing security.
+
+-   **Centralized Configuration**: The `LaunchGate` centralizes the configuration of key parameters like the Doppler factory address, fee recipients, and fee structures.
+
+-   **Auditable Events**: The `LaunchGate` emits detailed events for all launch executions, providing a clear audit trail for subgraphs and other off-chain services.
+
+### Architecture Diagram
 
 ```
-+-------------------------+
-|   SubDAOFactory         |
-+-------------------------+
-| - createSubDAO()        |
-| - createForkedSubDAO()  |
-+-------------------------+
-      |
-      | creates
-      v
-+-------------------------+
-|   SubDAO                |
-+-------------------------+
-| - governor              |
-| - promptRegistry        |
-| - treasury              |
-+-------------------------+
-      |           |
-      | owns      | owns
-      v           v
-+------------------+  +------------------+
-|  PromptGovernor  |  |  PromptRegistry  |
-+------------------+  +------------------+
-| - propose()      |  | - addPrompt()    |
-| - vote()         |  | - addFork()      |
-+------------------+  +------------------+
++-----------------+      +------------------+
+| Multisig Safe   |----->|   LaunchGate     |
+| (Treasury)      | owns +------------------+
++-----------------+      | - launchDynamic()|
+        ^                | - launchStatic() |
+        | executes       +------------------+
+        |                      |
++-----------------+            | calls
+| safe-payload.json|            v
++-----------------+      +------------------+
+        ^                |  Doppler Factory |
+        | generates      +------------------+
+        |                      | creates
++-----------------+            v
+|      CLI        |      +------------------+
++-----------------+      |     Auction      |
+                         +------------------+
 ```
