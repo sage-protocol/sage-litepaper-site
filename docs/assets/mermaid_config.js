@@ -9,7 +9,7 @@ document$.subscribe(function() {
       lineColor: '#5C4033',
       secondaryColor: '#D2B48C',
       tertiaryColor: '#fdf6e3',
-      fontFamily: '"EB Garamond", serif',
+      fontFamily: '"Lato", sans-serif',
       fontSize: '16px'
     }
   });
