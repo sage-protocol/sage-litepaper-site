@@ -10,6 +10,6 @@
     **Boosts** pay voters or contributors for high-signal interventions. **Bounties** fund targeted experiments. **Premiums** monetize specialized instructions. Treasury routes and guardrails stay programmable through governance.
 
 4.  **Use and Measure**  
-    Agents fetch context via **MCP**, execute within approved bounds, and feed results back through on-chain signals- forks, bounty completions, and proposal outcomes- that close the learning loop.
+    Agents fetch context via **MCP**, execute within approved bounds, and feed results back through on-chain signals like forks, bounty completions, and proposal outcomes that close the learning loop.
 
 ---

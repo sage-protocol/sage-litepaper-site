@@ -15,15 +15,10 @@ Both paths are governed through the **SubDAO** Timelock. The **CLI** supports `c
 
 Announce tasks, award winners, and pay out from the Timelock. This system is event-only by design. Fund the Timelock with ETH or an ERC‑20 before executing payout proposals.
 
-### 3. Premium Prompts
+### 3. Premium Prompts & Pay-to-Pin
 
-Encrypt content client-side, pin to **IPFS**, and gate decryption with Lit v7 and ERC‑1155 receipts. Buyers pay in USDC, get a receipt NFT, and decrypt locally with session signatures. Pricing and treasury routing are on‑chain. No reveal server is needed.
-
-### Paid Pinning Revenue
-
-When libraries are pushed with paid pinning, the service receives USDC and calls on-chain attribution. The default split routes 80% to the **SubDAO** treasury and 20% to the protocol treasury.
-
-In production, an HTTP‑native payment flow (x402) can collect USDC at request time and attribute proceeds automatically. For communities, this means: pay once to persist content; revenue lands transparently in your treasury.
+-   **Premium Prompts**: Encrypt content client-side, pin to **IPFS**, and gate decryption with Lit v7 and ERC‑1155 receipts. Buyers pay in USDC, get a receipt NFT, and decrypt locally with session signatures. Pricing and treasury routing are on‑chain. No reveal server is needed.
+-   **Pay-to-Pin Credits**: A 402-based credit system allows users to pay for pinning services directly through the CLI. Users can buy credits and spend them to pin CIDs via the managed worker, with revenue routed to SubDAO and protocol treasuries.
 
 ### SBTs and Badge‑Gated Fast Tracks
 

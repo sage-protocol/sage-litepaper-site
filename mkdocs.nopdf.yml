@@ -15,17 +15,19 @@ nav:
       - Why Now?: sections/01-why-now.md
       - What Sage Is: sections/02-what-sage-is.md
       - What’s Different: sections/03-what-makes-it-different.md
-      - Metaprompting Loop: sections/04-the-selfimproving-metaprompting-loop.md
+      - Metaprompting Loop: sections/04-the-self-improving-metaprompting-loop.md
       - Core Components: sections/05-core-components.md
-      - Incentives & Ownership: sections/06-incentives-and-ownership.md
-      - For Communities: sections/07-for-communities.md
-      - Why Base: sections/08-why-base.md
-      - Security & Launch: sections/09-security-and-launch-status.md
-      - Token & Treasury: sections/10-token-and-treasury-in-plain-terms.md
-      - On‑Device CLI: sections/11-from-on-chain-to-on-device-the-power-of-the-cli.md
-      - Get Started: sections/12-get-started.md
-      - Roadmap: sections/13-roadmap.md
-      - License: sections/14-license.md
+      - Technical Overview: sections/06-technical-overview.md
+      - Incentives & Ownership: sections/07-incentives-and-ownership.md
+      - Governance Modes: sections/08-governance-modes-simple.md
+      - For Communities: sections/09-for-communities.md
+      - Why Base: sections/10-why-base.md
+      - Security & Launch: sections/11-security-and-launch-status.md
+      - Token & Treasury: sections/12-token-and-treasury-in-plain-terms.md
+      - Metaprompting CLI: sections/13-metaprompting-cli.md
+      - Get Started: sections/14-get-started.md
+      - Roadmap: sections/15-roadmap.md
+      - License: sections/16-license.md
 
 extra: {}
 

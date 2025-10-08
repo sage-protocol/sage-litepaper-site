@@ -12,7 +12,7 @@ AI models evolve weekly; agent instructions rarely keep pace. Agent instructions
     Reuse happens without provenance or revenue share, so the people training the network rarely see upside.
 
 4.  **No Compounding Incentive Loop**  
-    Communities lack a transparent way to pool funds, reward experiments, and reinvest the learnings- so the collective intelligence plateaus.
+    Communities lack a transparent way to pool funds, reward experiments, and reinvest the learnings so the collective intelligence plateaus.
 
 > Sage exists to turn community knowledge into governed, composable intelligence that compounds.
 
