@@ -18,6 +18,23 @@ A 402-based credit system allows users to pay for pinning services directly thro
 
 When Coinbase’s facilitator is enabled, insufficient-credit responses include the `Payment-Protocol: X402` header and an exact/evm payload that the CLI relays back to the user. Facilitator receipts are hashed server-side, so each `Payment-Receipt` header is single-use—replays return HTTP 409 and the CLI will prompt you to settle again.
 
+### Sandbox Iteration (Phase A+)
+
+-   `sage prompt sandbox push --content-ref <cid>` defaults to the hosted worker at `https://api.sageprotocol.io`; use flags only when opting into custom infrastructure.
+-   `sage prompt sandbox list` shows your active public/share/private prompts with remaining quota.
+-   `sage prompt sandbox share <id>` rotates the share token (requires ENS and governance participation).
+-   `sage prompt sandbox discover` pulls the trending discovery feed; pass `--filter fresh` or `--json` for automation pipelines.
+-   LaunchGate deployments and MCP prompt usage automatically register discovery signals with the managed worker, so trending feeds stay current without manual pings.
+-   `sage prompt sandbox status` surfaces whether an address satisfies the ENS + governance checks for share/private tiers.
+-   `sage prompt sandbox report <id>` forwards a governance flag (reason + note) to the managed worker for triage.
+-   Custom workers remain possible, but you must pass `--worker-url`/`--worker-token` explicitly—Sage defaults are always preferred for consistency.
+
+### Governance Reporting Snapshot (Phase A+)
+
+-   Reports filed via the sandbox are persisted server-side with per-actor cooldowns and feed into the discovery graph’s `needs-review` filter.
+-   Reviewer tooling (`sage prompt sandbox reports list|review`) batches Safe transactions to quarantine or clear prompts and keeps discovery feeds aligned with governance decisions.
+-   Observability dashboards track open reports, reporter reputation, and resolution latency (<48 h target) so governance can detect abuse quickly.
+
 ### Off-chain credits (Phase A)
 
 -   Enable `SAGE_PAY_TO_PIN: true` in your profile flags to surface credits UX.
