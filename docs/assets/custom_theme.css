@@ -735,6 +735,11 @@ body {
   .md-content {
     padding: 0 2rem;
   }
+
+  /* Better tablet navigation */
+  .md-header__title {
+    font-size: 1rem;
+  }
 }
 
 @media screen and (max-width: 60em) {
@@ -744,5 +749,205 @@ body {
 
   .md-content {
     padding: 0 1.5rem;
+  }
+
+  /* Improved mobile header */
+  .md-header {
+    height: 3.5rem;
+  }
+
+  .md-header__inner {
+    padding: 0 0.8rem;
+  }
+
+  .md-header__title {
+    font-size: 0.95rem;
+    padding-left: 0.5rem;
+  }
+
+  /* Better mobile navigation button */
+  .md-header__button.md-logo {
+    padding: 0.4rem;
+  }
+
+  /* Hamburger menu icon styling */
+  .md-header__button.md-icon {
+    color: var(--md-primary-fg-color);
+    width: 2.8rem;
+    height: 2.8rem;
+    padding: 0.6rem;
+  }
+
+  .md-header__button.md-icon:hover {
+    background-color: var(--hover-bg-color);
+    border-radius: 0.5rem;
+  }
+
+  /* Mobile overlay backdrop */
+  .md-overlay {
+    background-color: rgba(42, 35, 26, 0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  /* Smooth transitions for mobile drawer */
+  .md-nav--primary {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .md-nav__toggle ~ .md-nav__title {
+    background-color: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+    font-weight: 600;
+  }
+
+  /* Improved mobile drawer */
+  .md-nav--primary .md-nav__title {
+    background-color: var(--md-primary-fg-color);
+    color: white;
+    font-size: 1rem;
+    line-height: 3.5rem;
+    padding-left: 1rem;
+  }
+
+  .md-nav--primary .md-nav__title .md-nav__icon {
+    color: white;
+  }
+
+  /* Better touch targets for mobile links */
+  .md-nav__item {
+    padding: 0.1rem 0;
+  }
+
+  .md-nav__link {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    min-height: 44px; /* iOS touch target minimum */
+  }
+
+  .md-nav__link--active {
+    background-color: var(--hover-bg-color);
+    border-left: 3px solid var(--md-primary-fg-color);
+    font-weight: 600;
+  }
+
+  /* Nested navigation on mobile */
+  .md-nav--secondary .md-nav__title {
+    background-color: transparent;
+    color: var(--md-default-fg-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--md-nav-border-color);
+  }
+
+  /* Mobile table of contents */
+  .md-sidebar--secondary {
+    display: none;
+  }
+
+  /* Better spacing for mobile content */
+  .md-typeset h1 {
+    font-size: 1.75rem;
+    margin: 1rem 0;
+  }
+
+  .md-typeset h2 {
+    font-size: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+
+  .md-typeset h3 {
+    font-size: 1.15rem;
+  }
+
+  /* Mobile code blocks */
+  .md-typeset pre {
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    overflow-x: auto;
+  }
+
+  /* Mobile tables */
+  .md-typeset table:not([class]) {
+    display: block;
+    overflow-x: auto;
+    font-size: 0.85rem;
+  }
+
+  /* Mobile search */
+  .md-search__form {
+    height: 2.8rem;
+  }
+
+  .md-search__input {
+    font-size: 0.9rem;
+  }
+
+  /* Mobile footer */
+  .md-footer__inner {
+    padding: 1.5rem 1rem;
+    flex-direction: column;
+  }
+
+  .md-footer__link {
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+  }
+
+  .md-footer-copyright {
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  /* Back to top button on mobile */
+  .md-top {
+    right: 1rem;
+    bottom: 1rem;
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+}
+
+/* Extra small mobile devices */
+@media screen and (max-width: 480px) {
+  .md-header__title {
+    font-size: 0.85rem;
+  }
+
+  .md-content {
+    padding: 0 1rem;
+  }
+
+  .md-nav__link {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .md-typeset h1 {
+    font-size: 1.5rem;
+  }
+
+  .md-typeset h2 {
+    font-size: 1.25rem;
+  }
+
+  .md-typeset h3 {
+    font-size: 1.1rem;
+  }
+
+  /* Smaller code blocks on very small screens */
+  .md-typeset pre {
+    font-size: 0.75rem;
+    padding: 0.6rem;
+  }
+
+  /* Mobile buttons and CTAs */
+  .md-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
   }
 }
