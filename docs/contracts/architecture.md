@@ -32,6 +32,8 @@ The Sage protocol's architecture is composed of several core smart contracts and
 
 ## System Overview
 
+The protocol architecture consists of three main layers working together to provide governed, content-addressed agent instructions:
+
 ```mermaid
 graph TB
     %% Define nodes
@@ -40,7 +42,9 @@ graph TB
     MCP("MCP Server")
     SG("Subgraph")
     RPC("RPC Node")
-    IPFS("IPFS / Filecoin")
+    IPFS("IPFS Gateway")
+    WORKER("Managed Worker")
+    CREDITS("Credit System")
     SF("SubDAO Factory")
     LR("LibraryRegistry")
     SD("SubDAO")
@@ -49,24 +53,33 @@ graph TB
     PR("PromptRegistry")
     TR("Treasury")
     SAGE("SAGE Token")
+    LG("LaunchGate")
+    TW("TreasuryWrapper")
 
     %% Define subgraphs
-    subgraph "Interfaces"
+    subgraph "Discovery Layer"
         CLI
         APP
         MCP
     end
 
-    subgraph "Index & Storage"
+    subgraph "Index Layer"
         SG
         RPC
-        IPFS
     end
 
-    subgraph "Contracts (Base)"
+    subgraph "Storage Layer"
+        IPFS
+        WORKER
+        CREDITS
+    end
+
+    subgraph "Smart Contract Layer (Base)"
         SF
         LR
         SAGE
+        LG
+        TW
         subgraph "Per SubDAO"
             SD
             GOV
@@ -85,6 +98,12 @@ graph TB
     RPC -.-> SF
     RPC -.-> LR
 
+    %% Storage operations
+    CLI --> WORKER
+    WORKER --> IPFS
+    WORKER -.-> CREDITS
+    MCP --> IPFS
+
     %% Write/Transaction operations
     SF --> SD
     SD --> GOV
@@ -93,7 +112,83 @@ graph TB
     TL ==> TR
     TL ==> LR
     SAGE --> GOV
+    TR --> TW
+    TW --> LG
 
-    %% Conceptual link
+    %% Conceptual links
     PR -.-> IPFS
 ```
+
+---
+
+## Storage Infrastructure
+
+The storage layer ensures prompts and manifests are **permanently available**, **cryptographically verifiable**, and **economically sustainable**.
+
+### IPFS Content Addressing
+
+All prompt content is stored on IPFS (InterPlanetary File System):
+
+- **Content Identifiers (CIDs)**: Each file has a unique hash (e.g., `bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi`)
+- **Immutability**: Changing a single byte produces a different CID
+- **Deduplication**: Identical content only needs to be stored once
+- **Decentralization**: Multiple nodes can pin and serve the same content
+
+### Managed Worker (Cloudflare Worker)
+
+A serverless Cloudflare Worker mediates uploads, pinning, and gateway warming:
+
+**Key Functions:**
+
+1. **Credit Checks**: Validates user has sufficient credits before accepting uploads
+2. **Metadata Validation**: Ensures manifests conform to schema before pinning
+3. **Gateway Warming**: Pre-caches content on multiple IPFS gateways for low-latency access
+4. **Telemetry**: Tracks usage stats (downloads, bandwidth) for analytics
+5. **Payment Processing**: Handles 402 Payment Required flows for credit purchases
+
+**Endpoints:**
+
+- `POST /upload` - Upload and pin content (requires credits)
+- `GET /pin/:cid` - Re-pin existing content
+- `POST /buy-credits` - Purchase pinning credits (USDC or SAGE)
+- `GET /credits` - Check current credit balance
+- `GET /telemetry` - View usage statistics
+
+### Credit System (Two-Phase Model)
+
+**Phase A (Current)**: Off-chain credits via Cloudflare Durable Objects
+
+- Users purchase credits through the worker's 402 payment flow
+- Credits are tracked in a persistent Durable Object ledger
+- Worker debits credits per pin operation (cost: ~$0.01-0.10 per GB/month)
+- CLI commands:
+  ```bash
+  sage ipfs credits  # Check balance
+  sage ipfs buy-credits --amount 100 --currency USDC
+  sage ipfs pin manifest.json  # Debits credits
+  ```
+
+**Phase B (Roadmap)**: On-chain `CreditToken` + `PaymentRouter`
+
+- ERC-20 credit token (`CREDIT`) minted via bonding curve
+- Smart contracts enforce burns per pin operation
+- Transparent on-chain accounting of storage costs
+- Automated treasury rebalancing based on usage
+
+### Gateway Infrastructure
+
+**Primary Gateway**: `https://gateway.sageprotocol.io`
+
+- Cloudflare-backed for global CDN distribution
+- 99.9% uptime SLA
+- Automatic failover to public gateways
+
+**Fallback Gateways**:
+
+- `https://w3s.link/ipfs/`
+- `https://ipfs.io/ipfs/`
+- `https://cloudflare-ipfs.com/ipfs/`
+
+**Warming Strategy**: When content is pinned, the worker pre-fetches it on multiple gateways to ensure low-latency first-read performance.
+
+---

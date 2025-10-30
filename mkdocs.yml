@@ -3,8 +3,8 @@ site_url: https://sageprotocol.io
 
 theme:
   name: material
-  logo: assets/logo.webp
-  favicon: assets/logo.webp
+  logo: assets/logo.png
+  favicon: assets/logo.png
   features:
     - content.code.copy
     - content.code.mermaid
@@ -125,6 +125,7 @@ nav:
   - Contracts:
       - Architecture: contracts/architecture.md
       - Doppler & LaunchGate: contracts/doppler.md
+      - Deployment Addresses: contracts/deployments.md
 
 plugins:
   - search
