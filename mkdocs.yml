@@ -3,8 +3,8 @@ site_url: https://sageprotocol.io
 
 theme:
   name: material
-  logo: assets/scroll.png
-  favicon: assets/scroll.png
+  logo: assets/logo.webp
+  favicon: assets/logo.webp
   features:
     - content.code.copy
     - content.code.mermaid
