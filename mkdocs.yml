@@ -1,10 +1,10 @@
-site_name: "📜 Sage Litepaper"
+site_name: "Sage Docs"
 site_url: https://sageprotocol.io
 
 theme:
   name: material
   logo: assets/logo.png
-  favicon: assets/logo.png
+  favicon: assets/favicon.svg
   features:
     - content.code.copy
     - content.code.mermaid
@@ -122,6 +122,7 @@ nav:
           - Sage SDK: guides/integrating-the-sage-sdk.md
   - CLI:
       - Getting Started: cli/get-started.md
+      - Command Reference: cli/command-reference.md
       - Doppler & LaunchGate: cli/doppler.md
       - IPFS & Pinning: cli/ipfs.md
   - SDK:

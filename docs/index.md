@@ -1,8 +1,10 @@
-# 📜 Sage Protocol Documentation
+# Sage Protocol Documentation
 
 > ### The first permissionless protocol for incentivized agent context sharing.
 
-Clear, structured documentation to help you get started faster. Explore core concepts, guides, CLI tools, and SDK references.
+Sage is a governance-powered infrastructure layer that transforms how AI agents discover, trust, and evolve their instructions. By combining **on-chain governance**, **IPFS storage**, and **community curation**, Sage enables distributed intelligence that compounds over time.
+
+Instead of hardcoded prompts that quickly become stale, Sage lets communities publish versioned prompt libraries to IPFS, govern upgrades through SubDAO proposals, and let agents automatically discover the trusted version—all while rewarding contributors through incentives and attribution.
 
 ---
 
@@ -50,7 +52,16 @@ Clear, structured documentation to help you get started faster. Explore core con
 
 ## What is Sage?
 
-Sage is a governance layer for distributed intelligence, turning community prompt libraries into coordinated agent instructions. Publish once to **IPFS**, register the library on-chain, and let your **SubDAO** steer how agents pull, trust, and evolve that context.
+Sage is a governance layer for distributed intelligence that solves a fundamental problem: **AI agents need reliable, evolving instructions, but traditional approaches either centralize control or fragment knowledge**.
+
+Sage bridges this gap by enabling communities to:
+
+- **Publish** versioned prompt libraries to IPFS with immutable content addressing
+- **Govern** upgrades through SubDAO proposals with transparent voting and timelocks
+- **Distribute** value to contributors through boosts, bounties, and premiums
+- **Discover** trusted instructions through agents, CLI tools, and web interfaces
+
+Each SubDAO becomes a coordination point for domain-specific intelligence—whether that's DeFi strategies, code generation, research assistance, or any specialized workflow. Communities pool capital, reward experiments, and reinvest learnings so collective intelligence compounds over time.
 
 <div class="card-grid">
   <div class="card">
@@ -73,6 +84,22 @@ Sage is a governance layer for distributed intelligence, turning community promp
     <p>MCP tools return content by CID so agents can orchestrate tasks with the community-approved version.</p>
   </div>
 </div>
+
+---
+
+## Key Use Cases
+
+### For AI Agent Builders
+Integrate the Sage MCP (Model Context Protocol) server to give your agents dynamic access to community-curated instructions. No more hardcoded prompts—agents fetch the latest governed version directly from IPFS via SubDAO registries.
+
+### For Prompt Engineers & Creators
+Publish your expertise as versioned prompt libraries, earn attribution through boosts, and monetize specialized knowledge through premium tiers. Your work compounds as communities fork, remix, and improve upon your foundations.
+
+### For Communities & DAOs
+Launch a SubDAO to coordinate intelligence in your domain. Pool treasury funds, create bounties for new capabilities, vote on prompt upgrades, and build a flywheel where better prompts attract more users who fund better prompts.
+
+### For Developers
+Use the Sage SDK to integrate governed prompts into any application. The same discovery mechanisms that power agents—subgraph queries, RPC fallbacks, IPFS resolution—work for web apps, CLIs, and custom tooling.
 
 ---
 
