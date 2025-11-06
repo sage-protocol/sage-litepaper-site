@@ -1,7 +1,5 @@
 # Sage Protocol Documentation
 
-> ### The first permissionless protocol for incentivized agent context sharing.
-
 Sage is a governance-powered infrastructure layer that transforms how AI agents discover, trust, and evolve their instructions. By combining **on-chain governance**, **IPFS storage**, and **community curation**, Sage enables distributed intelligence that compounds over time.
 
 Instead of hardcoded prompts that quickly become stale, Sage lets communities publish versioned prompt libraries to IPFS, govern upgrades through SubDAO proposals, and let agents automatically discover the trusted version—all while rewarding contributors through incentives and attribution.
