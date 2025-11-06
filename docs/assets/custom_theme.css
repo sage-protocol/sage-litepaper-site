@@ -127,6 +127,7 @@ body {
   height: 3.5rem;
   width: auto;
   max-width: none;
+  border-radius: 8px;
 }
 
 /* Header title */

@@ -127,10 +127,6 @@ nav:
       - IPFS & Pinning: cli/ipfs.md
   - SDK:
       - Introduction: sdk/index.md
-  - Contracts:
-      - Architecture: contracts/architecture.md
-      - Doppler & LaunchGate: contracts/doppler.md
-      - Deployment Addresses: contracts/deployments.md
 
 plugins:
   - search
