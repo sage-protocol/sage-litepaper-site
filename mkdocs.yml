@@ -3,7 +3,7 @@ site_url: https://sageprotocol.io
 
 theme:
   name: material
-  logo: assets/logo.svg
+  logo: assets/logo.png
   favicon: assets/favicon.svg
   features:
     - content.code.copy
