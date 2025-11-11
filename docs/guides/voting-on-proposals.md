@@ -1,6 +1,6 @@
 # Voting on Proposals
 
-Once you are a member of a SubDAO and have delegated your voting power, you can vote on active governance proposals.
+Once you are a member of a SubDAO and have delegated voting power (typically by delegating to yourself), you can vote on active governance proposals.
 
 ## 1. Find Active Proposals
 

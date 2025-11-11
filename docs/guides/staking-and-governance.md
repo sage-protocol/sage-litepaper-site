@@ -15,10 +15,10 @@ sage subdao stake <subdao-address> <amount>
 
 Your voting power for a given proposal is determined by your stake token balance at the time the proposal was created (the "snapshot" block).
 
-To participate in voting, you must delegate your voting power to yourself or another address.
+To participate in voting, you must hold sufficient voting power via staking (no delegation step is required in the current release).
 
 ```bash
-sage sxxx delegate-self
+// Delegation not required in current release
 ```
 
 This is a one-time transaction per wallet that enables your voting power.

@@ -62,7 +62,7 @@ A new "AI Artists Collective" wants to start curating prompts without requiring 
 ### Key Features
 
 - **ERC20Votes Tokens**: Voting power proportional to token holdings (e.g., SAGE or SubDAO-specific tokens)
-- **Delegation**: Token holders can delegate voting power to representatives
+- Note: Voting power derives from ERC20Votes-compatible receipts; users typically delegate to self to activate voting power.
 - **High Quorum**: Requires significant participation to pass proposals
 - **Proposer Threshold**: Minimum token balance required to create proposals
 
