@@ -18,7 +18,7 @@ The initial SAGE token distribution is structured to balance protocol developmen
 
 | Allocation | Amount | Percentage | Vesting | Purpose |
 |------------|--------|------------|---------|---------|
-| **Public LBP** | 200M SAGE | 20% | None | Public sale via Doppler LBP for price discovery and liquidity bootstrapping |
+| **Public Sale** | 200M SAGE | 20% | None | Public token sale for price discovery and liquidity bootstrapping |
 | **Treasury** | 300M SAGE | 30% | None | Protocol-owned liquidity, grants, bounties, and operational expenses |
 | **Team & Advisors** | 200M SAGE | 20% | 2-year linear | Core team, advisors, and early contributors |
 | **Community Incentives** | 200M SAGE | 20% | 4-year linear | Staking rewards, creator bounties, and ecosystem grants |
@@ -40,53 +40,33 @@ SAGE serves multiple functions within the protocol:
 
 The protocol treasury is the primary mechanism for long-term sustainability, funded through two main channels:
 
-### 1. Liquidity Bootstrapping Pool (LBP)
+### 1. Public Token Sale
 
-The initial token sale uses Doppler's dynamic LBP mechanism on Base:
+The initial token distribution uses a fair launch mechanism on Base:
 
-**Doppler Launch Parameters:**
+**Sale Parameters:**
 
-- **Launch Type**: Dynamic price curve (exponentially decreasing)
-- **Starting Price**: 0.05 USDC per SAGE
-- **Ending Price**: 0.01 USDC per SAGE
-- **Duration**: 72 hours
 - **Sale Amount**: 200M SAGE (20% of supply)
-- **Target Raise**: 4-10M USDC (depending on demand curve)
-
-**Benefits of LBP:**
-
-- **Fair Price Discovery**: Price decreases over time, discouraging front-running and bots
-- **Wide Distribution**: No whitelists or KYC, fully permissionless access
-- **Immediate Liquidity**: Raised funds partially seed protocol-owned liquidity (POL)
-- **No Lockups**: Tokens available immediately, no cliff or vesting
-
-### 2. Bond Sales (Olympus-style Mechanism)
-
-After the LBP, the protocol offers optional bond sales to grow treasury reserves:
-
-**Bond Mechanics:**
-
-- Users provide LP tokens (SAGE-USDC) or stablecoins (USDC, DAI) to the treasury
-- In exchange, they receive SAGE at a discount (e.g., 5-10% below market price)
-- Bonds vest linearly over 5-7 days
-- Treasury controls the discount rate and bond capacity dynamically
-
-**Example Bond Purchase:**
-
-```
-Market Price: 0.02 USDC per SAGE
-Bond Discount: 10%
-Bond Price: 0.018 USDC per SAGE
-User Pays: 1,000 USDC
-User Receives: 55,555 SAGE (vested over 5 days)
-Treasury Gains: 1,000 USDC of protocol-owned liquidity
-```
+- **Target Raise**: 4-10M USDC
+- **Duration**: 72 hours
+- **Distribution**: Fully permissionless, no whitelists or KYC
 
 **Benefits:**
 
-- Treasury accumulates assets without diluting existing holders (no new SAGE minted)
-- Protocol-owned liquidity reduces dependency on mercenary capital
-- Sustainable funding for grants, bounties, and operations
+- **Fair Price Discovery**: Transparent pricing mechanism discourages front-running and bots
+- **Wide Distribution**: Open to all participants
+- **Immediate Liquidity**: Raised funds partially seed protocol-owned liquidity (POL)
+- **No Lockups**: Tokens available immediately, no cliff or vesting
+
+### 2. Additional Token Sales
+
+The protocol may conduct additional token sales from treasury reserves to grow liquidity and fund operations:
+
+**Benefits:**
+
+- Increases protocol-owned liquidity for long-term stability
+- Provides sustainable funding for grants, bounties, and development
+- Reduces dependency on external capital sources
 
 ---
 

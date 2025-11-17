@@ -24,7 +24,7 @@ When Coinbase’s facilitator is enabled, insufficient-credit responses include 
 -   `sage prompt sandbox list` shows your active public/share/private prompts with remaining quota.
 -   `sage prompt sandbox share <id>` rotates the share token (requires ENS and governance participation).
 -   `sage prompt sandbox discover` pulls the trending discovery feed; pass `--filter fresh` or `--json` for automation pipelines.
--   LaunchGate deployments and MCP prompt usage automatically register discovery signals with the managed worker, so trending feeds stay current without manual pings.
+-   Protocol activity and MCP prompt usage automatically register discovery signals with the managed worker, so trending feeds stay current without manual pings.
 -   `sage prompt sandbox status` surfaces whether an address satisfies the ENS + governance checks for share/private tiers.
 -   `sage prompt sandbox report <id>` forwards a governance flag (reason + note) to the managed worker for triage.
 -   Custom workers remain possible, but you must pass `--worker-url`/`--worker-token` explicitly—Sage defaults are always preferred for consistency.

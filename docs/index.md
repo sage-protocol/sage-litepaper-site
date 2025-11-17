@@ -35,7 +35,7 @@ Instead of hardcoded prompts that quickly become stale, Sage lets communities pu
   
   <div class="card">
     <h3>⚙️ Smart Contracts</h3>
-    <p>Technical documentation on contract architecture, Doppler integration, and LaunchGate mechanics.</p>
+    <p>Technical documentation on contract architecture, governance, and library management.</p>
     <a href="contracts/architecture/" class="button">View Architecture →</a>
   </div>
   
@@ -115,9 +115,6 @@ sage library lint manifest.json
 sage library push manifest.json --pin
 sage library propose manifest.json --subdao 0xYourSubDAO
 
-# Launch an auction (via Doppler)
-sage doppler create --prepare-only --variant dynamic --output safe-payload.json
-
 # Manage IPFS credits
 sage ipfs credits
 sage ipfs buy-credits
@@ -127,14 +124,14 @@ sage ipfs buy-credits
 
 ## Core Components
 
-**On-chain Governance & LaunchGate**  
-The SubDAO Factory, Governor + Timelock, LibraryRegistry, PromptRegistry, and Treasury modules route all auction creation through a TreasuryWrapper + LaunchGate stack. The CLI produces prepare-only Safe payloads which hit TreasuryWrapper before LaunchGate finalises the Doppler call.
+**On-chain Governance**
+The SubDAO Factory, Governor + Timelock, LibraryRegistry, PromptRegistry, and Treasury modules coordinate library upgrades through transparent voting and timelock execution. The CLI produces Safe transaction payloads for multisig-supervised operations.
 
 **Persistent Shared Memory with Credits**  
 IPFS stays the canonical store for library payloads, enforced by a managed worker that mediates uploads, pinning, and warming. A 402-based credit ledger lets contributors prepay for storage.
 
-**Tooling for Distributed Intelligence**  
-The CLI, discovery app, and MCP endpoints share a unified SDK adapter. Commands like `sage ipfs credits` and `sage doppler create` connect operators, creators, and agents to the same governed knowledge base.
+**Tooling for Distributed Intelligence**
+The CLI, discovery app, and MCP endpoints share a unified SDK adapter. Commands like `sage ipfs credits` and `sage library push` connect operators, creators, and agents to the same governed knowledge base.
 
 ---
 

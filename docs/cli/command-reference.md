@@ -200,65 +200,6 @@ sage subdao info 0xSubDAOAddress
 
 ---
 
-## Doppler (Auction) Commands
-
-### `sage doppler create`
-Create a Doppler auction for token distribution.
-
-```bash
-sage doppler create \
-  --variant dynamic \
-  --prepare-only \
-  --output safe-payload.json
-```
-
-**Options:**
-- `--variant <type>` - Auction variant (dynamic, stable, linear)
-- `--prepare-only` - Generate Safe multisig payload without executing
-- `--output <path>` - Save transaction payload to file
-- `--start-time <timestamp>` - Auction start time
-- `--duration <seconds>` - Auction duration
-- `--min-price <amount>` - Minimum price per token
-- `--max-supply <amount>` - Maximum tokens to sell
-
-**What it does:**
-- Validates treasury permissions
-- Generates TreasuryWrapper + LaunchGate transaction
-- Optionally creates Safe multisig payload for approval
-
----
-
-### `sage doppler list`
-List all Doppler auctions.
-
-```bash
-sage doppler list
-sage doppler list --subdao 0xSubDAO --status active
-```
-
-**Options:**
-- `--subdao <address>` - Filter by SubDAO
-- `--status <state>` - Filter by status (active, ended, upcoming)
-- `--format <type>` - Output format (json, table)
-
----
-
-### `sage doppler info`
-Get detailed information about a specific auction.
-
-```bash
-sage doppler info <auction-id>
-```
-
-**Returns:**
-- Auction parameters
-- Current price
-- Tokens sold
-- Participants count
-- Time remaining
-
----
-
 ## IPFS Commands
 
 ### `sage ipfs credits`
@@ -430,25 +371,15 @@ sage library propose my-lib.json --subdao 0xYourSubDAO \
   --description "Add DeFi analysis prompts v1.0"
 ```
 
-### Setting Up a SubDAO + Auction
+### Setting Up a SubDAO
 
 ```bash
-# 1. Deploy SubDAO
+# Deploy SubDAO with governance parameters
 sage subdao create \
   --name "Research DAO" \
   --symbol "RSRCH" \
   --token-type fork \
   --initial-supply 10000000
-
-# 2. Create Doppler auction (prepare Safe payload)
-sage doppler create \
-  --variant dynamic \
-  --prepare-only \
-  --output auction-payload.json \
-  --subdao <newly-created-subdao-address>
-
-# 3. Execute via Safe multisig
-# (Use Safe UI to execute the payload)
 ```
 
 ### Agent Integration via MCP

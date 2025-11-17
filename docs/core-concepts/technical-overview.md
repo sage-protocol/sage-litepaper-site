@@ -65,15 +65,15 @@ A global, append-only directory for discovering library manifests across the pro
 - Namespace management
 - Version tracking and resolution
 
-**LaunchGate & Treasury System**
-For production operations like launching Liquidity Bootstrapping Pools (LBPs) on Doppler, Sage uses a secure architecture centered around the `LaunchGate.sol` contract and a multisig-managed treasury (e.g., a Gnosis Safe):
+**Treasury System**
+Sage uses a secure treasury architecture centered around multisig-managed treasuries (e.g., Gnosis Safe) with on-chain governance controls:
 
-- **On-chain Spend Limits**: `TreasuryWrapper` uses ARBAC roles and selector allowlists to enforce on-chain spending limits
-- **DAO Executor Role**: The DAO timelock has a `DAO_EXECUTOR_ROLE` to trigger `LaunchGate` actions directly, while the Safe retains admin powers
-- **Custodial Wrapper**: `TreasuryWrapper` holds the funds (USDC/ETH) for launches, ensuring all spending is transparent and on-chain
-- **Prepare-Only CLI Flow**: The `sage` CLI produces transaction payloads for the Safe to review and approve, which then target `TreasuryWrapper`
-- **Registry-driven Configuration**: `LaunchGate` reads configuration from the protocol registry, which is controlled by the treasury admins
-- **Auditable Events**: `TreasuryWrapper` and `LaunchGate` emit detailed events for a full audit trail
+- **On-chain Spend Limits**: Treasury contracts use ARBAC roles and selector allowlists to enforce spending limits
+- **DAO Executor Role**: The DAO timelock can trigger treasury actions directly, while the Safe retains admin powers
+- **Transparent Operations**: All treasury spending is on-chain and auditable
+- **Prepare-Only CLI Flow**: The `sage` CLI produces transaction payloads for the Safe to review and approve
+- **Registry-driven Configuration**: Treasury operations read configuration from the protocol registry
+- **Auditable Events**: All treasury contracts emit detailed events for full audit trails
 
 ### Governance Flow
 
