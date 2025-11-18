@@ -2,29 +2,35 @@
 
 This guide explains how to publish new versions of your prompt library and manage them on-chain.
 
-## 1. Update Your Local Manifest
+## 1. Make Your Changes
 
-First, make your changes to your local `manifest.json` and any associated prompt files. You can add, remove, or modify prompts.
+Edit prompt files in your workspace's `prompts/` directory. Add, modify, or remove markdown files as needed.
 
-## 2. Push the New Version to IPFS
+## 2. Check Status
 
-Once you are happy with your changes, push the updated manifest to IPFS. This will generate a new CID for your library.
-
-```bash
-sage library push manifest.json --pin
-```
-
-The CLI will output the new manifest CID. This CID represents a snapshot of your library at this point in time.
-
-## 3. Propose the Update to a SubDAO
-
-To make the new version official, you need to propose it to the SubDAO that governs the library.
+See what has changed since your last publish:
 
 ```bash
-sage library propose manifest.json --subdao 0xYourSubDAO --cid <new-manifest-cid>
+sage prompts status
 ```
 
-Replace `<new-manifest-cid>` with the CID you got from the `push` command. This creates a governance proposal to update the library's on-chain pointer to your new version.
+## 3. Publish Updates
+
+The `publish` command builds a manifest, uploads to IPFS, and creates a governance proposal:
+
+```bash
+sage prompts publish --pin
+```
+
+This generates a new CID and proposes it to your SubDAO in one step.
+
+### Preview First
+
+See what will be published without executing:
+
+```bash
+sage prompts publish --dry-run
+```
 
 ## How Versioning Works
 

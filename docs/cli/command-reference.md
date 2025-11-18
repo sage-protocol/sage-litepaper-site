@@ -354,21 +354,28 @@ sage help <command>
 ### Publishing a Complete Library
 
 ```bash
-# 1. Create manifest template
-sage library scaffold-manifest --output my-lib.json
+# 1. Initialize workspace
+sage prompts init --subdao 0xYourSubDAO
 
-# 2. Edit manifest (add prompts, metadata)
-# ... edit my-lib.json ...
+# 2. Add prompts (multiple options)
+# Write from scratch:
+echo "# DeFi Analysis\n\nAnalyze this..." > prompts/defi-analyzer.md
 
-# 3. Validate manifest
-sage library lint my-lib.json
+# Or import existing skills:
+sage prompts import-skill pdf
+sage prompts init --preset cursor
 
-# 4. Upload and pin to IPFS
-sage library push my-lib.json --pin --subdao 0xYourSubDAO
+# Or pull from registry to modify:
+sage prompts pull
 
-# 5. Create governance proposal
-sage library propose my-lib.json --subdao 0xYourSubDAO \
-  --description "Add DeFi analysis prompts v1.0"
+# 3. Check status
+sage prompts status
+
+# 4. Publish (builds manifest, uploads to IPFS, creates proposal)
+sage prompts publish --pin
+
+# Preview first with --dry-run
+sage prompts publish --dry-run
 ```
 
 ### Setting Up a SubDAO

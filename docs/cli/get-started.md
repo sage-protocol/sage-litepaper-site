@@ -24,10 +24,17 @@ sage doctor
 ## Publishing a Library
 
 ```bash
-sage library scaffold-manifest
-sage library lint manifest.json
-sage library push manifest.json --pin
-sage library propose manifest.json --subdao 0xYourSubDAO
+# Initialize workspace
+sage prompts init
+
+# Add .md files to prompts/ directory, then publish
+sage prompts publish --dest personal   # Personal library (IPFS only)
+sage prompts publish --subdao 0x...    # SubDAO library (with governance)
+
+# Or import existing prompts first
+sage prompts init --preset cursor       # From Cursor
+sage prompts import-skill pdf           # From OpenSkills
+sage prompts publish
 ```
 
 ## Running the MCP Server for Agents

@@ -110,14 +110,17 @@ Get up and running with Sage in minutes:
 sage wizard
 
 # Create and publish a library
-sage library scaffold-manifest
-sage library lint manifest.json
-sage library push manifest.json --pin
-sage library propose manifest.json --subdao 0xYourSubDAO
+sage prompts init                    # Initialize workspace
+# Add .md files to prompts/ directory
+sage prompts publish --dest personal # Publish to IPFS
 
-# Manage IPFS credits
-sage ipfs credits
-sage ipfs buy-credits
+# Or publish to a SubDAO with governance
+sage prompts init --subdao 0xYourSubDAO
+sage prompts publish
+
+# Import existing skills
+sage prompts import-skill pdf        # Import from OpenSkills
+sage prompts init --preset cursor    # Import from Cursor
 ```
 
 ---
