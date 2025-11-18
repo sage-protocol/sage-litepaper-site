@@ -1,17 +1,37 @@
 # Governance Modes
 
-SubDAOs can operate under different governance modes. Choose based on your team size and decentralization needs.
+SubDAOs operate under different governance modes. The `sage subdao create --wizard` guides you through choosing a **playbook** that maps to the right mode.
 
 ---
 
-## Which Mode Should I Choose?
+## Playbooks (Recommended)
 
-| If you have... | Choose | Why |
-|----------------|--------|-----|
-| **Small team (2-10 people)** | Operator | Fast execution, trusted signers |
-| **Growing community (50+)** | Token | Decentralized voting, transparent |
+When creating a SubDAO, choose a playbook that matches your collaboration style:
 
-Most SubDAOs start with **Operator mode** and transition to **Token mode** as they grow.
+| Playbook | Use Case | Governance Mode |
+|----------|----------|-----------------|
+| **Creator** | Solo publisher | Operator (direct control) |
+| **Squad** | Small team (3-10) | Operator (Safe multisig) |
+| **Community** | Token holders (50+) | Token (Tally voting) |
+
+```bash
+sage subdao create --wizard
+# Choose: Creator / Squad / Community
+```
+
+Playbooks set sensible defaults for governance parameters and determine how `sage skills publish` behaves.
+
+---
+
+## Underlying Modes
+
+Playbooks map to two underlying governance modes:
+
+| If you have... | Playbook | Mode | Why |
+|----------------|----------|------|-----|
+| **Just you** | Creator | Operator | Direct control, no voting |
+| **Small team (2-10)** | Squad | Operator | Safe multisig approval |
+| **Growing community (50+)** | Community | Token | Decentralized voting |
 
 ---
 

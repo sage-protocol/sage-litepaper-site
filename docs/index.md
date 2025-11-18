@@ -109,18 +109,21 @@ Get up and running with Sage in minutes:
 # Connect your wallet
 sage wizard
 
-# Create and publish a library
-sage prompts init                    # Initialize workspace
-# Add .md files to prompts/ directory
-sage prompts publish --dest personal # Publish to IPFS
+# Create and publish skills (for coding agents)
+sage skills init                     # Initialize workspace
+# Add .md files to prompts/skills/ directory
+sage skills publish --dest personal  # Publish to IPFS
 
 # Or publish to a SubDAO with governance
-sage prompts init --subdao 0xYourSubDAO
-sage prompts publish
+sage skills init --subdao 0xYourSubDAO
+sage skills publish
 
 # Import existing skills
-sage prompts import-skill pdf        # Import from OpenSkills
-sage prompts init --preset cursor    # Import from Cursor
+sage skills import pdf               # Import from OpenSkills
+sage skills init --preset cursor     # Import from Cursor
+
+# Create SubDAO with playbook-driven wizard
+sage subdao create --wizard          # Choose Creator/Squad/Community
 ```
 
 ---

@@ -21,20 +21,32 @@ sage wallet connect --type cast
 sage doctor
 ```
 
-## Publishing a Library
+## Publishing a Skill Library
 
 ```bash
-# Initialize workspace
-sage prompts init
+# Initialize workspace (for coding agents)
+sage skills init
 
-# Add .md files to prompts/ directory, then publish
-sage prompts publish --dest personal   # Personal library (IPFS only)
-sage prompts publish --subdao 0x...    # SubDAO library (with governance)
+# Add .md files to prompts/skills/, then publish
+sage skills publish --dest personal    # Personal library (IPFS only)
+sage skills publish --subdao 0x...     # SubDAO library (with governance)
 
-# Or import existing prompts first
-sage prompts init --preset cursor       # From Cursor
-sage prompts import-skill pdf           # From OpenSkills
-sage prompts publish
+# Import existing skills
+sage skills init --preset cursor       # From Cursor
+sage skills import pdf                 # From OpenSkills
+sage skills publish
+```
+
+## Creating a SubDAO with Playbooks
+
+```bash
+# Wizard guides you through playbook selection
+sage subdao create --wizard
+
+# Playbooks:
+# - Creator: Solo publisher, direct control
+# - Squad: Small team with Safe multisig
+# - Community: Token voting on Tally
 ```
 
 ## Running the MCP Server for Agents

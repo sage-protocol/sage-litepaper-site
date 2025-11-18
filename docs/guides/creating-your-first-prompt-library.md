@@ -4,37 +4,59 @@ This guide shows how to create and publish a prompt library using the Sage CLI.
 
 ---
 
-## Quick Start
+## Two Workflows
 
-Get a library on IPFS in three commands:
+Sage provides two command groups for different use cases:
+
+| Workflow | Best For | Commands |
+|----------|----------|----------|
+| **`sage skills`** | Coding agents (Claude Code, Cursor, Codex) | `sage skills init`, `sage skills publish` |
+| **`sage prompts`** | Browser testing with Echo | `sage prompts init`, `sage prompts publish` |
+
+Most users should start with **`sage skills`** since coding agents are the primary use case.
+
+---
+
+## Quick Start (Skills)
+
+Get a skill library on IPFS in three commands:
 
 ```bash
-sage prompts init                    # Initialize workspace
-# Add .md files to prompts/ directory
-sage prompts publish --dest personal # Publish to IPFS
+sage skills init                     # Initialize workspace
+# Add .md files to prompts/skills/ directory
+sage skills publish --dest personal  # Publish to IPFS
 ```
 
 Your library is now discoverable by agents via its CID.
 
 ---
 
-## Ways to Create Prompts
+## Ways to Create Skills
 
 ### Option 1: Write from Scratch
 
-Create a workspace and add prompt files manually:
+Create a workspace and add skill files:
 
 ```bash
-sage prompts init
+sage skills init
 ```
 
-This creates a `prompts/` directory and `.sage/workspace.json`. Add markdown files:
+This creates a `prompts/skills/` directory. Add markdown files with optional frontmatter:
 
-```bash
-echo "# Code Review\n\nReview this code for bugs..." > prompts/code-review.md
+```markdown
+---
+title: Code Review Assistant
+summary: Reviews code for bugs and best practices
+tags: ["code", "review"]
+targets: ["claude", "cursor"]
+---
+
+# Code Review
+
+Review this code for bugs, security issues, and style...
 ```
 
-### Option 2: Import OpenSkills
+### Option 2: Import from OpenSkills
 
 Import skills from the [OpenSkills](https://github.com/numman-ali/openskills) ecosystem:
 
@@ -43,86 +65,93 @@ Import skills from the [OpenSkills](https://github.com/numman-ali/openskills) ec
 openskills install anthropics/skills
 
 # Import into your workspace
-sage prompts import-skill pdf
-sage prompts import-skill xlsx
+sage skills import pdf
+sage skills import xlsx
 ```
 
-Skills are copied to `prompts/skills/` and included when you publish.
-
-### Option 3: Import Existing Prompts
+### Option 3: Import from IDE
 
 Import from Claude Code, Cursor, or other directories:
 
 ```bash
-sage prompts init --preset claude      # Import from ~/.claude/skills
-sage prompts init --preset cursor      # Import from .cursor/prompts
-sage prompts init --import-from ./my-prompts
+sage skills init --preset claude      # Import from ~/.claude/skills
+sage skills init --preset cursor      # Import from .cursor/prompts
 ```
 
-### Option 4: Pull from Registry
+### Option 4: Create Variants
 
-Pull prompts from an existing library to modify:
+Clone an existing skill to experiment:
 
 ```bash
-sage prompts init --subdao 0xLibrary...
-sage prompts pull
-# Edit local files
-sage prompts publish
+sage skills variant code-review v2
+# Creates prompts/skills/code-review.v2.md
 ```
 
 ---
 
 ## Publish Your Library
 
-The `publish` command builds a manifest, uploads to IPFS, and optionally creates a governance proposal:
+The `publish` command builds a manifest, uploads to IPFS, and creates a governance proposal based on your SubDAO's playbook:
 
 ```bash
 # Personal library (IPFS only, no governance)
-sage prompts publish --dest personal
+sage skills publish --dest personal
 
-# To a SubDAO (creates governance proposal)
-sage prompts publish --subdao 0xYourSubDAO
+# To a SubDAO (uses playbook-aware flow)
+sage skills publish --subdao 0xYourSubDAO
 
 # Preview without executing
-sage prompts publish --dry-run
+sage skills publish --dry-run
 ```
 
 ### What Happens
 
-1. **Build** - Creates manifest from workspace changes
+1. **Build** - Creates manifest from workspace skills
 2. **Upload** - Pushes files to IPFS
-3. **Propose** - Creates governance proposal (if SubDAO specified)
-
-You'll receive a CID that uniquely identifies your library version.
+3. **Propose** - Creates Safe transaction or Tally proposal (based on playbook)
 
 ---
 
-## Optional: Test Before Publishing
+## Export for Different Agents
 
-Test a prompt locally before publishing:
+Export a skill formatted for specific targets:
 
 ```bash
-sage prompts try code-review
+sage skills export code-review --as claude
+sage skills export code-review --as cursor
+sage skills export code-review --as browser
 ```
 
 ---
 
-## Adding Governance
+## Adding Governance with Playbooks
 
-Connect your library to a SubDAO for community voting on updates:
+When creating a SubDAO, choose a playbook that matches your collaboration style:
 
 ```bash
-# Create a SubDAO
 sage subdao create --wizard
+```
 
-# Bind workspace to SubDAO
-sage prompts init --subdao 0xYourSubDAO
+**Playbooks:**
+- **Creator** - Solo publisher, direct control
+- **Squad** - Small team with Safe multisig
+- **Community** - Token voting on Tally
 
-# Publish (creates proposal automatically)
+The playbook determines how `sage skills publish` behaves (direct update, Safe transaction, or Tally proposal).
+
+---
+
+## Alternative: Browser Testing with `sage prompts`
+
+For testing prompts interactively in the browser with Echo:
+
+```bash
+sage prompts init
+sage prompts try code-review
 sage prompts publish
 ```
 
-SubDAO members vote on proposals, and approved changes update the on-chain registry.
+The `prompts` workflow is less structured but good for quick experimentation.
 
 ---
 
