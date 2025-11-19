@@ -2,24 +2,73 @@
 
 This guide explains how to publish new versions of your prompt library and manage them on-chain.
 
-## 1. Make Your Changes
+## Two Publishing Workflows
 
-Edit prompt files in your workspace's `prompts/` directory. Add, modify, or remove markdown files as needed.
+Sage provides two complementary workflows for publishing:
 
-## 2. Check Status
+### Skills Workflow (Workspace-Based)
 
-See what has changed since your last publish:
+**Use when:** You have a workspace (`prompts/skills/`) and want the CLI to handle manifest creation.
 
 ```bash
-sage prompts status
+# Initialize workspace
+sage skills init
+
+# Create and edit skills
+sage skills list
+sage skills variant my-skill v2
+
+# Publish (builds manifest automatically)
+sage skills publish my-skill --dest personal
 ```
 
-## 3. Publish Updates
+### Library Workflow (Manifest-Based)
+
+**Use when:** You want fine-grained control over manifest structure or are composing prompts programmatically.
+
+```bash
+# Create manifest template
+sage library template --type basic --out ./manifest.json
+
+# Add prompts to manifest
+sage library add-prompt \
+  --manifest ./manifest.json \
+  --file ./prompts/hello.md \
+  --key examples/hello \
+  --name "Hello World" \
+  --upload
+
+# Preview before publishing
+sage library preview ./manifest.json
+
+# Publish
+sage library push ./manifest.json --subdao 0xYourSubDAO --pin
+```
+
+**Both workflows** end at the same place: a versioned library update in the registry.
+
+---
+
+## Skills Workflow Details
+
+### 1. Make Your Changes
+
+Edit skill files in your workspace's `prompts/skills/` directory. Add, modify, or remove markdown files as needed.
+
+### 2. Check Status
+
+See what has changed:
+
+```bash
+sage skills list
+```
+
+### 3. Publish Updates
 
 The `publish` command builds a manifest, uploads to IPFS, and creates a governance proposal:
 
 ```bash
-sage prompts publish --pin
+sage skills publish my-skill --dest personal --pin
 ```
 
 This generates a new CID and proposes it to your SubDAO in one step.
@@ -29,7 +78,39 @@ This generates a new CID and proposes it to your SubDAO in one step.
 See what will be published without executing:
 
 ```bash
-sage prompts publish --dry-run
+sage skills try my-skill --as cursor
+```
+
+---
+
+## Library Workflow Details
+
+### 1. Check Library Status
+
+See the current state of your library:
+
+```bash
+sage library status --subdao 0xYourSubDAO
+```
+
+### 2. Preview Changes
+
+Before publishing, preview your manifest:
+
+```bash
+sage library preview ./manifest.json
+```
+
+### 3. Publish
+
+Push your manifest to IPFS and create a proposal:
+
+```bash
+# For team (Safe multisig)
+sage library push ./manifest.json --subdao 0xTeamSubDAO --pin --exec
+
+# For community (token voting)
+sage library push ./manifest.json --subdao 0xCommunitySubDAO --pin
 ```
 
 ## How Versioning Works

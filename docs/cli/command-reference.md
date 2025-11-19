@@ -59,94 +59,148 @@ sage doctor
 
 ## Library Management Commands
 
-### `sage library scaffold-manifest`
-Generate a template manifest.json for a new prompt library.
+### When to Use Skills vs Library Commands
 
-```bash
-sage library scaffold-manifest
-sage library scaffold-manifest --output my-library-manifest.json
-```
+**Use `sage skills` commands** when:
+- You have a workspace (`prompts/skills/`) and want the CLI to build + pin a manifest for you
+- You're iterating on skills locally and want integrated publishing
 
-**Options:**
-- `--output <path>` - Output file path (default: manifest.json)
-- `--template <type>` - Template type (default, mcp, agent)
+**Use `sage library` commands** when:
+- You already have a `manifest.json` or want to compose one manually
+- You need fine-grained control over the manifest structure
+
+**Both paths** end at the same place: a proposal or scheduled update against the LibraryRegistry.
 
 ---
 
-### `sage library lint`
-Validate a manifest file against the Sage schema.
+### `sage library template`
+Generate a template manifest.json for a new prompt library.
 
 ```bash
-sage library lint manifest.json
+sage library template --type basic --out ./manifest.json
 ```
 
-**What it validates:**
-- JSON schema compliance
-- Required fields presence
-- Prompt path references
-- Metadata format
-- Version string format
+**Options:**
+- `--type <type>` - Template type (basic, mcp, agent)
+- `--out <path>` - Output file path (default: manifest.json)
+
+---
+
+### `sage library add-prompt`
+Add a prompt to an existing manifest.
+
+```bash
+sage library add-prompt \
+  --manifest ./manifest.json \
+  --file ./prompts/hello.md \
+  --key examples/hello \
+  --name "Hello World" \
+  --upload
+```
+
+**Options:**
+- `--manifest <path>` - Manifest file to update
+- `--file <path>` - Prompt markdown file
+- `--key <string>` - Unique key for the prompt
+- `--name <string>` - Human-readable prompt name
+- `--upload` - Upload file to IPFS and add CID reference
+
+---
+
+### `sage library preview`
+Preview a manifest file before publishing.
+
+```bash
+sage library preview ./manifest.json
+```
+
+**What it shows:**
+- Prompt count and structure
+- IPFS references
+- Validation warnings
+- Estimated upload size
+
+---
+
+### `sage library status`
+Check the current status of a library in a SubDAO.
+
+```bash
+sage library status --subdao 0xYourSubDAO
+```
+
+**Returns:**
+- Current library CID
+- Pending proposals
+- Role permissions (LIBRARY_ADMIN, PROPOSER, EXECUTOR)
+- SubDAO governance configuration
 
 ---
 
 ### `sage library push`
-Upload a library to IPFS and optionally pin it.
+Upload a library to IPFS and create governance proposal or execute directly.
 
 ```bash
-sage library push manifest.json
-sage library push manifest.json --pin
-sage library push manifest.json --pin --subdao 0xYourSubDAO
-```
+# Team (Safe) - generates Safe transaction
+sage library push ./manifest.json --subdao 0xTeamSubDAO --pin --wait --warm --exec
 
-**Options:**
-- `--pin` - Pin the uploaded content on IPFS
-- `--subdao <address>` - Associate with a SubDAO
-- `--dry-run` - Simulate upload without executing
-
-**Returns:**
-- Manifest CID (bafybei...)
-- Content CID references
-- Upload receipt
-
----
-
-### `sage library propose`
-Create a governance proposal for a library update.
-
-```bash
-sage library propose manifest.json --subdao 0xYourSubDAO
+# Community (Tally) - creates governance proposal
+sage library push ./manifest.json --subdao 0xCommunitySubDAO --pin --wait --warm
 ```
 
 **Options:**
 - `--subdao <address>` - SubDAO address (required)
-- `--description <text>` - Proposal description
-- `--execution-delay <seconds>` - Delay before execution (after queue)
+- `--pin` - Pin the uploaded content on IPFS
+- `--wait` - Wait for IPFS upload completion
+- `--warm` - Warm IPFS caches for faster retrieval
+- `--exec` - Execute directly (team/operator mode only)
 
-**What it does:**
-- Validates manifest and SubDAO permissions
-- Creates on-chain proposal via Governor contract
-- Returns proposal ID for tracking
-
----
-
-### `sage library info`
-Fetch information about a library from the registry.
-
-```bash
-sage library info <cid>
-sage library info <cid> --subdao 0xSubDAO
-```
-
-**Options:**
-- `--subdao <address>` - Filter by SubDAO
-- `--format <type>` - Output format (json, table, yaml)
+**Returns:**
+- Manifest CID
+- Proposal ID (community mode)
+- Safe transaction JSON path (team mode)
+- Next steps instructions
 
 ---
 
 ## SubDAO Commands
 
+### `sage subdao create-playbook`
+Deploy a new SubDAO using a versioned playbook (Creator/Squad/Community).
+
+```bash
+# Dry-run to generate plan
+sage subdao create-playbook \
+  --playbook community-long \
+  --name "Community UX Test" \
+  --dry-run
+
+# Apply the generated plan
+sage subdao create-playbook --apply subdao-plan-*.json
+```
+
+**Playbook Options:**
+- `creator` - Solo operator (direct control, no voting)
+- `squad` - Small team (Safe multisig, 3-10 members)
+- `community-long` - Token voting (long delays, high quorum)
+- `community` - Token voting (standard parameters)
+
+**Options:**
+- `--playbook <type>` - Playbook type (required)
+- `--name <string>` - SubDAO name
+- `--dry-run` - Generate plan without executing
+- `--apply <path>` - Apply a previously generated plan
+
+**What it does:**
+- Generates deployment plan (contracts, roles, parameters)
+- Validates playbook configuration
+- Executes deployment (if not dry-run)
+- Returns SubDAO address and governance details
+
+---
+
 ### `sage subdao create`
-Deploy a new SubDAO with governance contracts.
+Deploy a new SubDAO with custom governance parameters (advanced).
 
 ```bash
 sage subdao create \
@@ -165,6 +219,8 @@ sage subdao create \
 - `--voting-period <blocks>` - Blocks for voting duration
 - `--proposal-threshold <tokens>` - Tokens required to propose
 - `--quorum <percentage>` - Quorum percentage required
+
+**Note:** For most use cases, `subdao create-playbook` is recommended over this command.
 
 ---
 
@@ -197,6 +253,95 @@ sage subdao info 0xSubDAOAddress
 - Treasury balance
 - Active proposals count
 - Library count
+
+---
+
+## Proposals & Governance Commands
+
+### `sage proposals inbox`
+List pending and active proposals for a SubDAO.
+
+```bash
+sage proposals inbox --subdao 0xCommunitySubDAO
+```
+
+**Returns:**
+- Proposal IDs
+- Proposal status (Pending, Active, Succeeded, Queued, Executed)
+- Voting period deadlines
+- Current vote counts
+
+---
+
+### `sage proposals preview`
+Preview the details of a specific proposal.
+
+```bash
+sage proposals preview <id> --subdao 0xCommunitySubDAO
+```
+
+**What it shows:**
+- Proposal description
+- Calldata breakdown (which contracts/functions will be called)
+- Current voting status
+- Time remaining
+- Required quorum
+
+---
+
+### `sage proposals vote`
+Vote on an active proposal.
+
+```bash
+sage proposals vote <id> for --subdao 0xCommunitySubDAO
+sage proposals vote <id> against --subdao 0xCommunitySubDAO
+sage proposals vote <id> abstain --subdao 0xCommunitySubDAO
+```
+
+**Options:**
+- `<id>` - Proposal ID (required)
+- Vote type: `for`, `against`, or `abstain`
+- `--subdao <address>` - SubDAO address (required)
+
+**Requirements:**
+- Must have voting power (delegated tokens)
+- Proposal must be in Active state
+- Can only vote once per proposal
+
+---
+
+### `sage proposals execute`
+Execute a successful proposal after timelock delay.
+
+```bash
+sage proposals execute <id> --subdao 0xCommunitySubDAO
+```
+
+**Requirements:**
+- Proposal must have succeeded (quorum + majority reached)
+- Proposal must be queued in Timelock
+- Timelock delay must have passed
+
+**What it does:**
+- Executes the proposal's on-chain actions
+- Updates library registry (for library update proposals)
+- Returns transaction hash
+
+---
+
+### `sage proposals status`
+Check the status of proposals and show recommended next action.
+
+```bash
+sage proposals status --subdao 0xCommunitySubDAO
+```
+
+**Returns:**
+- Latest proposals with current state
+- Recommended next action:
+  - "Vote on proposal #X" (if active)
+  - "Queue proposal #X" (if succeeded)
+  - "Execute proposal #X" (if queued and delay passed)
 
 ---
 

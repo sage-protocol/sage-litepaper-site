@@ -2,49 +2,90 @@
 
 Once you are a member of a SubDAO and have delegated voting power (typically by delegating to yourself), you can vote on active governance proposals.
 
-## 1. Find Active Proposals
+## 1. Check Proposal Inbox
 
-List the active proposals for your SubDAO:
-
-```bash
-sage governance list --subdao <subdao-address>
-```
-
-This will show you the proposal ID and description for each active proposal.
-
-## 2. Review a Proposal
-
-Before voting, inspect the details of the proposal to understand what it does.
+View all pending and active proposals for your SubDAO:
 
 ```bash
-sage governance inspect <proposal-id> --subdao <subdao-address>
+sage proposals inbox --subdao 0xYourSubDAO
 ```
 
-This command will decode the proposal's actions, showing you which contracts will be called and with what data.
+This will show you:
+- Proposal IDs
+- Current status (Pending, Active, Succeeded, Queued, Executed)
+- Voting deadlines
+- Current vote counts
 
-## 3. Cast Your Vote
+## 2. Preview a Proposal
 
-To vote, use the `governance vote` command.
+Before voting, inspect the details of a specific proposal:
 
 ```bash
-sage governance vote <proposal-id> <support> --subdao <subdao-address>
+sage proposals preview <proposal-id> --subdao 0xYourSubDAO
 ```
 
-*   `<proposal-id>`: The ID of the proposal you are voting on.
-*   `<support>`: Your vote. Can be `for`, `against`, or `abstain`.
+This command shows:
+- Proposal description
+- Calldata breakdown (which contracts/functions will be called)
+- Current voting status
+- Time remaining
+- Required quorum
 
 Example:
 ```bash
-sage governance vote 42 for --subdao 0xYourSubDAO
+sage proposals preview 42 --subdao 0xYourSubDAO
+```
+
+## 3. Cast Your Vote
+
+To vote, use the `proposals vote` command:
+
+```bash
+sage proposals vote <proposal-id> <support> --subdao 0xYourSubDAO
+```
+
+*   `<proposal-id>`: The ID of the proposal you are voting on
+*   `<support>`: Your vote. Can be `for`, `against`, or `abstain`
+
+Examples:
+```bash
+sage proposals vote 42 for --subdao 0xYourSubDAO
+sage proposals vote 42 against --subdao 0xYourSubDAO
+sage proposals vote 42 abstain --subdao 0xYourSubDAO
 ```
 
 Your vote is weighted by your stake token balance at the proposal's snapshot block.
 
-## Proposal Lifecycle
+## 4. Execute Successful Proposals
 
-After the voting period ends, a successful proposal must be **queued** in the Timelock contract and then **executed**.
+After the voting period ends, a successful proposal must be **executed** after the Timelock delay passes.
 
-*   `sage governance queue <proposal-id>`
-*   `sage governance execute <proposal-id>`
+```bash
+sage proposals execute <proposal-id> --subdao 0xYourSubDAO
+```
 
-Anyone can call these functions to move a successful proposal forward.
+Anyone can call this function to execute a proposal once:
+- Quorum is reached
+- Voting period has ended
+- Timelock delay has passed
+
+## Check Next Steps
+
+Use `proposals status` to see what action is needed next:
+
+```bash
+sage proposals status --subdao 0xYourSubDAO
+```
+
+This will show recommended next actions:
+- "Vote on proposal #X" (if active)
+- "Queue proposal #X" (if succeeded)
+- "Execute proposal #X" (if queued and delay passed)
+
+## Full Proposal Lifecycle
+
+1. **Created** - Proposal submitted to Governor
+2. **Active** - Voting period is open → **Vote here**
+3. **Succeeded** - Quorum reached, majority voted for
+4. **Queued** - Waiting for Timelock delay
+5. **Executed** - Proposal actions completed → **Library updated**

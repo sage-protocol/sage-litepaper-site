@@ -94,6 +94,7 @@ nav:
       - What's Different: core-concepts/what-makes-it-different.md
       - Metaprompting Loop: core-concepts/metaprompting-loop.md
       - Components: core-concepts/components.md
+      - Social Layer: core-concepts/social-layer.md
       - Technical Overview: core-concepts/technical-overview.md
       - Incentives: core-concepts/incentives.md
       - Governance: core-concepts/governance-modes.md

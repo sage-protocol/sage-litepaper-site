@@ -139,6 +139,12 @@ IPFS stays the canonical store for library payloads, enforced by a managed worke
 **Tooling for Distributed Intelligence**
 The CLI, discovery app, and MCP endpoints share a unified SDK adapter. Commands like `sage ipfs credits` and `sage library push` connect operators, creators, and agents to the same governed knowledge base.
 
+**Social & Discovery Layer**
+Sage fosters a social ecosystem around prompts:
+- **Wallet Profiles**: Showcase your skills, libraries, and governance activity at `/u/[ens_name]`.
+- **Farcaster Frames**: Share interactive library and proposal frames directly in social feeds.
+- **Governance Hub**: Visualize skill diffs and track proposal lineage with a capabilities-aware UI.
+
 ---
 
 ## Community & Support
