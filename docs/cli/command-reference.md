@@ -163,6 +163,71 @@ sage library push ./manifest.json --subdao 0xCommunitySubDAO --pin --wait --warm
 
 ---
 
+---
+
+## Skills Management Commands
+
+The `sage skills` command group is the recommended workflow for managing AI skills and prompts locally before publishing.
+
+### `sage skills init`
+Initialize a new skills workspace.
+
+```bash
+sage skills init
+```
+
+### `sage skills list`
+List skills in the current workspace.
+
+```bash
+sage skills list
+```
+
+### `sage skills variant`
+Create a variant of an existing skill.
+
+```bash
+sage skills variant <key> [suffix]
+```
+
+### `sage skills agents-sync`
+Sync local skills to `AGENTS.md` for Claude/OpenSkills compatibility.
+
+```bash
+sage skills agents-sync
+```
+
+### `sage skills import`
+Import skills from external sources.
+
+```bash
+sage skills import ./path/to/skill
+sage skills import owner/repo
+```
+
+### `sage skills export`
+Export a skill to a specific target format.
+
+```bash
+sage skills export <key> --as cursor --write
+```
+
+### `sage skills publish`
+Publish skills to the on-chain library with governance checks.
+
+```bash
+sage skills publish [key] --subdao 0xYourSubDAO
+```
+
+### `sage skills doctor`
+Validate skill frontmatter and SubDAO governance readiness.
+
+```bash
+sage skills doctor [key] --subdao 0xYourSubDAO
+```
+
+---
+
 ## SubDAO Commands
 
 ### `sage subdao create-playbook`
@@ -439,6 +504,20 @@ Run MCP server in stdio mode for Claude Desktop.
 ```bash
 node packages/cli/src/mcp-server-stdio.js
 ```
+
+**Available Tools:**
+- `search_prompts`: Find prompts by keyword or tag.
+- `get_prompt`: Retrieve a specific prompt.
+- `list_libraries`: List available libraries (local or pinned).
+- `suggest_subdaos_for_library`: Recommend SubDAOs for publishing based on library content and tags.
+- `generate_publishing_commands`: Generate CLI commands to publish a library to a SubDAO.
+- `improve_prompt`: Analyze and improve a prompt using heuristics (`pass='deep'`) or basic checks.
+- `create_from_template`: Create a new prompt from a template.
+- `list_templates`: List available prompt templates.
+- `get_template`: Get details of a specific template.
+- `bulk_update_prompts`: Update multiple prompts in a manifest at once.
+- `analyze_dependencies`: Analyze dependencies between prompts.
+- `update_library_metadata`: Update library metadata (name, description, tags).
 
 **Usage in Claude Desktop config:**
 ```json

@@ -149,10 +149,10 @@ Agents query the subgraph first for the latest approved manifests, providing nea
 **MCP Server (Model Context Protocol)**
 A standardized interface for agents to interact with Sage:
 
-- `list_libraries`: Discover all available prompt libraries
-- `get_library`: Fetch a specific library manifest by CID or name
-- `search_prompts`: Full-text search across prompts
-- `get_prompt`: Retrieve prompt content by CID
+- **Discovery**: `list_libraries`, `search_prompts`, `suggest_subdaos_for_library`
+- **Content**: `get_prompt`, `get_template`, `list_templates`
+- **Creation**: `create_from_template`, `improve_prompt`, `generate_publishing_commands`
+- **Management**: `bulk_update_prompts`, `update_library_metadata`
 
 MCP integrations exist for Claude Desktop, LangChain, and other agent frameworks, enabling plug-and-play usage.
 

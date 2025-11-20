@@ -52,8 +52,10 @@ sage subdao create --wizard
 ## Running the MCP Server for Agents
 
 ```bash
-node cli/mcp-server-stdio.js
-# or start HTTP and set NEXT_PUBLIC_MCP_HTTP_URL
+node packages/cli/src/mcp-server-stdio.js
 ```
 
-Tools include: `search_onchain_prompts`, `get_prompt_content`, `list_subdaos`, `get_library_manifests`.
+**Key Tools:**
+- **Discovery**: `search_prompts`, `list_libraries`, `suggest_subdaos_for_library`
+- **Creation**: `create_from_template`, `improve_prompt`, `generate_publishing_commands`
+- **Management**: `bulk_update_prompts`, `update_library_metadata`
