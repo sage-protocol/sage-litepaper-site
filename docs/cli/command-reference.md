@@ -409,6 +409,93 @@ sage proposals status --dao 0xCommunityDAO
 
 ---
 
+## Personal Premium Commands
+
+The `sage personal` command group allows creators to monetize their prompts directly using the Personal Premium model.
+
+### `sage personal sell`
+Publish a premium prompt with an encrypted component.
+
+```bash
+sage personal sell --file ./prompts/exclusive.md --price 5.0
+```
+
+**Options:**
+- `--file <path>` - Path to the prompt file (required)
+- `--price <amount>` - Price in USDC (required)
+- `--name <string>` - Name of the prompt (optional, defaults to filename)
+- `--description <string>` - Description (optional)
+- `--preview <path>` - Path to a preview file (optional)
+- `--subdao <address>` - SubDAO to endorse this prompt (optional)
+
+---
+
+### `sage personal buy`
+Purchase access to a premium prompt.
+
+```bash
+sage personal buy --id <prompt-id>
+```
+
+**Options:**
+- `--id <number>` - The ID of the premium prompt (required)
+- `--amount <number>` - Amount of USDC to pay (optional, defaults to current price)
+
+---
+
+### `sage personal access`
+Decrypt and view a purchased premium prompt.
+
+```bash
+sage personal access --id <prompt-id>
+```
+
+**Options:**
+- `--id <number>` - The ID of the premium prompt (required)
+- `--out <path>` - Output file path (optional, prints to stdout otherwise)
+
+---
+
+### `sage personal my-licenses`
+List all premium licenses you own.
+
+```bash
+sage personal my-licenses
+```
+
+---
+
+### `sage personal list`
+List premium prompts available for sale.
+
+```bash
+sage personal list
+```
+
+**Options:**
+- `--creator <address>` - Filter by creator address
+- `--subdao <address>` - Filter by endorsing SubDAO
+
+---
+
+### `sage personal price`
+Update the price of your premium prompt.
+
+```bash
+sage personal price --id <prompt-id> --new-price 10.0
+```
+
+---
+
+### `sage personal unlist`
+Unlist a premium prompt, preventing new purchases.
+
+```bash
+sage personal unlist --id <prompt-id>
+```
+
+---
+
 ## IPFS Commands
 
 ### `sage ipfs credits`

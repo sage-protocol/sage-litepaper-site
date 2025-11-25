@@ -1,194 +1,121 @@
-# Protocol Architecture
+# Contracts Architecture
 
-This document outlines the high-level architecture of the Sage Protocol smart contracts. The protocol is designed as a modular and extensible system for community-owned agent instructions.
-
-## Core Components
-
-The Sage protocol's architecture is composed of several core smart contracts and off-chain components that work together to provide a robust and secure system.
-
-- **SubDAO Factory (`SubDAOFactoryOptimized.sol`)**: The main entry point for creating new SubDAOs using gas-efficient EIP-1167 minimal proxies. It sets up the initial configuration of a SubDAO, including its governance model, access control, and prompt registry.
-
-- **SubDAO (`SubDAO.sol`)**: A self-governed entity that manages a collection of prompt libraries, with its own treasury, governance contract (`PromptGovernor`), and prompt registry (`PromptRegistry`).
-
-- **Prompt Registry (`PromptRegistry.sol`)**: Stores and manages prompts, supporting versioning, forking, and attribution.
-
-- **Prompt Governor (`PromptGovernor.sol`)**: The governance contract for a SubDAO, allowing members to vote on proposals using the `SXXX` token.
-
-- **SXXX Token (`SXXX.sol`, `SXXXProper.sol`)**: The native governance token for staking, voting, and incentives.
-
-- **Library Registry (`LibraryRegistry.sol`)**: A global, append-only directory for discovering library manifests across the protocol.
-
-- **LaunchGate & Treasury System**: For production operations like launching Liquidity Bootstrapping Pools (LBPs) on Doppler, Sage uses a secure architecture centered around the `LaunchGate.sol` contract and a multisig-managed treasury (e.g., a Gnosis Safe). This system includes several key features for security and transparency:
-    - **On-chain Spend Limits**: `TreasuryWrapper` uses ARBAC roles and selector allowlists to enforce on-chain spending limits.
-    - **DAO Executor Role**: The DAO timelock has a `DAO_EXECUTOR_ROLE` to trigger `LaunchGate` actions directly, while the Safe retains admin powers.
-    - **Custodial Wrapper**: `TreasuryWrapper` holds the funds (USDC/ETH) for launches, ensuring all spending is transparent and on-chain.
-    - **Prepare-Only CLI Flow**: The `sage` CLI produces transaction payloads for the Safe to review and approve, which then target `TreasuryWrapper`.
-    - **Registry-driven Configuration**: `LaunchGate` reads configuration from the protocol registry, which is controlled by the treasury admins.
-    - **Auditable Events**: `TreasuryWrapper` and `LaunchGate` emit detailed events for a full audit trail.
-
-- **Off-chain Components**:
-    - **IPFS Worker**: A Cloudflare Worker for IPFS uploads, pinning, and managing ledgers for paid pinning and prompt commerce.
-    - **MCP Server**: The Model Context Protocol server, providing a primary interface for agents to interact with the protocol.
-
-## System Overview
-
-The protocol architecture consists of three main layers working together to provide governed, content-addressed agent instructions:
-
-```mermaid
-graph TB
-    %% Define nodes
-    CLI("Sage CLI")
-    APP("Web App")
-    MCP("MCP Server")
-    SG("Subgraph")
-    RPC("RPC Node")
-    IPFS("IPFS Gateway")
-    WORKER("Managed Worker")
-    CREDITS("Credit System")
-    SF("SubDAO Factory")
-    LR("LibraryRegistry")
-    SD("SubDAO")
-    GOV("Governor")
-    TL("Timelock")
-    PR("PromptRegistry")
-    TR("Treasury")
-    SAGE("SAGE Token")
-    LG("LaunchGate")
-    TW("TreasuryWrapper")
-
-    %% Define subgraphs
-    subgraph "Discovery Layer"
-        CLI
-        APP
-        MCP
-    end
-
-    subgraph "Index Layer"
-        SG
-        RPC
-    end
-
-    subgraph "Storage Layer"
-        IPFS
-        WORKER
-        CREDITS
-    end
-
-    subgraph "Smart Contract Layer (Base)"
-        SF
-        LR
-        SAGE
-        LG
-        TW
-        subgraph "Per SubDAO"
-            SD
-            GOV
-            TL
-            PR
-            TR
-        end
-    end
-
-    %% Define connections
-    %% Read operations
-    CLI -.-> SG
-    APP -.-> SG
-    MCP -.-> SG
-    SG -.-> RPC
-    RPC -.-> SF
-    RPC -.-> LR
-
-    %% Storage operations
-    CLI --> WORKER
-    WORKER --> IPFS
-    WORKER -.-> CREDITS
-    MCP --> IPFS
-
-    %% Write/Transaction operations
-    SF --> SD
-    SD --> GOV
-    GOV --> TL
-    TL ==> PR
-    TL ==> TR
-    TL ==> LR
-    SAGE --> GOV
-    TR --> TW
-    TW --> LG
-
-    %% Conceptual links
-    PR -.-> IPFS
-```
+This document summarizes the main contracts in Sage Protocol and how they fit together. It focuses on the pieces that are in use today and clearly separates design intent from future extensions.
 
 ---
 
-## Storage Infrastructure
+## High‑Level Modules
 
-The storage layer ensures prompts and manifests are **permanently available**, **cryptographically verifiable**, and **economically sustainable**.
+- **DAO Factory (`SubDAOFactoryOptimized.sol`)**  
+  Entry point for creating new DAO instances using gas‑efficient minimal proxies. It wires up:
+  - Governance (Governor + Timelock).
+  - Library and prompt registries.
+  - Initial roles for executors and treasuries.
 
-### IPFS Content Addressing
+- **DAO (`SubDAO.sol`)**  
+  The DAO contract represents a governance domain. It typically references:
+  - A Governor + Timelock pair.
+  - A library registry and prompt registry.
+  - Treasury contracts or wrappers.
 
-All prompt content is stored on IPFS (InterPlanetary File System):
+- **Prompt & Library Registries**  
+  - `LibraryRegistry`: Tracks library manifests (CIDs) and registry‑level metadata.
+  - `PromptRegistry`: Tracks prompts and their relationships (forks, updates, attribution) at a finer granularity.
 
-- **Content Identifiers (CIDs)**: Each file has a unique hash (e.g., `bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi`)
-- **Immutability**: Changing a single byte produces a different CID
-- **Deduplication**: Identical content only needs to be stored once
-- **Decentralization**: Multiple nodes can pin and serve the same content
+- **Treasury & Wrappers**  
+  Treasury contracts hold assets and are wrapped by helper contracts that:
+  - Enforce ARBAC‑style roles and selector allowlists.
+  - Coordinate with the DAO’s Timelock for execution.
 
-### Managed Worker (Cloudflare Worker)
-
-A serverless Cloudflare Worker mediates uploads, pinning, and gateway warming:
-
-**Key Functions:**
-
-1. **Credit Checks**: Validates user has sufficient credits before accepting uploads
-2. **Metadata Validation**: Ensures manifests conform to schema before pinning
-3. **Gateway Warming**: Pre-caches content on multiple IPFS gateways for low-latency access
-4. **Telemetry**: Tracks usage stats (downloads, bandwidth) for analytics
-5. **Payment Processing**: Handles 402 Payment Required flows for credit purchases
-
-**Endpoints:**
-
-- `POST /upload` - Upload and pin content (requires credits)
-- `GET /pin/:cid` - Re-pin existing content
-- `POST /buy-credits` - Purchase pinning credits (USDC or SAGE)
-- `GET /credits` - Check current credit balance
-- `GET /telemetry` - View usage statistics
-
-### Credit System (Two-Phase Model)
-
-**Phase A (Current)**: Off-chain credits via Cloudflare Durable Objects
-
-- Users purchase credits through the worker's 402 payment flow
-- Credits are tracked in a persistent Durable Object ledger
-- Worker debits credits per pin operation (cost: ~$0.01-0.10 per GB/month)
-- CLI commands:
-  ```bash
-  sage ipfs credits  # Check balance
-  sage ipfs buy-credits --amount 100 --currency USDC
-  sage ipfs pin manifest.json  # Debits credits
-  ```
-
-**Phase B (Roadmap)**: On-chain `CreditToken` + `PaymentRouter`
-
-- ERC-20 credit token (`CREDIT`) minted via bonding curve
-- Smart contracts enforce burns per pin operation
-- Transparent on-chain accounting of storage costs
-- Automated treasury rebalancing based on usage
-
-### Gateway Infrastructure
-
-**Primary Gateway**: `https://gateway.sageprotocol.io`
-
-- Cloudflare-backed for global CDN distribution
-- 99.9% uptime SLA
-- Automatic failover to public gateways
-
-**Fallback Gateways**:
-
-- `https://w3s.link/ipfs/`
-- `https://ipfs.io/ipfs/`
-- `https://cloudflare-ipfs.com/ipfs/`
-
-**Warming Strategy**: When content is pinned, the worker pre-fetches it on multiple gateways to ensure low-latency first-read performance.
+Contract names such as `SubDAOFactoryOptimized` and `SubDAO` are retained for compatibility, but conceptually they represent DAOs and their factories.
 
 ---
+
+## Governance Flow
+
+The typical governance flow for library updates and related actions is:
+
+1. **Proposal Creation**  
+   - A user or agent (via CLI/MCP) prepares a proposal to:
+     - Update a DAO’s library manifest CID.
+     - Trigger a treasury action.
+     - Change configuration parameters.
+   - The CLI helps construct proposal calldata and payloads, but does not execute them directly.
+
+2. **Voting**  
+   - DAO token or stake holders vote through the Governor.
+   - Voting parameters (delay, period, quorum, threshold) are configured per DAO.
+
+3. **Queue & Timelock**  
+   - Passed proposals are queued in the Timelock.
+   - A delay window allows for inspection and potential intervention via governance or multisig where appropriate.
+
+4. **Execution**  
+   - After the delay, the Timelock executes registry updates or treasury calls.
+   - Off‑chain services (subgraph, MCP server, CLI) observe the new state and update discovery surfaces.
+
+This pattern is intended to cover library updates, premium endorsement flows (future), and most treasury operations.
+
+---
+
+## Storage & Discovery
+
+- **IPFS + CIDs**  
+  - Manifests and prompt files are stored on IPFS.
+  - Registries store CIDs, not raw content.
+  - Clients fetch content from gateways using those CIDs.
+
+- **Subgraph Indexing**  
+  - A subgraph indexes DAO, registry, and marketplace events.
+  - It provides a GraphQL API for:
+    - Listing DAOs and their libraries.
+    - Inspecting proposal history and registry changes.
+    - Discovering personal marketplace listings and license receipts.
+
+- **MCP Server**  
+  - The Sage MCP server exposes a model‑native interface for:
+    - Discovering libraries and prompts.
+    - Fetching manifests and prompts by CID/key.
+    - Validating content and generating publishing commands.
+  - It does not bypass governance or timelock controls; it only helps agents reason about and operate within them.
+
+---
+
+## Premium & Marketplace Contracts
+
+- **Personal Marketplace (`PersonalMarketplace.sol`)**  
+  - Manages SXXX‑priced licenses for personal premium prompts.
+  - Maps `(creator, key)` to prices.
+  - Mints ERC1155 license receipts via `PersonalLicenseReceipt`.
+
+- **Personal License Receipt (`PersonalLicenseReceipt.sol`)**  
+  - ERC1155 token representing ownership of a personal premium license.
+  - Used in Lit access conditions to gate decryption.
+
+- **PremiumPrompts / DAO‑Level Premium (Legacy / Roadmap)**  
+  - Earlier iterations included DAO‑scoped premium contracts (`PremiumPrompts`) that integrated directly with DAOs for revenue splits and governance‑gated publishing.
+  - For the current beta, these flows are **not** the primary path; CLI support has been reduced in favor of personal premium.
+  - Future DAO‑level premium and endorsement flows are expected to:
+    - Use governance proposals to register and endorse content.
+    - Rely on DAOs’ Timelocks for execution.
+    - Be indexed for transparent auditing.
+
+---
+
+## Safety Considerations
+
+- **Timelock as Gatekeeper**  
+  - Registry and treasury contracts should only be mutable by the Timelock or tightly scoped admin roles.
+  - Emergency or bootstrap roles should be time‑limited and clearly documented.
+
+- **Role Configuration**  
+  - Role and selector configuration should be inspected via CLI tools (e.g., `timelock doctor`) rather than edited manually from the CLI.
+  - Any “fix” flows should route through governance when moving from testnet to mainnet.
+
+- **Upgrade Path**  
+  - Where upgradability (via diamonds or proxies) is in use, upgrade paths should:
+    - Be controlled by the DAO’s Timelock or dedicated upgrade council.
+    - Be visible in the subgraph for auditability.
+
+This architecture aims to keep the on‑chain surface small, composable, and compatible with existing DeFi/NFT infrastructure, while letting Sage evolve its premium and credit systems over time without changing the core trust assumptions.
+

@@ -1,218 +1,160 @@
 # Token and Treasury Economics
 
-The Sage economy is designed to create a self-sustaining ecosystem that rewards contributors, funds development, and coordinates community-governed agent instructions. The protocol uses a fixed-supply token model with deflationary mechanisms and multiple value capture streams.
+The Sage economy is designed to reward contributors, fund development, and coordinate community‑governed prompt libraries, while keeping the on-chain surface as simple and robust as possible.
+
+This section reflects what is implemented today and what is planned for mainnet.
+
+---
 
 ## Core Economic Principles
 
--   **Fixed Supply**: SAGE has a fixed 1 billion token supply at genesis with deflationary burns tied to DAO creation and forking. No inflation.
--   **Treasury Bootstrapping**: A public LBP (Liquidity Bootstrapping Pool) plus optional bond sales seed protocol-owned liquidity and long-term reserves.
--   **Creator Rewards**: DAOs receive grants from the main treasury and use those funds to post bounties, creating a direct work-to-earn loop.
--   **Community Governance**: SAGE token holders stake their tokens in DAOs to vote on content curation and community decisions.
--   **Coordination over Fees**: Tokens primarily coordinate long-horizon work (governance, reputation, commitment burns) rather than charging per-prompt usage.
+- **Fixed Supply (Design)**  
+  SAGE is designed as a fixed‑supply token (1 billion at genesis) with deflationary mechanisms tied primarily to DAO creation and library forking. Final parameters and burn mechanics are intended for mainnet and may be simplified on testnets.
+
+- **DAO‑First Governance**  
+  DAOs control library upgrades, treasuries, and economic parameters via Governor + Timelock. The Sage CLI and MCP server route all impactful actions through those governance paths.
+
+- **Coordination Over Fees**  
+  Tokens are intended to coordinate long‑horizon work (governance, bounties, attribution) rather than extract value from every prompt invocation.
 
 ---
 
-## Token Allocation (1 Billion Total Supply)
+## Token Allocation (Design)
 
-The initial SAGE token distribution is structured to balance protocol development, community incentives, and long-term sustainability:
+The initial SAGE token distribution is structured to balance protocol development, community incentives, and long‑term sustainability:
 
-| Allocation | Amount | Percentage | Vesting | Purpose |
-|------------|--------|------------|---------|---------|
-| **Public Sale** | 200M SAGE | 20% | None | Public token sale for price discovery and liquidity bootstrapping |
-| **Treasury** | 300M SAGE | 30% | None | Protocol-owned liquidity, grants, bounties, and operational expenses |
-| **Team & Advisors** | 200M SAGE | 20% | 2-year linear | Core team, advisors, and early contributors |
-| **Community Incentives** | 200M SAGE | 20% | 4-year linear | Staking rewards, creator bounties, and ecosystem grants |
-| **Liquidity Mining** | 100M SAGE | 10% | 2-year linear | Incentives for liquidity providers and protocol participants |
+| Allocation            | Amount      | Percentage | Vesting         | Purpose                                                        |
+|-----------------------|------------:|-----------:|-----------------|----------------------------------------------------------------|
+| Public Sale           | 200M SAGE   | 20%        | None            | Price discovery and initial liquidity                          |
+| Treasury              | 300M SAGE   | 30%        | None            | Grants, bounties, and protocol operations                      |
+| Team & Advisors       | 200M SAGE   | 20%        | 2‑year linear   | Core contributors and early advisors                           |
+| Community Incentives  | 200M SAGE   | 20%        | 4‑year linear   | Staking rewards, creator programs, and ecosystem grants        |
+| Liquidity & Incentive | 100M SAGE   | 10%        | 2‑year linear   | Liquidity mining and incentive programs                        |
 
-### Token Utility
-
-SAGE serves multiple functions within the protocol:
-
-1. **Governance**: Stake SAGE to vote on DAO proposals (library updates, treasury spending, parameter changes)
-2. **Staking**: Lock SAGE to earn governance power and share of DAO treasury rewards
-3. **Bounty Rewards**: Contributors earn SAGE for completing community-posted bounties
-4. **DAO Creation**: Burn SAGE to create new DAOs (deflationary mechanism)
-5. **Premium Access**: Optional SAGE staking requirements for premium DAO features
+Exact schedules and mechanics may be tuned as part of mainnet launch governance.
 
 ---
 
-## Treasury Bootstrapping
+## Token Utility
 
-The protocol treasury is the primary mechanism for long-term sustainability, funded through two main channels:
+SAGE is intended to support several core functions:
 
-### 1. Public Token Sale
+1. **Governance**  
+   Stake SAGE (or the SXXX/stake token in deployed networks) to participate in DAO governance: library updates, treasury spending, and parameter changes.
 
-The initial token distribution uses a fair launch mechanism on Base:
+2. **Staking & Treasury Alignment**  
+   DAOs may distribute rewards or bounties to stakers and contributors, aligning long‑term holders with protocol growth.
 
-**Sale Parameters:**
+3. **Bounty Rewards**  
+   Bounty contracts and DAO treasuries can pay SAGE/SXXX to contributors for completing tasks (new prompts, fixes, integrations).
 
-- **Sale Amount**: 200M SAGE (20% of supply)
-- **Target Raise**: 4-10M USDC
-- **Duration**: 72 hours
-- **Distribution**: Fully permissionless, no whitelists or KYC
+4. **DAO Creation & Forking (Design)**  
+   The design calls for burns when creating new DAOs or forking libraries, tying network expansion to a deflationary sink. On testnets these mechanics may be disabled or simulated.
 
-**Benefits:**
-
-- **Fair Price Discovery**: Transparent pricing mechanism discourages front-running and bots
-- **Wide Distribution**: Open to all participants
-- **Immediate Liquidity**: Raised funds partially seed protocol-owned liquidity (POL)
-- **No Lockups**: Tokens available immediately, no cliff or vesting
-
-### 2. Additional Token Sales
-
-The protocol may conduct additional token sales from treasury reserves to grow liquidity and fund operations:
-
-**Benefits:**
-
-- Increases protocol-owned liquidity for long-term stability
-- Provides sustainable funding for grants, bounties, and development
-- Reduces dependency on external capital sources
+5. **Premium Access (Personal‑First)**  
+   For paid prompts, the current beta focuses on **personal premium** (via `PersonalMarketplace` and SXXX). SubDAO‑level revenue sharing and endorsement are roadmap features (see below).
 
 ---
 
-## Payment Rails Architecture
+## Payment Rails & Premium Prompts
 
-Sage supports multiple payment flows to monetize agent context and reward creators:
+### Free‑to‑Use Default
 
-### Free-to-Use Default
+Most prompts are intended to be free to read and governed at the DAO level. DAOs decide which manifest CID is “official”; agents and users fetch the same content via registries and the subgraph.
 
-Most prompts are **free to use** and governed by the DAO. The protocol prioritizes **coordination** over **extraction**—tokens fund long-term development, not per-prompt fees.
+### Personal Premium (Implemented Today)
 
-### Premium Prompts (Optional)
+The first implementation of paid content uses a **personal marketplace**:
 
-DAOs or individual creators can offer **premium prompts** with gated access:
+- Creators publish encrypted prompts using Lit v7 + ERC1155 receipts.
+- Pricing is denominated in SXXX on Base Sepolia.
+- The `PersonalMarketplace` contract:
+  - Stores a price per `(creator, key)`.
+  - Mints an ERC1155 license receipt to buyers.
+- The Sage CLI:
+  - Encrypts content client‑side.
+  - Uploads encrypted payloads to IPFS.
+  - Interacts with `PersonalMarketplace` to set prices and purchase licenses.
 
-**Implementation:**
+This model is **creator‑first** and does not require DAO governance to list or sell a premium prompt.
 
-1. Creator marks prompt as "premium" in manifest with price (e.g., 10 SAGE or 1 USDC)
-2. PromptRegistry stores payment splitter contract address
-3. Agent queries MCP server, which checks if user has paid
-4. If not paid, MCP returns 402 Payment Required with payment address
-5. User pays via smart contract (splits revenue between creator, DAO treasury, protocol)
-6. MCP server grants access to CID
+### DAO Endorsement & Revenue Splits (Roadmap)
 
-**Payment Splits (Configurable by DAO):**
+For mainnet, DAOs will be able to curate and endorse personal premium prompts without taking custody of the content or encryption keys:
 
-- **Creator**: 70% (address that registered the prompt)
-- **DAO Treasury**: 20% (for bounties and grants)
-- **Protocol Fee**: 10% (main SAGE treasury)
+- DAOs endorse `(creator, key)` pairs on‑chain via governance.
+- Endorsed prompts can surface in DAO‑specific views and discovery feeds.
+- Optional revenue splits (e.g., creator / DAO treasury / protocol) are handled by dedicated payment splitter contracts or marketplace extensions.
 
-**Example Premium Prompt Flow:**
-
-```
-Agent requests prompt "advanced-trading-strategies"
-MCP Server: "402 Payment Required: 10 SAGE"
-User approves transaction to PaymentSplitter contract
-PaymentSplitter distributes:
-  - 7 SAGE to creator (0xAlice)
-  - 2 SAGE to DAO treasury
-  - 1 SAGE to protocol treasury
-MCP Server grants access to CID bafyXXX...
-Agent downloads and uses prompt
-```
-
-### IPFS Pinning Credits
-
-Storage has real costs. The protocol uses a two-phase credit system:
-
-**Phase A (Current)**: Off-chain credits managed by Cloudflare Worker
-
-- Users purchase credits via 402 flow (USDC or SAGE)
-- Credits stored in Durable Object ledger
-- Worker debits credits per pin (cost: ~$0.01-0.10 per GB/month)
-
-**Phase B (Roadmap)**: On-chain `CreditToken` + `PaymentRouter`
-
-- ERC-20 credit token (`CREDIT`) minted via bonding curve
-- Smart contracts enforce burns per pin operation
-- Transparent on-chain accounting of storage costs
-- CLI command: `sage ipfs buy-credits --amount 100 --currency SAGE`
+This endorsement model is specified in more detail in `docs/specs/premium-endorsement-model.md` and is intentionally **future‑facing**; the CLI does not assume it exists today.
 
 ---
 
-## Value Capture & Flywheel
+## Storage, IPFS & Credits
 
-The token economics create a compounding flywheel that rewards quality contributions:
+### Today: Pinning Providers + Gateways
 
-```
-┌─────────────────────────────────────────────┐
-│                                             │
-│  1. Treasury raises funds (LBP + Bonds)    │
-│                  ▼                          │
-│  2. DAOs receive grants                    │
-│                  ▼                          │
-│  3. DAOs post bounties for improvements    │
-│                  ▼                          │
-│  4. Creators deliver quality prompts       │
-│                  ▼                          │
-│  5. Agents use prompts (usage stats up)    │
-│                  ▼                          │
-│  6. More users = more premium sales        │
-│                  ▼                          │
-│  7. Revenue splits to creators + treasuries│
-│                  ▼                          │
-│  8. Treasuries post bigger bounties        │
-│                  │                          │
-│                  └──────────[cycle]─────────┘
-```
+Right now, storage works as follows:
 
-### Deflationary Mechanisms
+- The Sage CLI uploads manifests and prompt payloads to a configured IPFS pinning provider (e.g., Pinata) using an API key or JWT.
+- On‑chain registries store CIDs (or are indexed by a subgraph) so agents can resolve the **same approved manifest** for a given DAO.
+- Clients fetch content through one or more gateways:
+  - Defaults (e.g., `ipfs.dev.sageprotocol.io`) and/or
+  - Provider‑specific gateways (e.g., Pinata’s gateway), overrideable via CLI flags such as `--gateway`.
 
-Several protocol actions burn SAGE, creating long-term scarcity:
+There is **no on‑chain credit token** required to use Sage today; you only need a working pinning configuration and enough ETH/SXXX to pay transaction fees where relevant.
 
-1. **DAO Creation**: Burn 1,000 SAGE to create a new DAO
-2. **Library Forking**: Burn 100 SAGE to fork a library to a new DAO
-3. **Premium Content**: Protocol fee from premium prompts can be partially burned (governance-controlled)
-4. **Credit Purchases**: Optional burn mechanism when buying pinning credits with SAGE
+### Roadmap: 402 Worker & On‑Chain Credits
 
-These burns reduce supply over time, creating deflationary pressure as the protocol scales.
+The repository includes an experimental **402 worker** that implements a credit‑based pinning API:
+
+- A Cloudflare Worker (or similar) mediates uploads and pinning.
+- Uploads are gated by a per‑user credit ledger (off‑chain).
+- Users buy credits (e.g., with USDC or SAGE) and the worker debits those credits when pins are created or renewed.
+
+Future iterations may introduce:
+
+- An on‑chain `CreditToken` (ERC20 or ERC1155) to represent storage credits.
+- A `PaymentRouter` contract that:
+  - Accepts token payments for credits.
+  - Burns or redirects a portion to protocol/DAO treasuries per pin.
+
+These credit and worker systems are **roadmap items**. They are not required for current testnet usage, but the architecture is designed so they can be layered in without changing how DAOs or agents reason about CIDs.
 
 ---
 
-## Treasury Management
+## Deflationary Mechanisms (Design)
 
-The main SAGE treasury is managed by a **multisig Safe** with on-chain spending limits enforced by `TreasuryWrapper`:
+Several protocol actions are designed to burn or lock SAGE over time:
 
-**Governance Structure:**
+1. **DAO Creation**  
+   Burning a fixed amount of SAGE to create a new DAO (or to bootstrap a new governance domain) makes expansion a scarce operation.
 
-- **Safe Signers**: 5-of-9 multisig (core team, advisors, community members)
-- **DAO Timelock**: Can trigger pre-approved actions via `DAO_EXECUTOR_ROLE`
-- **Spending Limits**: `TreasuryWrapper` enforces per-function spending caps (e.g., max 10,000 USDC per `createAuction` call)
+2. **Library Forking**  
+   Burning SAGE to fork a library to a new DAO discourages low‑quality forks and encourages meaningful divergence.
 
-**Treasury Operations:**
+3. **Premium & Credits (Future)**  
+   A portion of protocol fees from premium prompts or storage credits may be burned by governance, creating further long‑term scarcity.
 
-- Grant distributions to DAOs
-- Bond sales to raise additional funds
-- Liquidity management (e.g., adding POL to DEX pools)
-- Operational expenses (infrastructure, audits, marketing)
-
-**Example Grant Flow:**
-
-```bash
-# Proposal submitted to DAO Governor
-sage governance propose --action grantDao \
-  --dao 0xArtistsDAO \
-  --amount 50000 \
-  --description "Q1 2025 Artist Collective Grant"
-
-# Community votes
-# If approved, queued in Timelock
-# After delay, executed via TreasuryWrapper
-# 50,000 SAGE transferred to ArtistsDAO treasury
-```
+Exact parameters for these mechanisms are subject to DAO governance, especially at mainnet launch.
 
 ---
 
-## Long-Term Sustainability
+## Treasury Management & Sustainability
 
-The economic model prioritizes **sustainable coordination** over short-term extraction:
+The main protocol treasury is intended to be managed by a **multisig Safe** plus on‑chain wrappers that enforce spending limits:
 
-✅ **Treasury-funded grants** enable community experimentation without upfront capital
-✅ **Bounty system** rewards quality contributions with clear attribution
-✅ **Optional premium prompts** allow monetization without gating basic access
-✅ **Deflationary burns** create long-term scarcity as usage grows
-✅ **Protocol-owned liquidity** reduces dependency on mercenary capital
+- Governance contracts control:
+  - Grant programs and bounty budgets.
+  - Liquidity provisioning and buyback programs.
+  - Long‑term incentive programs.
+- Safe + wrapper contracts enforce:
+  - Role‑based execution with timelocks where appropriate.
+  - Per‑function spending caps (e.g., maximum per‑grant or per‑proposal limits).
 
-By aligning incentives across creators, users, and the protocol, Sage creates a self-sustaining economy where the best agent context is rewarded and compounded.
+By combining treasury controls with the tokenomics above, Sage aims to create a **self‑sustaining** loop:
 
----
+- Treasuries fund experimentation and prompt development.
+- Successful prompts and libraries attract users and, eventually, premium flows.
+- Value captured can be recycled into new grants and bounties, compounding the ecosystem’s collective intelligence.
+

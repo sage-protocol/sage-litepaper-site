@@ -64,7 +64,20 @@ sage prompts diff
 sage prompts publish --dry-run
 ```
 
-## 5. Create a DAO (Optional)
+
+## 5. Monetize Your Skills (Optional)
+
+You can sell premium prompts directly to other users without DAO approval.
+
+```bash
+# Encrypt and list a prompt for sale (e.g. 5 USDC)
+sage personal sell --file ./prompts/alpha.md --price 5.0
+
+# Check your listed items
+sage personal list --creator $(sage wallet address)
+```
+
+## 6. Create a DAO (Optional)
 
 ```bash
 # Wizard guides you through playbook selection
@@ -76,7 +89,7 @@ sage dao create --wizard
 # - Community: Token voting on Tally
 ```
 
-## 6. Project-Based Workflow (Advanced)
+## 7. Project-Based Workflow (Advanced)
 
 For fine-grained control over manifests:
 

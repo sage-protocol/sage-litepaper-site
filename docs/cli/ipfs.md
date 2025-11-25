@@ -1,53 +1,74 @@
-# IPFS & Pinning
+# IPFS & Storage Commands
 
-Sage Protocol uses IPFS for storing and sharing prompt libraries. The CLI provides tools for uploading, pinning, and managing content on IPFS.
+Sage uses IPFS as the canonical store for manifests and prompt payloads. This page explains how the CLI interacts with IPFS today, and how credit‑based pinning fits into the roadmap.
 
-## Managed IPFS Worker
+---
 
-Uploading defaults to the Sage worker provider with the hosted gateway:
+## 1. Current Model: Pinning Providers & Gateways
 
--   **Provider**: `worker`
--   **Gateway**: `https://ipfs.dev.sageprotocol.io/ipfs`
--   **Worker base**: `https://api.sageprotocol.io`
+Today, the Sage CLI works with a configured IPFS pinning provider (such as Pinata) and one or more gateways.
 
-Pinata is now opt-in. Use `--use-pinata` (or set `SAGE_IPFS_PROVIDER=pinata`) when you want to supply Pinata credentials; otherwise the worker handles warming and pinning.
+### Uploading Content
 
-## Pay-to-Pin Credits
+- Prompts and manifests are typically uploaded as part of higher‑level workflows:
+  - `sage prompts publish` – builds a manifest from your `prompts/` directory and uploads it.
+  - `sage project push` – uploads an existing `manifest.json` and its prompts.
+- In both cases, the CLI:
+  - Sends content to the configured pinning provider.
+  - Receives a CID for the uploaded JSON or file(s).
+  - Uses that CID in on‑chain proposals or registry updates.
 
-A 402-based credit system allows users to pay for pinning services directly through the CLI. Users can buy credits and spend them to pin CIDs via the managed worker, with revenue routed to DAO and protocol treasuries.
+You can also work with IPFS more directly:
 
-When Coinbase’s facilitator is enabled, insufficient-credit responses include the `Payment-Protocol: X402` header and an exact/evm payload that the CLI relays back to the user. Facilitator receipts are hashed server-side, so each `Payment-Receipt` header is single-use—replays return HTTP 409 and the CLI will prompt you to settle again.
+```bash
+sage ipfs upload ./path/to/file
+sage ipfs fetch <cid> --output ./out.json
+```
 
-### Sandbox Iteration (Phase A+)
+Exact subcommands may evolve, but the pattern is:
+- **Upload** content via the configured provider.
+- **Fetch** content via a gateway.
 
--   `sage prompt sandbox push --content-ref <cid>` defaults to the hosted worker at `https://api.sageprotocol.io`; use flags only when opting into custom infrastructure.
--   `sage prompt sandbox list` shows your active public/share/private prompts with remaining quota.
--   `sage prompt sandbox share <id>` rotates the share token (requires ENS and governance participation).
--   `sage prompt sandbox discover` pulls the trending discovery feed; pass `--filter fresh` or `--json` for automation pipelines.
--   Protocol activity and MCP prompt usage automatically register discovery signals with the managed worker, so trending feeds stay current without manual pings.
--   `sage prompt sandbox status` surfaces whether an address satisfies the ENS + governance checks for share/private tiers.
--   `sage prompt sandbox report <id>` forwards a governance flag (reason + note) to the managed worker for triage.
--   Custom workers remain possible, but you must pass `--worker-url`/`--worker-token` explicitly—Sage defaults are always preferred for consistency.
+### Fetching Content
 
-### Governance Reporting Snapshot (Phase A+)
+When fetching from IPFS, the CLI:
+- Uses a default gateway (e.g., `ipfs.dev.sageprotocol.io`) or a provider‑specific gateway.
+- Allows you to override the gateway with flags such as `--gateway https://gateway.pinata.cloud/ipfs/`.
 
--   Reports filed via the sandbox are persisted server-side with per-actor cooldowns and feed into the discovery graph’s `needs-review` filter.
--   Reviewer tooling (`sage prompt sandbox reports list|review`) batches Safe transactions to quarantine or clear prompts and keeps discovery feeds aligned with governance decisions.
--   Observability dashboards track open reports, reporter reputation, and resolution latency (<48 h target) so governance can detect abuse quickly.
+If a gateway returns 404 (e.g., due to propagation lag), you can:
+- Retry with a different gateway using `--gateway`.
+- Confirm the CID exists in your pinning provider’s dashboard.
 
-### Off-chain credits (Phase A)
+On‑chain registries and the subgraph reference CIDs, so agents and users can always find the DAO‑approved manifest even if multiple gateways are involved.
 
--   Enable `SAGE_PAY_TO_PIN: true` in your profile flags to surface credits UX.
--   Show credits: `sage ipfs credits --worker-url https://ipfs.dev.sageprotocol.io`
--   Buy credits: `sage ipfs buy-credits --worker-url …` (prints checkout URL)
--   Pin with credits: `sage ipfs pin <cid> --worker-url …` (prints 402 guidance when needed). You can always use your own provider with `sage ipfs upload --provider pinata` if you prefer BYO model.
+---
 
-### On-chain pin and credits (Phase B)
+## 2. Credit‑Based Pinning (Experimental & Roadmap)
 
--   **Pin burn (prepare-only vs send)**:
-    -   Prepare: `SAGE_PAY_TO_PIN=1 SAGE_PAY_TO_PIN_MODE=onchain sage ipfs pin <cid>`
-    -   Send:    `… sage ipfs pin <cid> --send` (requires wallet configured)
--   **Buy credits on-chain**:
-    -   Prepare (simple allowance): `sage ipfs buy-credits-onchain --token <USDC> --amount <baseUnits> --credits <n>`
-    -   Prepare (Permit2): `sage ipfs buy-credits-onchain --permit2 <addr> --token <USDC> --amount <baseUnits> --credits <n>`
-    -   Append `--send` to submit the transaction directly.
+The repository includes an experimental **402 worker** and credit ledger for pinning, but it is not required for current CLI usage.
+
+### 402 Worker (In Repo)
+
+The 402 worker is a small service that:
+- Exposes HTTP endpoints that respond with 402 Payment Required when credits are insufficient.
+- Maintains a per‑user credit balance in a durable store.
+- Debits credits when a pin is created or renewed.
+
+This allows you to:
+- Gate pinning behind a simple “buy credits → spend credits” flow.
+- Integrate payments (e.g., USDC or SAGE) off‑chain while still using IPFS under the hood.
+
+### On‑Chain Credits (Future)
+
+Longer term, credits can be moved on‑chain:
+- A `CreditToken` (ERC) represents pinning credits.
+- A `PaymentRouter` contract accepts token payments, mints/burns credits, and optionally routes a portion of value to DAOs or the protocol treasury.
+
+The CLI can then:
+- Show balances of credits for a given address.
+- Use credits to gate IPFS uploads while keeping CIDs and gateways unchanged.
+
+These credit and worker systems are **roadmap items**. The key point for users today is:
+- You only need a working pinning provider and gateway configuration.
+- CIDs referenced by DAOs and registries remain stable regardless of how storage is funded.
+
