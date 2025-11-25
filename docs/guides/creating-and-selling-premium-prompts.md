@@ -1,47 +1,35 @@
 # Creating and Selling Premium Prompts
 
-This guide covers how to create encrypted, paid prompts using Lit Protocol for access control.
+This guide covers how to create encrypted, paid prompts using Lit Protocol for access control via the personal marketplace.
 
 ## 1. Author Your Premium Content
 
 Create your high-quality prompt content in a local file. This is the content that will be encrypted.
 
-## 2. Generate a Lit AuthSig
+## 2. Publish a Personal Premium Prompt
 
-To encrypt content with Lit Protocol, you need an `AuthSig`. This is a signature from your wallet that proves you own the address that will be creating the premium prompt.
-
-```bash
-sage premium-pre authsig --out ./authSig.creator.json
-```
-
-This command will prompt you to sign a message with your wallet and will save the resulting signature to `authSig.creator.json`.
-
-## 3. Publish the Premium Prompt
-
-The `premium-pre publish` command handles encryption, uploading to IPFS, and creating the on-chain proposal to register your prompt for sale.
+Personal premium prompts are published through the personal marketplace, not via DAO governance.
 
 ```bash
-sage premium-pre publish \
-  --in ./path/to/your/prompt.md \
+sage personal premium publish "my-prompt" \
+  --price 10 \
+  --file ./path/to/your/prompt.md \
   --name "My Premium Prompt" \
-  --description "A high-quality prompt for professional use." \
-  --subdao 0xYourSubDAO \
-  --price 10.00 \
-  --auth-sig ./authSig.creator.json
+  --description "A high-quality prompt for professional use."
 ```
 
 This command will:
-1.  Generate a symmetric key to encrypt your prompt file.
-2.  Encrypt the symmetric key with Lit Protocol, gated by ownership of an ERC1155 receipt token.
-3.  Upload the encrypted prompt and the Lit metadata to IPFS.
-4.  Create a governance proposal in your SubDAO to register the prompt in the `PremiumPrompts` contract with the specified price.
+1.  Encrypt your prompt file with a symmetric key.
+2.  Use Lit Protocol to encrypt the symmetric key, gated by ownership of a personal ERC1155 receipt.
+3.  Upload the encrypted prompt and Lit metadata to IPFS.
+4.  Register the listing in the `PersonalMarketplace` contract with the specified SXXX price.
 
 ## How it Works for Buyers
 
-1.  A buyer calls the `purchaseAccess` function on the `PremiumPrompts` contract.
-2.  They pay the specified USDC price.
-3.  The contract mints an ERC1155 receipt token to their address.
+1.  A buyer calls the `purchase` function on the `PersonalMarketplace` contract.
+2.  They pay the specified SXXX price.
+3.  The contract mints an ERC1155 receipt token (personal license) to their address.
 4.  The buyer can now use their ownership of this token to ask the Lit Protocol nodes to decrypt the symmetric key.
 5.  With the decrypted key, they can decrypt and access the premium prompt content.
 
-```
+> Note: In future phases, DAOs will be able to **endorse** personal premium prompts on-chain (without taking custody of the content). This optional endorsement model is described in `docs/specs/premium-endorsement-model.md` and is tracked as a roadmap feature, not required for the current personal-only premium beta.

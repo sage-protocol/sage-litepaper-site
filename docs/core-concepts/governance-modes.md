@@ -1,12 +1,12 @@
 # Governance Modes
 
-SubDAOs operate under different governance modes. The `sage subdao create --wizard` guides you through choosing a **playbook** that maps to the right mode.
+DAOs operate under different governance modes. The `sage dao create --wizard` guides you through choosing a **playbook** that maps to the right mode.
 
 ---
 
 ## Playbooks (Recommended)
 
-When creating a SubDAO, choose a playbook that matches your collaboration style:
+When creating a DAO, choose a playbook that matches your collaboration style:
 
 | Playbook | Use Case | Governance Mode |
 |----------|----------|-----------------|
@@ -15,11 +15,11 @@ When creating a SubDAO, choose a playbook that matches your collaboration style:
 | **Community** | Token holders (50+) | Token (Tally voting) |
 
 ```bash
-sage subdao create --wizard
+sage dao create --wizard
 # Choose: Creator / Squad / Community
 ```
 
-Playbooks set sensible defaults for governance parameters and determine how `sage skills publish` behaves.
+Playbooks set sensible defaults for governance parameters and determine how `sage prompts publish` behaves.
 
 ---
 
@@ -40,14 +40,14 @@ Playbooks map to two underlying governance modes:
 Best for small teams that need fast execution.
 
 **How it works:**
-- A trusted multisig (e.g., Gnosis Safe) controls the SubDAO
+- A trusted multisig (e.g., Gnosis Safe) controls the DAO
 - Actions execute after a short timelock delay (1-2 days)
 - All actions are transparent and auditable
 
 **Example:** A 5-person team uses a 3-of-5 Safe. Any 3 members can approve library updates, which execute after 24 hours.
 
 ```bash
-sage subdao create --wizard --mode operator
+sage dao create --wizard --mode operator
 ```
 
 ---
@@ -61,27 +61,27 @@ Best for communities that want decentralized governance.
 - Proposals require minimum quorum to pass
 - Longer voting periods (3-7 days) + timelock delays
 
-**Example:** A SubDAO with 500 token holders. Members propose and vote on library updates. Proposals need 4% quorum and pass after a 5-day vote + 2-day timelock.
+**Example:** A DAO with 500 token holders. Members propose and vote on library updates. Proposals need 4% quorum and pass after a 5-day vote + 2-day timelock.
 
 ```bash
-sage subdao create --wizard --mode token
+sage dao create --wizard --mode token
 ```
 
 ---
 
 ## Transitioning Between Modes
 
-SubDAOs can upgrade from Operator to Token mode as they grow:
+DAOs can upgrade from Operator to Token mode as they grow:
 
 ```bash
 # Current operators propose the transition
 sage governance propose-mode-change \
-  --subdao 0xMySubDAO \
+  --dao 0xMyDAO \
   --to token \
   --token 0xNewGovernanceToken
 ```
 
-After the proposal passes and executes, the SubDAO switches to token-weighted voting.
+After the proposal passes and executes, the DAO switches to token-weighted voting.
 
 ---
 
@@ -101,8 +101,8 @@ All parameters are configurable via proposals. Here are the most important:
 ## CLI Quick Reference
 
 ```bash
-# View SubDAO governance info
-sage governance info --subdao 0xMySubDAO
+# View DAO governance info
+sage governance info --dao 0xMyDAO
 
 # Vote on a proposal
 sage governance vote --proposal-id 42 --support for

@@ -17,7 +17,7 @@ Sage Protocol is built on a three-layer architecture that combines on-chain gove
 ┌─────────────────────────────────────────────────────────┐
 │                  Smart Contract Layer                    │
 │  ┌────────────┐  ┌───────────┐  ┌──────────────────┐   │
-│  │  SubDAO    │  │ Governor  │  │ PromptRegistry   │   │
+│  │  DAO       │  │ Governor  │  │ PromptRegistry   │   │
 │  │  Factory   │  │ Timelock  │  │ LibraryRegistry  │   │
 │  └────────────┘  └───────────┘  └──────────────────┘   │
 └─────────────────────────────────────────────────────────┘
@@ -39,11 +39,11 @@ The smart contract layer provides **tamper-proof governance** and **economic coo
 
 ### Core Components
 
-**SubDAO Factory (`SubDAOFactoryOptimized.sol`)**
-The main entry point for creating new SubDAOs using gas-efficient EIP-1167 minimal proxies. It sets up the initial configuration of a SubDAO, including its governance model, access control, and prompt registry.
+**DAO Factory (`SubDAOFactoryOptimized.sol`)**
+The main entry point for creating new DAOs using gas-efficient EIP-1167 minimal proxies. It sets up the initial configuration of a DAO instance, including its governance model, access control, and prompt registry.
 
 **Governor + Timelock**
-Each SubDAO has its own OpenZeppelin Governor contract with a Timelock for proposal execution. This provides:
+Each DAO has its own OpenZeppelin Governor contract with a Timelock for proposal execution. This provides:
 
 - Transparent proposal creation and voting
 - Configurable voting delays, periods, and quorum thresholds
@@ -61,7 +61,7 @@ Stores and manages prompts with support for versioning, forking, and attribution
 **LibraryRegistry (`LibraryRegistry.sol`)**
 A global, append-only directory for discovering library manifests across the protocol. This enables:
 
-- Cross-SubDAO library discovery
+- Cross-DAO library discovery
 - Namespace management
 - Version tracking and resolution
 
@@ -149,19 +149,19 @@ Agents query the subgraph first for the latest approved manifests, providing nea
 **MCP Server (Model Context Protocol)**
 A standardized interface for agents to interact with Sage:
 
-- **Discovery**: `list_libraries`, `search_prompts`, `suggest_subdaos_for_library`
-- **Content**: `get_prompt`, `get_template`, `list_templates`
-- **Creation**: `create_from_template`, `improve_prompt`, `generate_publishing_commands`
-- **Management**: `bulk_update_prompts`, `update_library_metadata`
+- **Discovery**: search governed libraries and prompts across workspaces and on-chain registries.
+- **Content**: fetch fully-resolved prompts and templates for use inside agent workflows.
+- **Creation**: scaffold and refine prompts and manifests before they are proposed on-chain.
+- **Management**: analyze dependencies and update libraries while still routing upgrades through normal governance.
 
-MCP integrations exist for Claude Desktop, LangChain, and other agent frameworks, enabling plug-and-play usage.
+MCP integrations exist for Claude Desktop, LangChain, and other agent frameworks, so agents can work entirely through the MCP server instead of talking directly to blockchains or the CLI.
 
 **Web App**
 A user-friendly interface for:
 
 - Browsing libraries and prompts
 - Creating and voting on proposals
-- Managing SubDAO membership and staking
+- Managing DAO membership and staking
 - Viewing analytics and telemetry
 
 ### Data Flow
@@ -178,8 +178,8 @@ This architecture ensures agents always see the latest approved manifest with cr
 
 The three layers work together to create a sustainable economic loop:
 
-1. **Treasury Bootstrapping**: SubDAOs receive grants from main SAGE treasury (funded via LBP + bond sales)
-2. **Bounty Posting**: SubDAOs post bounties for prompt improvements
+1. **Treasury Bootstrapping**: DAOs receive grants from main SAGE treasury (funded via LBP + bond sales)
+2. **Bounty Posting**: DAOs post bounties for prompt improvements
 3. **Creator Rewards**: Contributors earn SAGE for quality work (voted by community)
 4. **Storage Fees**: Pinning costs are covered by treasury or creator credits
 5. **Premium Content**: Optional paid prompts enable monetization via payment splitters

@@ -14,17 +14,17 @@ Learn how to create, publish, and monetize your prompt libraries.
 
 ## For Community Members
 
-Discover how to participate in the Sage ecosystem, from joining SubDAOs to shaping their future through governance.
+Discover how to participate in the Sage ecosystem, from joining DAOs to shaping their future through governance.
 
-- [Joining a SubDAO](./joining-a-subdao.md)
+- [Joining a DAO](./joining-a-subdao.md)
 - [Staking and Governance](./staking-and-governance.md)
 - [Voting on Proposals](./voting-on-proposals.md)
 
-## For SubDAO Admins
+## For DAO Admins
 
 Get the knowledge you need to launch and manage your own decentralized community.
 
-- [Creating and Configuring a SubDAO](./creating-a-subdao.md)
+- [Creating and Configuring a DAO](./creating-a-subdao.md)
 - [Managing Members and Permissions](./managing-subdao-members.md)
 - [Creating Bounties for Your Community](./creating-bounties.md)
 

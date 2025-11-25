@@ -61,11 +61,11 @@ sage doctor
 
 ### When to Use Skills vs Library Commands
 
-**Use `sage skills` commands** when:
+**Use `sage prompts` commands** when:
 - You have a workspace (`prompts/skills/`) and want the CLI to build + pin a manifest for you
 - You're iterating on skills locally and want integrated publishing
 
-**Use `sage library` commands** when:
+**Use `sage project` commands** when:
 - You already have a `manifest.json` or want to compose one manually
 - You need fine-grained control over the manifest structure
 
@@ -73,11 +73,11 @@ sage doctor
 
 ---
 
-### `sage library template`
+### `sage project template`
 Generate a template manifest.json for a new prompt library.
 
 ```bash
-sage library template --type basic --out ./manifest.json
+sage project template --type basic --out ./manifest.json
 ```
 
 **Options:**
@@ -86,11 +86,11 @@ sage library template --type basic --out ./manifest.json
 
 ---
 
-### `sage library add-prompt`
+### `sage project add-prompt`
 Add a prompt to an existing manifest.
 
 ```bash
-sage library add-prompt \
+sage project add-prompt \
   --manifest ./manifest.json \
   --file ./prompts/hello.md \
   --key examples/hello \
@@ -107,11 +107,11 @@ sage library add-prompt \
 
 ---
 
-### `sage library preview`
+### `sage project preview`
 Preview a manifest file before publishing.
 
 ```bash
-sage library preview ./manifest.json
+sage project preview ./manifest.json
 ```
 
 **What it shows:**
@@ -122,34 +122,34 @@ sage library preview ./manifest.json
 
 ---
 
-### `sage library status`
-Check the current status of a library in a SubDAO.
+### `sage project status`
+Check the current status of a library in a DAO.
 
 ```bash
-sage library status --subdao 0xYourSubDAO
+sage project status --dao 0xYourDAO
 ```
 
 **Returns:**
 - Current library CID
 - Pending proposals
 - Role permissions (LIBRARY_ADMIN, PROPOSER, EXECUTOR)
-- SubDAO governance configuration
+- DAO governance configuration
 
 ---
 
-### `sage library push`
+### `sage project push`
 Upload a library to IPFS and create governance proposal or execute directly.
 
 ```bash
 # Team (Safe) - generates Safe transaction
-sage library push ./manifest.json --subdao 0xTeamSubDAO --pin --wait --warm --exec
+sage project push ./manifest.json --dao 0xTeamDAO --pin --wait --warm --exec
 
-# Community (Tally) - creates governance proposal
-sage library push ./manifest.json --subdao 0xCommunitySubDAO --pin --wait --warm
+# Community (Governor) - creates governance proposal
+sage project push ./manifest.json --dao 0xCommunityDAO --pin --wait --warm
 ```
 
 **Options:**
-- `--subdao <address>` - SubDAO address (required)
+- `--dao <address>` - DAO address (preferred; `--subdao` is a legacy alias)
 - `--pin` - Pin the uploaded content on IPFS
 - `--wait` - Wait for IPFS upload completion
 - `--warm` - Warm IPFS caches for faster retrieval
@@ -167,81 +167,81 @@ sage library push ./manifest.json --subdao 0xCommunitySubDAO --pin --wait --warm
 
 ## Skills Management Commands
 
-The `sage skills` command group is the recommended workflow for managing AI skills and prompts locally before publishing.
+The `sage prompts` command group is the recommended workflow for managing AI skills and prompts locally before publishing.
 
-### `sage skills init`
+### `sage prompts init`
 Initialize a new skills workspace.
 
 ```bash
-sage skills init
+sage prompts init
 ```
 
-### `sage skills list`
+### `sage prompts list`
 List skills in the current workspace.
 
 ```bash
-sage skills list
+sage prompts list
 ```
 
-### `sage skills variant`
+### `sage prompts variant`
 Create a variant of an existing skill.
 
 ```bash
-sage skills variant <key> [suffix]
+sage prompts variant <key> [suffix]
 ```
 
-### `sage skills agents-sync`
+### `sage prompts agents-sync`
 Sync local skills to `AGENTS.md` for Claude/OpenSkills compatibility.
 
 ```bash
-sage skills agents-sync
+sage prompts agents-sync
 ```
 
-### `sage skills import`
+### `sage prompts import`
 Import skills from external sources.
 
 ```bash
-sage skills import ./path/to/skill
-sage skills import owner/repo
+sage prompts import ./path/to/skill
+sage prompts import owner/repo
 ```
 
-### `sage skills export`
+### `sage prompts export`
 Export a skill to a specific target format.
 
 ```bash
-sage skills export <key> --as cursor --write
+sage prompts export <key> --as cursor --write
 ```
 
-### `sage skills publish`
+### `sage prompts publish`
 Publish skills to the on-chain library with governance checks.
 
 ```bash
-sage skills publish [key] --subdao 0xYourSubDAO
+sage prompts publish [key] --dao 0xYourDAO
 ```
 
-### `sage skills doctor`
-Validate skill frontmatter and SubDAO governance readiness.
+### `sage prompts doctor`
+Validate skill frontmatter and DAO governance readiness.
 
 ```bash
-sage skills doctor [key] --subdao 0xYourSubDAO
+sage prompts doctor [key] --dao 0xYourDAO
 ```
 
 ---
 
-## SubDAO Commands
+## DAO Commands
 
-### `sage subdao create-playbook`
-Deploy a new SubDAO using a versioned playbook (Creator/Squad/Community).
+### `sage dao create-playbook`
+Deploy a new DAO using a versioned playbook (Creator/Squad/Community).
 
 ```bash
 # Dry-run to generate plan
-sage subdao create-playbook \
+sage dao create-playbook \
   --playbook community-long \
   --name "Community UX Test" \
   --dry-run
 
 # Apply the generated plan
-sage subdao create-playbook --apply subdao-plan-*.json
+sage dao create-playbook --apply dao-plan-*.json
 ```
 
 **Playbook Options:**
@@ -252,7 +252,7 @@ sage subdao create-playbook --apply subdao-plan-*.json
 
 **Options:**
 - `--playbook <type>` - Playbook type (required)
-- `--name <string>` - SubDAO name
+- `--name <string>` - DAO name
 - `--dry-run` - Generate plan without executing
 - `--apply <path>` - Apply a previously generated plan
 
@@ -260,15 +260,15 @@ sage subdao create-playbook --apply subdao-plan-*.json
 - Generates deployment plan (contracts, roles, parameters)
 - Validates playbook configuration
 - Executes deployment (if not dry-run)
-- Returns SubDAO address and governance details
+- Returns DAO address and governance details
 
 ---
 
-### `sage subdao create`
-Deploy a new SubDAO with custom governance parameters (advanced).
+### `sage dao create`
+Deploy a new DAO with custom governance parameters (advanced).
 
 ```bash
-sage subdao create \
+sage dao create \
   --name "DeFi Intelligence" \
   --symbol "DEFI" \
   --token-type fork \
@@ -276,7 +276,7 @@ sage subdao create \
 ```
 
 **Options:**
-- `--name <string>` - SubDAO name
+- `--name <string>` - DAO name
 - `--symbol <string>` - Governance token symbol
 - `--token-type <type>` - Token type (fork, stable)
 - `--initial-supply <number>` - Initial token supply
@@ -285,16 +285,15 @@ sage subdao create \
 - `--proposal-threshold <tokens>` - Tokens required to propose
 - `--quorum <percentage>` - Quorum percentage required
 
-**Note:** For most use cases, `subdao create-playbook` is recommended over this command.
+**Note:** For most use cases, `dao create-playbook` is recommended over this command.
 
 ---
 
-### `sage subdao list`
-List all SubDAOs from the registry.
+### `sage dao list`
+List DAOs from the registry.
 
 ```bash
-sage subdao list
-sage subdao list --filter active
+sage dao list
 ```
 
 **Options:**
@@ -304,15 +303,15 @@ sage subdao list --filter active
 
 ---
 
-### `sage subdao info`
-Get detailed information about a SubDAO.
+### `sage dao info`
+Get detailed information about a DAO.
 
 ```bash
-sage subdao info 0xSubDAOAddress
+sage dao info 0xDAOAddress
 ```
 
 **Returns:**
-- SubDAO metadata
+- DAO metadata
 - Governance parameters
 - Token information
 - Treasury balance
@@ -324,10 +323,10 @@ sage subdao info 0xSubDAOAddress
 ## Proposals & Governance Commands
 
 ### `sage proposals inbox`
-List pending and active proposals for a SubDAO.
+List pending and active proposals for a DAO.
 
 ```bash
-sage proposals inbox --subdao 0xCommunitySubDAO
+sage proposals inbox --dao 0xCommunityDAO
 ```
 
 **Returns:**
@@ -342,7 +341,7 @@ sage proposals inbox --subdao 0xCommunitySubDAO
 Preview the details of a specific proposal.
 
 ```bash
-sage proposals preview <id> --subdao 0xCommunitySubDAO
+sage proposals preview <id> --dao 0xCommunityDAO
 ```
 
 **What it shows:**
@@ -358,15 +357,15 @@ sage proposals preview <id> --subdao 0xCommunitySubDAO
 Vote on an active proposal.
 
 ```bash
-sage proposals vote <id> for --subdao 0xCommunitySubDAO
-sage proposals vote <id> against --subdao 0xCommunitySubDAO
-sage proposals vote <id> abstain --subdao 0xCommunitySubDAO
+sage proposals vote <id> for --dao 0xCommunityDAO
+sage proposals vote <id> against --dao 0xCommunityDAO
+sage proposals vote <id> abstain --dao 0xCommunityDAO
 ```
 
 **Options:**
 - `<id>` - Proposal ID (required)
 - Vote type: `for`, `against`, or `abstain`
-- `--subdao <address>` - SubDAO address (required)
+- `--dao <address>` - DAO address (preferred; `--subdao` is a legacy alias)
 
 **Requirements:**
 - Must have voting power (delegated tokens)
@@ -379,7 +378,7 @@ sage proposals vote <id> abstain --subdao 0xCommunitySubDAO
 Execute a successful proposal after timelock delay.
 
 ```bash
-sage proposals execute <id> --subdao 0xCommunitySubDAO
+sage proposals execute <id> --dao 0xCommunityDAO
 ```
 
 **Requirements:**
@@ -398,7 +397,7 @@ sage proposals execute <id> --subdao 0xCommunitySubDAO
 Check the status of proposals and show recommended next action.
 
 ```bash
-sage proposals status --subdao 0xCommunitySubDAO
+sage proposals status --dao 0xCommunityDAO
 ```
 
 **Returns:**
@@ -506,18 +505,28 @@ node packages/cli/src/mcp-server-stdio.js
 ```
 
 **Available Tools:**
-- `search_prompts`: Find prompts by keyword or tag.
-- `get_prompt`: Retrieve a specific prompt.
-- `list_libraries`: List available libraries (local or pinned).
-- `suggest_subdaos_for_library`: Recommend SubDAOs for publishing based on library content and tags.
-- `generate_publishing_commands`: Generate CLI commands to publish a library to a SubDAO.
-- `improve_prompt`: Analyze and improve a prompt using heuristics (`pass='deep'`) or basic checks.
-- `create_from_template`: Create a new prompt from a template.
-- `list_templates`: List available prompt templates.
-- `get_template`: Get details of a specific template.
-- `bulk_update_prompts`: Update multiple prompts in a manifest at once.
-- `analyze_dependencies`: Analyze dependencies between prompts.
-- `update_library_metadata`: Update library metadata (name, description, tags).
+
+*Quick Workflow:*
+- `quick_create_prompt` / `quick_iterate_prompt` / `quick_test_prompt`: Create, iterate, and test prompts
+- `improve_prompt` / `rename_prompt` / `help`: Prompt improvement and help
+
+*Discovery & Search:*
+- `search_prompts`: Unified search across local and on-chain sources
+- `search_onchain_prompts`: Search from `LibraryRegistry` and per-DAO registries
+- `trending_prompts` / `list_prompts` / `get_prompt`: Browse and retrieve prompts
+- `list_libraries` / `list_subdaos` / `get_library_manifests`: DAO and library discovery
+
+*Publishing & Governance:*
+- `suggest_subdaos_for_library`: Recommend DAOs for publishing
+- `generate_publishing_commands`: Generate CLI commands to publish
+- `publish_manifest_flow`: Validate → Push → Build governance payload (no signing)
+- `list_proposals`: List active proposals
+
+*Templates & Bulk Operations:*
+- `list_templates` / `get_template` / `create_from_template`: Template workflows
+- `bulk_update_prompts` / `analyze_dependencies` / `update_library_metadata`: Library management
+
+For the complete tool list, see the MCP configuration guide.
 
 **Usage in Claude Desktop config:**
 ```json
@@ -579,7 +588,7 @@ sage help <command>
 
 ```bash
 # 1. Initialize workspace
-sage prompts init --subdao 0xYourSubDAO
+sage prompts init
 
 # 2. Add prompts (multiple options)
 # Write from scratch:
@@ -596,17 +605,17 @@ sage prompts pull
 sage prompts status
 
 # 4. Publish (builds manifest, uploads to IPFS, creates proposal)
-sage prompts publish --pin
+sage prompts publish --dao 0xYourDAO --pin
 
 # Preview first with --dry-run
 sage prompts publish --dry-run
 ```
 
-### Setting Up a SubDAO
+### Setting Up a DAO
 
 ```bash
-# Deploy SubDAO with governance parameters
-sage subdao create \
+# Deploy DAO with governance parameters
+sage dao create \
   --name "Research DAO" \
   --symbol "RSRCH" \
   --token-type fork \

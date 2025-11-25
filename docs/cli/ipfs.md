@@ -14,7 +14,7 @@ Pinata is now opt-in. Use `--use-pinata` (or set `SAGE_IPFS_PROVIDER=pinata`) wh
 
 ## Pay-to-Pin Credits
 
-A 402-based credit system allows users to pay for pinning services directly through the CLI. Users can buy credits and spend them to pin CIDs via the managed worker, with revenue routed to SubDAO and protocol treasuries.
+A 402-based credit system allows users to pay for pinning services directly through the CLI. Users can buy credits and spend them to pin CIDs via the managed worker, with revenue routed to DAO and protocol treasuries.
 
 When Coinbase’s facilitator is enabled, insufficient-credit responses include the `Payment-Protocol: X402` header and an exact/evm payload that the CLI relays back to the user. Facilitator receipts are hashed server-side, so each `Payment-Receipt` header is single-use—replays return HTTP 409 and the CLI will prompt you to settle again.
 

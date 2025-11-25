@@ -20,7 +20,7 @@ The following contracts are deployed on Base Sepolia testnet for testing and dev
 | **Boost Manager (Direct)** | `0x55dB08a3241517B73bc4A63df2d5B11680beCAef` | Incentives | Direct reward distribution |
 | **Premium Prompts** | `0xbECd6a4f2c267455052ad14D9463d988aA964675` | Marketplace | Paid prompt access and revenue splits |
 | **Safe Master Copy** | `0xD83ad4A56900A4Aa65d20FC0746D58a939F8B352` | Treasury | Gnosis Safe template for treasuries |
-| **Template Module** | `0x0732b8b4fB55BC2A16955a5932dbB61188a3d970` | Configuration | SubDAO configuration templates |
+| **Template Module** | `0x0732b8b4fB55BC2A16955a5932dbB61188a3d970` | Configuration | DAO configuration templates |
 
 ### Network Information
 
@@ -155,12 +155,12 @@ sage config show
 - **LaunchGate**: (To be deployed)
 - **TreasuryWrapper**: (To be deployed)
 
-### Example SubDAO Treasuries
+### Example DAO Treasuries
 
-SubDAOs create their own treasuries during deployment. View all SubDAOs:
+DAOs create their own treasuries during deployment. View all DAOs:
 
 ```bash
-sage subdao list --network base-sepolia
+sage dao list --network base-sepolia
 ```
 
 ---

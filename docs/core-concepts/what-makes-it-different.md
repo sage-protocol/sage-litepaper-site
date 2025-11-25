@@ -1,7 +1,7 @@
 # What Makes It Different
 
--   **Community-Governed Intelligence**  
-    Each community spins up a **SubDAO** with its own library, treasury, and upgrade cadence. Forks, remixes, and attribution happen in the open, so distributed intelligence stays transparent and aligned.
+-   **Community-Governed Intelligence**
+    Each community spins up a **DAO** with its own library, treasury, and upgrade cadence. Forks, remixes, and attribution happen in the open, so distributed intelligence stays transparent and aligned.
 
 -   **Personal Libraries & Fast Iteration**  
     Individual creators can publish updates off-chain using stable **IPNS** and **ENS** pointers. This allows for rapid iteration on personal or draft libraries without waiting for formal governance, blending personal ownership with community discovery.

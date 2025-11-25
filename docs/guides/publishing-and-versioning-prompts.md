@@ -12,14 +12,14 @@ Sage provides two complementary workflows for publishing:
 
 ```bash
 # Initialize workspace
-sage skills init
+sage prompts init
 
 # Create and edit skills
-sage skills list
-sage skills variant my-skill v2
+sage prompts list
+sage prompts variant my-skill v2
 
 # Publish (builds manifest automatically)
-sage skills publish my-skill --dest personal
+sage prompts publish my-skill --dest personal
 ```
 
 ### Library Workflow (Manifest-Based)
@@ -28,10 +28,10 @@ sage skills publish my-skill --dest personal
 
 ```bash
 # Create manifest template
-sage library template --type basic --out ./manifest.json
+sage project template --type basic --out ./manifest.json
 
 # Add prompts to manifest
-sage library add-prompt \
+sage project add-prompt \
   --manifest ./manifest.json \
   --file ./prompts/hello.md \
   --key examples/hello \
@@ -39,10 +39,10 @@ sage library add-prompt \
   --upload
 
 # Preview before publishing
-sage library preview ./manifest.json
+sage project preview ./manifest.json
 
 # Publish
-sage library push ./manifest.json --subdao 0xYourSubDAO --pin
+sage project push ./manifest.json --subdao 0xYourSubDAO --pin
 ```
 
 **Both workflows** end at the same place: a versioned library update in the registry.
@@ -60,7 +60,7 @@ Edit skill files in your workspace's `prompts/skills/` directory. Add, modify, o
 See what has changed:
 
 ```bash
-sage skills list
+sage prompts list
 ```
 
 ### 3. Publish Updates
@@ -68,7 +68,7 @@ sage skills list
 The `publish` command builds a manifest, uploads to IPFS, and creates a governance proposal:
 
 ```bash
-sage skills publish my-skill --dest personal --pin
+sage prompts publish my-skill --dest personal --pin
 ```
 
 This generates a new CID and proposes it to your SubDAO in one step.
@@ -78,7 +78,7 @@ This generates a new CID and proposes it to your SubDAO in one step.
 See what will be published without executing:
 
 ```bash
-sage skills try my-skill --as cursor
+sage prompts try my-skill --as cursor
 ```
 
 ---
@@ -90,7 +90,7 @@ sage skills try my-skill --as cursor
 See the current state of your library:
 
 ```bash
-sage library status --subdao 0xYourSubDAO
+sage project status --subdao 0xYourSubDAO
 ```
 
 ### 2. Preview Changes
@@ -98,7 +98,7 @@ sage library status --subdao 0xYourSubDAO
 Before publishing, preview your manifest:
 
 ```bash
-sage library preview ./manifest.json
+sage project preview ./manifest.json
 ```
 
 ### 3. Publish
@@ -107,10 +107,10 @@ Push your manifest to IPFS and create a proposal:
 
 ```bash
 # For team (Safe multisig)
-sage library push ./manifest.json --subdao 0xTeamSubDAO --pin --exec
+sage project push ./manifest.json --subdao 0xTeamSubDAO --pin --exec
 
 # For community (token voting)
-sage library push ./manifest.json --subdao 0xCommunitySubDAO --pin
+sage project push ./manifest.json --subdao 0xCommunitySubDAO --pin
 ```
 
 ## How Versioning Works

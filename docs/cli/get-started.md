@@ -25,23 +25,23 @@ sage doctor
 
 ```bash
 # Initialize workspace (for coding agents)
-sage skills init
+sage prompts init
 
 # Add .md files to prompts/skills/, then publish
-sage skills publish --dest personal    # Personal library (IPFS only)
-sage skills publish --subdao 0x...     # SubDAO library (with governance)
+sage prompts publish --dest personal    # Personal library (IPFS only)
+sage prompts publish --dao 0x...        # DAO library (with governance)
 
 # Import existing skills
-sage skills init --preset cursor       # From Cursor
-sage skills import pdf                 # From OpenSkills
-sage skills publish
+sage prompts init --preset cursor       # From Cursor
+sage prompts import pdf                 # From OpenSkills
+sage prompts publish
 ```
 
-## Creating a SubDAO with Playbooks
+## Creating a DAO with Playbooks
 
 ```bash
 # Wizard guides you through playbook selection
-sage subdao create --wizard
+sage dao create --wizard
 
 # Playbooks:
 # - Creator: Solo publisher, direct control

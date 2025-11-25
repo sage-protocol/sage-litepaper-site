@@ -4,10 +4,10 @@ The Sage economy is designed to create a self-sustaining ecosystem that rewards 
 
 ## Core Economic Principles
 
--   **Fixed Supply**: SAGE has a fixed 1 billion token supply at genesis with deflationary burns tied to SubDAO creation and forking. No inflation.
+-   **Fixed Supply**: SAGE has a fixed 1 billion token supply at genesis with deflationary burns tied to DAO creation and forking. No inflation.
 -   **Treasury Bootstrapping**: A public LBP (Liquidity Bootstrapping Pool) plus optional bond sales seed protocol-owned liquidity and long-term reserves.
--   **Creator Rewards**: SubDAOs receive grants from the main treasury and use those funds to post bounties, creating a direct work-to-earn loop.
--   **Community Governance**: SAGE token holders stake their tokens in SubDAOs to vote on content curation and community decisions.
+-   **Creator Rewards**: DAOs receive grants from the main treasury and use those funds to post bounties, creating a direct work-to-earn loop.
+-   **Community Governance**: SAGE token holders stake their tokens in DAOs to vote on content curation and community decisions.
 -   **Coordination over Fees**: Tokens primarily coordinate long-horizon work (governance, reputation, commitment burns) rather than charging per-prompt usage.
 
 ---
@@ -28,11 +28,11 @@ The initial SAGE token distribution is structured to balance protocol developmen
 
 SAGE serves multiple functions within the protocol:
 
-1. **Governance**: Stake SAGE to vote on SubDAO proposals (library updates, treasury spending, parameter changes)
-2. **Staking**: Lock SAGE to earn governance power and share of SubDAO treasury rewards
+1. **Governance**: Stake SAGE to vote on DAO proposals (library updates, treasury spending, parameter changes)
+2. **Staking**: Lock SAGE to earn governance power and share of DAO treasury rewards
 3. **Bounty Rewards**: Contributors earn SAGE for completing community-posted bounties
-4. **SubDAO Creation**: Burn SAGE to create new SubDAOs (deflationary mechanism)
-5. **Premium Access**: Optional SAGE staking requirements for premium SubDAO features
+4. **DAO Creation**: Burn SAGE to create new DAOs (deflationary mechanism)
+5. **Premium Access**: Optional SAGE staking requirements for premium DAO features
 
 ---
 
@@ -76,11 +76,11 @@ Sage supports multiple payment flows to monetize agent context and reward creato
 
 ### Free-to-Use Default
 
-Most prompts are **free to use** and governed by the SubDAO. The protocol prioritizes **coordination** over **extraction**—tokens fund long-term development, not per-prompt fees.
+Most prompts are **free to use** and governed by the DAO. The protocol prioritizes **coordination** over **extraction**—tokens fund long-term development, not per-prompt fees.
 
 ### Premium Prompts (Optional)
 
-SubDAOs or individual creators can offer **premium prompts** with gated access:
+DAOs or individual creators can offer **premium prompts** with gated access:
 
 **Implementation:**
 
@@ -88,13 +88,13 @@ SubDAOs or individual creators can offer **premium prompts** with gated access:
 2. PromptRegistry stores payment splitter contract address
 3. Agent queries MCP server, which checks if user has paid
 4. If not paid, MCP returns 402 Payment Required with payment address
-5. User pays via smart contract (splits revenue between creator, SubDAO treasury, protocol)
+5. User pays via smart contract (splits revenue between creator, DAO treasury, protocol)
 6. MCP server grants access to CID
 
-**Payment Splits (Configurable by SubDAO):**
+**Payment Splits (Configurable by DAO):**
 
 - **Creator**: 70% (address that registered the prompt)
-- **SubDAO Treasury**: 20% (for bounties and grants)
+- **DAO Treasury**: 20% (for bounties and grants)
 - **Protocol Fee**: 10% (main SAGE treasury)
 
 **Example Premium Prompt Flow:**
@@ -105,7 +105,7 @@ MCP Server: "402 Payment Required: 10 SAGE"
 User approves transaction to PaymentSplitter contract
 PaymentSplitter distributes:
   - 7 SAGE to creator (0xAlice)
-  - 2 SAGE to SubDAO treasury
+  - 2 SAGE to DAO treasury
   - 1 SAGE to protocol treasury
 MCP Server grants access to CID bafyXXX...
 Agent downloads and uses prompt
@@ -139,9 +139,9 @@ The token economics create a compounding flywheel that rewards quality contribut
 │                                             │
 │  1. Treasury raises funds (LBP + Bonds)    │
 │                  ▼                          │
-│  2. SubDAOs receive grants                 │
+│  2. DAOs receive grants                    │
 │                  ▼                          │
-│  3. SubDAOs post bounties for improvements │
+│  3. DAOs post bounties for improvements    │
 │                  ▼                          │
 │  4. Creators deliver quality prompts       │
 │                  ▼                          │
@@ -160,8 +160,8 @@ The token economics create a compounding flywheel that rewards quality contribut
 
 Several protocol actions burn SAGE, creating long-term scarcity:
 
-1. **SubDAO Creation**: Burn 1,000 SAGE to create a new SubDAO
-2. **Library Forking**: Burn 100 SAGE to fork a library to a new SubDAO
+1. **DAO Creation**: Burn 1,000 SAGE to create a new DAO
+2. **Library Forking**: Burn 100 SAGE to fork a library to a new DAO
 3. **Premium Content**: Protocol fee from premium prompts can be partially burned (governance-controlled)
 4. **Credit Purchases**: Optional burn mechanism when buying pinning credits with SAGE
 
@@ -181,7 +181,7 @@ The main SAGE treasury is managed by a **multisig Safe** with on-chain spending 
 
 **Treasury Operations:**
 
-- Grant distributions to SubDAOs
+- Grant distributions to DAOs
 - Bond sales to raise additional funds
 - Liquidity management (e.g., adding POL to DEX pools)
 - Operational expenses (infrastructure, audits, marketing)
@@ -190,8 +190,8 @@ The main SAGE treasury is managed by a **multisig Safe** with on-chain spending 
 
 ```bash
 # Proposal submitted to DAO Governor
-sage governance propose --action grantSubDAO \
-  --subdao 0xArtistsDAO \
+sage governance propose --action grantDao \
+  --dao 0xArtistsDAO \
   --amount 50000 \
   --description "Q1 2025 Artist Collective Grant"
 

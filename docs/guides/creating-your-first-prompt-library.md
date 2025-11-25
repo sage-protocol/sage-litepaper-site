@@ -1,162 +1,140 @@
 # Creating Your First Prompt Library
 
-This guide shows how to create and publish a prompt library using the Sage CLI.
+This guide walks through going from a fresh Sage CLI install to a governed prompt library that agents can use via the MCP server.
+
+The steps are:
+1. Set up your wallet and get test SXXX.
+2. Initialize a local prompts workspace.
+3. Author and test a prompt.
+4. Publish through a DAO with governance.
+5. Let agents access it via the MCP server.
 
 ---
 
-## Two Workflows
+## 1. Wallet Setup and Testnet Funds
 
-Sage provides two command groups for different use cases:
+Sage CLI defaults to a Privy-backed wallet on Base Sepolia in recent versions.
 
-| Workflow | Best For | Commands |
-|----------|----------|----------|
-| **`sage skills`** | Coding agents (Claude Code, Cursor, Codex) | `sage skills init`, `sage skills publish` |
-| **`sage prompts`** | Browser testing with Echo | `sage prompts init`, `sage prompts publish` |
+1. **Initialize your wallet and config**
+   ```bash
+   sage wallet init
+   sage wallet doctor
+   ```
+   - `wallet init` walks you through connecting with Privy.
+   - `wallet doctor` verifies RPC, chain ID, and wallet connectivity.
 
-Most users should start with **`sage skills`** since coding agents are the primary use case.
+2. **Get SXXX for governance and publishing**
+   On Base Sepolia, use the built-in SXXX faucet:
+   ```bash
+   sage sxxx faucet --check   # view limits and cooldown
+   sage sxxx faucet           # request SXXX to your connected wallet
+   ```
 
----
-
-## Quick Start (Skills)
-
-Get a skill library on IPFS in three commands:
-
-```bash
-sage skills init                     # Initialize workspace
-# Add .md files to prompts/skills/ directory
-sage skills publish --dest personal  # Publish to IPFS
-```
-
-Your library is now discoverable by agents via its CID.
-
----
-
-## Ways to Create Skills
-
-### Option 1: Write from Scratch
-
-Create a workspace and add skill files:
-
-```bash
-sage skills init
-```
-
-This creates a `prompts/skills/` directory. Add markdown files with optional frontmatter:
-
-```markdown
----
-title: Code Review Assistant
-summary: Reviews code for bugs and best practices
-tags: ["code", "review"]
-targets: ["claude", "cursor"]
----
-
-# Code Review
-
-Review this code for bugs, security issues, and style...
-```
-
-### Option 2: Import from OpenSkills
-
-Import skills from the [OpenSkills](https://github.com/numman-ali/openskills) ecosystem:
-
-```bash
-# Install skills externally
-openskills install anthropics/skills
-
-# Import into your workspace
-sage skills import pdf
-sage skills import xlsx
-```
-
-### Option 3: Import from IDE
-
-Import from Claude Code, Cursor, or other directories:
-
-```bash
-sage skills init --preset claude      # Import from ~/.claude/skills
-sage skills init --preset cursor      # Import from .cursor/prompts
-```
-
-### Option 4: Create Variants
-
-Clone an existing skill to experiment:
-
-```bash
-sage skills variant code-review v2
-# Creates prompts/skills/code-review.v2.md
-```
+3. **Optional: delegate voting power**
+   ```bash
+   sage sxxx delegate-self
+   ```
+   This ensures your SXXX stake counts for voting in DAOs that use SXXX-weighted governance.
 
 ---
 
-## Publish Your Library
+## 2. Initialize a Prompts Workspace
 
-The `publish` command builds a manifest, uploads to IPFS, and creates a governance proposal based on your SubDAO's playbook:
-
-```bash
-# Personal library (IPFS only, no governance)
-sage skills publish --dest personal
-
-# To a SubDAO (uses playbook-aware flow)
-sage skills publish --subdao 0xYourSubDAO
-
-# Preview without executing
-sage skills publish --dry-run
-```
-
-### What Happens
-
-1. **Build** - Creates manifest from workspace skills
-2. **Upload** - Pushes files to IPFS
-3. **Propose** - Creates Safe transaction or Tally proposal (based on playbook)
-
----
-
-## Export for Different Agents
-
-Export a skill formatted for specific targets:
-
-```bash
-sage skills export code-review --as claude
-sage skills export code-review --as cursor
-sage skills export code-review --as browser
-```
-
----
-
-## Adding Governance with Playbooks
-
-When creating a SubDAO, choose a playbook that matches your collaboration style:
-
-```bash
-sage subdao create --wizard
-```
-
-**Playbooks:**
-- **Creator** - Solo publisher, direct control
-- **Squad** - Small team with Safe multisig
-- **Community** - Token voting on Tally
-
-The playbook determines how `sage skills publish` behaves (direct update, Safe transaction, or Tally proposal).
-
----
-
-## Alternative: Browser Testing with `sage prompts`
-
-For testing prompts interactively in the browser with Echo:
+From your project directory, create a Sage workspace:
 
 ```bash
 sage prompts init
-sage prompts try code-review
-sage prompts publish
 ```
 
-The `prompts` workflow is less structured but good for quick experimentation.
+This creates:
+- `.sage/workspace.json` – workspace configuration.
+- `prompts/` – folder where your prompt markdown files live.
+
+You can check status at any time with:
+```bash
+sage prompts status
+```
 
 ---
 
-## What's Next?
+## 3. Author and Test a Prompt
 
-- [Publishing and Versioning Prompts](./publishing-and-versioning-prompts.md) - Managing library updates
-- [Using the MCP Server](./using-the-mcp-server.md) - Discovering prompts in agents
-- [Voting on Proposals](./voting-on-proposals.md) - Participating in governance
+Create a simple prompt file in the `prompts/` folder, for example:
+
+```bash
+cat > prompts/hello-world.md << 'EOF'
+---
+title: Hello World
+description: Simple test prompt for Sage
+---
+
+You are a helpful assistant. Say hello to the user and ask one clarifying question about their goal.
+EOF
+```
+
+Try it locally with:
+```bash
+sage prompts try hello-world
+```
+
+You can add more prompts over time; `sage prompts status` will show added and modified prompts in your workspace.
+
+---
+
+## 4. Publish Through a DAO
+
+To make your library governed and discoverable, you’ll publish it through a DAO that controls a `LibraryRegistry`/`PromptRegistry` instance.
+
+1. **Choose or create a DAO**
+   - Use an existing DAO address (e.g. one created with `sage dao create-playbook`).
+   - Or follow the “Creating and Configuring a DAO” guide first.
+
+2. **Publish prompts to that DAO**
+   From your workspace root:
+   ```bash
+   sage prompts publish --dao 0xYourDAOAddress
+   ```
+
+   The CLI will:
+   - Build a manifest from your `prompts/` files.
+   - Upload the manifest and content to IPFS.
+   - Create a governance proposal or operator-mode execution, depending on the DAO’s playbook.
+
+3. **Follow the governance lifecycle**
+   After publishing, use the governance commands to drive the proposal through:
+   ```bash
+   sage proposals inbox  --dao 0xYourDAOAddress   # see pending/active proposals
+   sage proposals vote   <id> for --dao 0xYourDAOAddress
+   sage proposals status --dao 0xYourDAOAddress   # see next recommended action
+   sage proposals execute <id> --dao 0xYourDAOAddress
+   ```
+
+Once the proposal executes, the DAO’s registry points to your new manifest CID, and that version becomes the “official” library for agents and users.
+
+---
+
+## 5. Using MCP With Your Library
+
+After your DAO has approved a manifest, agents don’t need to know contract addresses or CIDs directly—they talk to the Sage MCP server instead.
+
+1. **Run the MCP server**
+   ```bash
+   sage mcp start --port 3000
+   ```
+   or in stdio mode for tools like Claude Desktop:
+   ```bash
+   node packages/cli/src/mcp-server-stdio.js
+   ```
+
+2. **What agents can do via MCP**
+   - **Discover**: Find your DAO and its libraries using on-chain metadata and subgraph indexing, instead of hardcoded addresses.
+   - **Search**: Look up prompts in your approved manifest by keywords or tags, grounded in governed content rather than ad-hoc files.
+   - **Fetch**: Retrieve the latest manifest and specific prompts for use inside agent workflows, always using the DAO-approved CID.
+   - **Validate & Plan**: Check manifests and prompt structure, then generate publishing commands that humans can run to propose updates, instead of having agents call governance contracts directly.
+
+In practice, this means you can:
+- Use the CLI for authoring and governance (`sage prompts`, `sage project`, `sage proposals`, `sage dao`).
+- Let agents use MCP to read from and suggest changes to your library, without bypassing timelocks, Safe approvals, or DAO voting.
+
+With this flow in place, you have a complete path from local markdown prompts to governed, agent-ready libraries on Base Sepolia.
+

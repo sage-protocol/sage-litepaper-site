@@ -111,11 +111,11 @@ nav:
           - Publishing & Versioning: guides/publishing-and-versioning-prompts.md
           - Premium Prompts: guides/creating-and-selling-premium-prompts.md
       - Community Members:
-          - Joining a SubDAO: guides/joining-a-subdao.md
+          - Joining a DAO: guides/joining-a-subdao.md
           - Staking & Governance: guides/staking-and-governance.md
           - Voting: guides/voting-on-proposals.md
-      - SubDAO Admins:
-          - Creating a SubDAO: guides/creating-a-subdao.md
+      - DAO Admins:
+          - Creating a DAO: guides/creating-a-subdao.md
           - Managing Members: guides/managing-subdao-members.md
           - Creating Bounties: guides/creating-bounties.md
       - Agent Builders:

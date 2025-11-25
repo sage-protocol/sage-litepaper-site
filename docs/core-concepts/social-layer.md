@@ -30,13 +30,13 @@ Individual prompts can be shared as frames, allowing users to preview the prompt
 
 ## Governance Hub
 
-The Governance Hub is the command center for SubDAOs. It goes beyond simple voting interfaces to provide deep insight into the changes being proposed.
+The Governance Hub is the command center for DAOs. It goes beyond simple voting interfaces to provide deep insight into the changes being proposed.
 
 ### Diff Viewer
 When a proposal updates a prompt library, the Governance Hub shows a visual **Diff View**. This allows voters to see exactly what changed line-by-line in the prompt text or manifest, ensuring transparency and preventing malicious updates.
 
 ### Capabilities Matrix
-The Hub displays the "Capabilities" of the SubDAO based on its stamped Playbook (e.g., "Community v1.0"). It clearly shows:
+The Hub displays the "Capabilities" of the DAO based on its stamped Playbook (e.g., "Community v1.0"). It clearly shows:
 - Who can propose changes?
 - Who can execute them?
 - What are the delay periods?

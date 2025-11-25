@@ -1,13 +1,13 @@
 # Voting on Proposals
 
-Once you are a member of a SubDAO and have delegated voting power (typically by delegating to yourself), you can vote on active governance proposals.
+Once you are a member of a DAO and have delegated voting power (typically by delegating to yourself), you can vote on active governance proposals.
 
 ## 1. Check Proposal Inbox
 
-View all pending and active proposals for your SubDAO:
+View all pending and active proposals for your DAO:
 
 ```bash
-sage proposals inbox --subdao 0xYourSubDAO
+sage proposals inbox --dao 0xYourDAO
 ```
 
 This will show you:
@@ -21,7 +21,7 @@ This will show you:
 Before voting, inspect the details of a specific proposal:
 
 ```bash
-sage proposals preview <proposal-id> --subdao 0xYourSubDAO
+sage proposals preview <proposal-id> --dao 0xYourDAO
 ```
 
 This command shows:
@@ -33,7 +33,7 @@ This command shows:
 
 Example:
 ```bash
-sage proposals preview 42 --subdao 0xYourSubDAO
+sage proposals preview 42 --dao 0xYourDAO
 ```
 
 ## 3. Cast Your Vote
@@ -41,7 +41,7 @@ sage proposals preview 42 --subdao 0xYourSubDAO
 To vote, use the `proposals vote` command:
 
 ```bash
-sage proposals vote <proposal-id> <support> --subdao 0xYourSubDAO
+sage proposals vote <proposal-id> <support> --dao 0xYourDAO
 ```
 
 *   `<proposal-id>`: The ID of the proposal you are voting on
@@ -49,9 +49,9 @@ sage proposals vote <proposal-id> <support> --subdao 0xYourSubDAO
 
 Examples:
 ```bash
-sage proposals vote 42 for --subdao 0xYourSubDAO
-sage proposals vote 42 against --subdao 0xYourSubDAO
-sage proposals vote 42 abstain --subdao 0xYourSubDAO
+sage proposals vote 42 for --dao 0xYourDAO
+sage proposals vote 42 against --dao 0xYourDAO
+sage proposals vote 42 abstain --dao 0xYourDAO
 ```
 
 Your vote is weighted by your stake token balance at the proposal's snapshot block.
@@ -61,7 +61,7 @@ Your vote is weighted by your stake token balance at the proposal's snapshot blo
 After the voting period ends, a successful proposal must be **executed** after the Timelock delay passes.
 
 ```bash
-sage proposals execute <proposal-id> --subdao 0xYourSubDAO
+sage proposals execute <proposal-id> --dao 0xYourDAO
 ```
 
 Anyone can call this function to execute a proposal once:
@@ -74,7 +74,7 @@ Anyone can call this function to execute a proposal once:
 Use `proposals status` to see what action is needed next:
 
 ```bash
-sage proposals status --subdao 0xYourSubDAO
+sage proposals status --dao 0xYourDAO
 ```
 
 This will show recommended next actions:

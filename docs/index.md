@@ -2,7 +2,7 @@
 
 Sage is a governance-powered infrastructure layer that transforms how AI agents discover, trust, and evolve their instructions. By combining **on-chain governance**, **IPFS storage**, and **community curation**, Sage enables distributed intelligence that compounds over time.
 
-Instead of hardcoded prompts that quickly become stale, Sage lets communities publish versioned prompt libraries to IPFS, govern upgrades through SubDAO proposals, and let agents automatically discover the trusted version—all while rewarding contributors through incentives and attribution.
+Instead of hardcoded prompts that quickly become stale, Sage lets communities publish versioned prompt libraries to IPFS, govern upgrades through DAO proposals, and let agents automatically discover the trusted version—all while rewarding contributors through incentives and attribution.
 
 ---
 
@@ -17,13 +17,13 @@ Instead of hardcoded prompts that quickly become stale, Sage lets communities pu
   
   <div class="card">
     <h3>🎯 User Guides</h3>
-    <p>Step-by-step guides for prompt creators, community members, SubDAO admins, and agent builders.</p>
+    <p>Step-by-step guides for prompt creators, community members, DAO admins, and agent builders.</p>
     <a href="guides/" class="button">View Guides →</a>
   </div>
   
   <div class="card">
     <h3>💻 Command Line (CLI)</h3>
-    <p>Comprehensive CLI documentation to manage SubDAOs, publish libraries, and integrate with IPFS.</p>
+    <p>Comprehensive CLI documentation to manage DAOs, publish libraries, and integrate with IPFS.</p>
     <a href="cli/get-started/" class="button">CLI Docs →</a>
   </div>
   
@@ -55,11 +55,11 @@ Sage is a governance layer for distributed intelligence that solves a fundamenta
 Sage bridges this gap by enabling communities to:
 
 - **Publish** versioned prompt libraries to IPFS with immutable content addressing
-- **Govern** upgrades through SubDAO proposals with transparent voting and timelocks
+- **Govern** upgrades through DAO proposals with transparent voting and timelocks
 - **Distribute** value to contributors through boosts, bounties, and premiums
 - **Discover** trusted instructions through agents, CLI tools, and web interfaces
 
-Each SubDAO becomes a coordination point for domain-specific intelligence—whether that's DeFi strategies, code generation, research assistance, or any specialized workflow. Communities pool capital, reward experiments, and reinvest learnings so collective intelligence compounds over time.
+Each DAO becomes a coordination point for domain-specific intelligence—whether that's DeFi strategies, code generation, research assistance, or any specialized workflow. Communities pool capital, reward experiments, and reinvest learnings so collective intelligence compounds over time.
 
 <div class="card-grid">
   <div class="card">
@@ -69,7 +69,7 @@ Each SubDAO becomes a coordination point for domain-specific intelligence—whet
   
   <div class="card">
     <h3>🗳️ Propose</h3>
-    <p>Each manifest is one governance proposal in your SubDAO. Vote, queue, and execute through a Timelock.</p>
+    <p>Each manifest is one governance proposal in your DAO. Vote, queue, and execute through a Timelock.</p>
   </div>
   
   <div class="card">
@@ -88,13 +88,13 @@ Each SubDAO becomes a coordination point for domain-specific intelligence—whet
 ## Key Use Cases
 
 ### For AI Agent Builders
-Integrate the Sage MCP (Model Context Protocol) server to give your agents dynamic access to community-curated instructions. No more hardcoded prompts—agents fetch the latest governed version directly from IPFS via SubDAO registries.
+Integrate the Sage MCP (Model Context Protocol) server to give your agents dynamic access to community-curated instructions. Instead of talking directly to blockchains or shelling out to the CLI, agents call the MCP server to search governed libraries, fetch the latest approved manifests, validate content, and generate publishing commands—while actual upgrades still flow through normal on-chain governance.
 
 ### For Prompt Engineers & Creators
 Publish your expertise as versioned prompt libraries, earn attribution through boosts, and monetize specialized knowledge through premium tiers. Your work compounds as communities fork, remix, and improve upon your foundations.
 
 ### For Communities & DAOs
-Launch a SubDAO to coordinate intelligence in your domain. Pool treasury funds, create bounties for new capabilities, vote on prompt upgrades, and build a flywheel where better prompts attract more users who fund better prompts.
+Launch a DAO to coordinate intelligence in your domain. Pool treasury funds, create bounties for new capabilities, vote on prompt upgrades, and build a flywheel where better prompts attract more users who fund better prompts.
 
 ### For Developers
 Use the Sage SDK to integrate governed prompts into any application. The same discovery mechanisms that power agents—subgraph queries, RPC fallbacks, IPFS resolution—work for web apps, CLIs, and custom tooling.
@@ -110,20 +110,20 @@ Get up and running with Sage in minutes:
 sage wizard
 
 # Create and publish skills (for coding agents)
-sage skills init                     # Initialize workspace
+sage prompts init                     # Initialize workspace
 # Add .md files to prompts/skills/ directory
-sage skills publish --dest personal  # Publish to IPFS
+sage prompts publish --dest personal  # Publish to IPFS
 
-# Or publish to a SubDAO with governance
-sage skills init --subdao 0xYourSubDAO
-sage skills publish
+# Or publish to a DAO with governance
+sage prompts init
+sage prompts publish
 
 # Import existing skills
-sage skills import pdf               # Import from OpenSkills
-sage skills init --preset cursor     # Import from Cursor
+sage prompts import pdf               # Import from OpenSkills
+sage prompts init --preset cursor     # Import from Cursor
 
-# Create SubDAO with playbook-driven wizard
-sage subdao create --wizard          # Choose Creator/Squad/Community
+# Create DAO with playbook-driven wizard
+sage dao create --wizard          # Choose Creator/Squad/Community
 ```
 
 ---
@@ -131,13 +131,13 @@ sage subdao create --wizard          # Choose Creator/Squad/Community
 ## Core Components
 
 **On-chain Governance**
-The SubDAO Factory, Governor + Timelock, LibraryRegistry, PromptRegistry, and Treasury modules coordinate library upgrades through transparent voting and timelock execution. The CLI produces Safe transaction payloads for multisig-supervised operations.
+The DAO Factory, Governor + Timelock, LibraryRegistry, PromptRegistry, and Treasury modules coordinate library upgrades through transparent voting and timelock execution. The CLI produces Safe transaction payloads for multisig-supervised operations, and the MCP server exposes a read/write planning surface for agents that still respects those same governance paths.
 
 **Persistent Shared Memory with Credits**  
 IPFS stays the canonical store for library payloads, enforced by a managed worker that mediates uploads, pinning, and warming. A 402-based credit ledger lets contributors prepay for storage.
 
 **Tooling for Distributed Intelligence**
-The CLI, discovery app, and MCP endpoints share a unified SDK adapter. Commands like `sage ipfs credits` and `sage library push` connect operators, creators, and agents to the same governed knowledge base.
+The CLI, discovery app, and MCP endpoints share a unified SDK adapter. Commands like `sage ipfs credits` and `sage project push` connect operators, creators, and agents to the same governed knowledge base.
 
 **Social & Discovery Layer**
 Sage fosters a social ecosystem around prompts:

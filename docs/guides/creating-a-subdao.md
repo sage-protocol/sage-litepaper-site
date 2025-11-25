@@ -1,6 +1,6 @@
-# Creating and Configuring a SubDAO
+# Creating and Configuring a DAO
 
-This guide will walk you through creating and configuring your own SubDAO using playbooks.
+This guide will walk you through creating and configuring your own DAO using playbooks.
 
 ## Choose a Playbook
 
@@ -19,13 +19,13 @@ Sage provides versioned playbooks that set sensible governance defaults:
 First, preview what will be deployed:
 
 ```bash
-sage subdao create-playbook \
+sage dao create-playbook \
   --playbook community \
   --name "My Community DAO" \
   --dry-run
 ```
 
-This generates a plan file (`subdao-plan-*.json`) showing:
+This generates a plan file (`dao-plan-*.json`) showing:
 - Contracts to deploy
 - Roles to grant
 - Parameters to set
@@ -33,7 +33,7 @@ This generates a plan file (`subdao-plan-*.json`) showing:
 
 ### 2. Review the Plan
 
-Open the generated `subdao-plan-*.json` file and review:
+Open the generated `dao-plan-*.json` file and review:
 - Governance parameters (voting period, quorum, threshold)
 - Role assignments (PROPOSER, EXECUTOR, LIBRARY_ADMIN)
 - Timelock delays
@@ -43,21 +43,21 @@ Open the generated `subdao-plan-*.json` file and review:
 Execute the deployment:
 
 ```bash
-sage subdao create-playbook --apply subdao-plan-*.json
+sage dao create-playbook --apply dao-plan-*.json
 ```
 
 The CLI will:
 1. Deploy all contracts
 2. Grant necessary roles
 3. Configure governance parameters
-4. Return your SubDAO address
+4. Return your DAO address
 
 ### 4. Verify Configuration
 
 Check that everything is set up correctly:
 
 ```bash
-sage library status --subdao 0xYourNewSubDAO
+sage project status --dao 0xYourNewDAO
 ```
 
 This shows:
@@ -74,7 +74,7 @@ This shows:
 **Best for:** Solo operators who want direct control
 
 ```bash
-sage subdao create-playbook \
+sage dao create-playbook \
   --playbook creator \
   --name "Personal Skills Library"
 ```
@@ -89,7 +89,7 @@ sage subdao create-playbook \
 **Best for:** Small trusted teams (3-10 members)
 
 ```bash
-sage subdao create-playbook \
+sage dao create-playbook \
   --playbook squad \
   --name "Team Skills"
 ```
@@ -104,7 +104,7 @@ sage subdao create-playbook \
 **Best for:** Decentralized communities (50+ members)
 
 ```bash
-sage subdao create-playbook \
+sage dao create-playbook \
   --playbook community \
   --name "Community Intelligence DAO"
 ```
@@ -119,10 +119,10 @@ sage subdao create-playbook \
 
 ## Advanced: Custom Parameters
 
-For full control, use `subdao create` directly:
+For full control, use `sage dao create` directly:
 
 ```bash
-sage subdao create \
+sage dao create \
   --name "Custom DAO" \
   --symbol "CUSTOM" \
   --token-type fork \
@@ -139,19 +139,19 @@ sage subdao create \
 
 ## Next Steps
 
-After creating your SubDAO:
+After creating your DAO:
 
 1. **Publish your first skill**
    ```bash
-   sage skills publish my-skill --dest <subdao-address>
+   sage prompts publish my-skill --dest <dao-address>
    ```
 
 2. **Invite members** (for Squad/Community)
-   - Share SubDAO address
+   - Share DAO address
    - Distribute governance tokens
    - Guide members through voting setup
 
 3. **Monitor proposals**
    ```bash
-   sage proposals inbox --subdao <subdao-address>
+   sage proposals inbox --dao <dao-address>
    ```
