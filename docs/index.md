@@ -106,24 +106,23 @@ Use the Sage SDK to integrate governed prompts into any application. The same di
 Get up and running with Sage in minutes:
 
 ```bash
-# Connect your wallet
-sage wizard
+# 1. Connect wallet and verify setup
+sage wizard                           # Interactive setup
+sage doctor                           # Verify configuration
 
-# Create and publish skills (for coding agents)
+# 2. Start MCP server for AI agents
+sage mcp start                        # HTTP server on localhost:3000
+
+# 3. Import existing skills
+sage prompts import-skill my-skill    # Import from local .agent/skills/
+sage prompts pull my-skill            # Pull from on-chain registry
+
+# 4. Create and publish your own
 sage prompts init                     # Initialize workspace
-# Add .md files to prompts/skills/ directory
-sage prompts publish --dest personal  # Publish to IPFS
+sage prompts publish --dest personal  # Publish to personal library
 
-# Or publish to a DAO with governance
-sage prompts init
-sage prompts publish
-
-# Import existing skills
-sage prompts import pdf               # Import from OpenSkills
-sage prompts init --preset cursor     # Import from Cursor
-
-# Create DAO with playbook-driven wizard
-sage dao create --wizard          # Choose Creator/Squad/Community
+# 5. Create a DAO (optional)
+sage dao create --wizard              # Choose Creator/Squad/Community
 ```
 
 ---

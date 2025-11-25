@@ -17,5 +17,6 @@
 
 - **Growth**
   First community libraries in creative AI, research, and agent ops, plus grants and **bounties** focused on subjective domains where human curation matters most.
+  - **Social & Discovery Layer**: Wallet profiles (skills, libraries, governance activity at `/u/[ens_name]`), Farcaster frames for sharing libraries and proposals in social feeds, and a capabilities-aware Governance Hub UI for visualizing skill diffs and proposal lineage.
 
 ---
