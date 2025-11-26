@@ -88,22 +88,6 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Core Concepts:
-      - Overview: core-concepts/what-is-sage.md
-      - Why Now: core-concepts/why-now.md
-      - What's Different: core-concepts/what-makes-it-different.md
-      - Metaprompting Loop: core-concepts/metaprompting-loop.md
-      - Components: core-concepts/components.md
-      - Social Layer: core-concepts/social-layer.md
-      - Technical Overview: core-concepts/technical-overview.md
-      - Incentives: core-concepts/incentives.md
-      - Governance: core-concepts/governance-modes.md
-      - For Communities: core-concepts/for-communities.md
-      - Why Base: core-concepts/why-base.md
-      - Security: core-concepts/security.md
-      - Tokenomics: core-concepts/tokenomics.md
-      - Roadmap: core-concepts/roadmap.md
-      - License: core-concepts/license.md
   - Guides:
       - Getting Started: guides/index.md
       - Prompt Creators:
