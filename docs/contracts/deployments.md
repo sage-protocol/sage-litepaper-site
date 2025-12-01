@@ -23,6 +23,8 @@ The following contracts are deployed on Base Sepolia testnet for testing and dev
 | **Template Module** | `0x0732b8b4fB55BC2A16955a5932dbB61188a3d970` | Configuration | DAO configuration templates |
 | **VotingMultiplierNFT** | *(Set via VOTING_MULTIPLIER_NFT_ADDRESS)* | NFT | Voting power multiplier NFTs |
 | **SageAuctionHouse** | *(Set via SAGE_AUCTION_HOUSE_ADDRESS)* | Auction | Nouns-style NFT auctions |
+| **SimpleContributorSystem** | `0x7Fd91c3f80B22cF3c1458Ff870fdCaA8A1d4C3f5` | Reputation | Contributor staking and reputation tracking |
+| **SimpleBountySystem** | `0x926B2dFA98dd79790c314ceBcb8588e8a6f4577B` | Bounties | Task bounties with escrow and submissions |
 
 ### Network Information
 
