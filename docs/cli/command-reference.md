@@ -889,6 +889,416 @@ sage boost finalize --proposal-id 123
 
 ---
 
+## Bounty Commands
+
+The `sage bounty` command group manages the enhanced bounty system for incentivizing contributions.
+
+### `sage bounty doctor`
+Check bounty system configuration.
+
+```bash
+sage bounty doctor
+```
+
+---
+
+### `sage bounty create`
+Create a new bounty.
+
+```bash
+sage bounty create \
+  --title "Fix bug in parser" \
+  --description "The markdown parser fails on..." \
+  --reward 100
+```
+
+**Options:**
+- `--title <title>` - Bounty title
+- `--description <desc>` - Detailed description
+- `--reward <amount>` - Reward amount (in SXXX or specified token)
+- `--token <address>` - Reward token (default: SXXX)
+- `--deadline <unix>` - Submission deadline
+- `--subdao <address>` - DAO context for governance bounties
+
+---
+
+### `sage bounty list`
+List all bounties.
+
+```bash
+sage bounty list
+sage bounty list --status open
+```
+
+---
+
+### `sage bounty claim`
+Claim a bounty to start working on it.
+
+```bash
+sage bounty claim --id <bounty-id>
+```
+
+---
+
+### `sage bounty submit`
+Submit work for a bounty.
+
+```bash
+sage bounty submit --id <bounty-id> --proof <cid-or-url>
+```
+
+---
+
+### `sage bounty approve`
+Approve a bounty submission (operator/board).
+
+```bash
+sage bounty approve --id <bounty-id> --submission <submission-id>
+```
+
+---
+
+### `sage bounty wizard`
+Interactive bounty creation wizard.
+
+```bash
+sage bounty wizard
+```
+
+---
+
+### `sage bounty set-mode`
+Configure bounty winner selection mode.
+
+```bash
+sage bounty set-mode \
+  --subdao 0xDAO \
+  --mode auto \
+  --governance-config 0x... \
+  --bounty-system 0x...
+```
+
+**Modes:**
+- `auto` - Automatic approval based on fast-track limits
+- `board` - Board/operator approval required
+- `token` - Token holder voting
+
+---
+
+### `sage bounty fund`
+Fund a bounty via governance proposal.
+
+```bash
+sage bounty fund \
+  --subdao 0xDAO \
+  --bounty-system 0x... \
+  --bounty-id 123 \
+  --token 0xSXXX \
+  --amount 1000000000000000000
+```
+
+---
+
+### `sage bounty payout-eth`
+Payout bounty reward in ETH.
+
+```bash
+sage bounty payout-eth --bounty-id 123 --winner 0xWinner --amount 0.1
+```
+
+---
+
+### `sage bounty payout-erc20`
+Payout bounty reward in ERC20 token.
+
+```bash
+sage bounty payout-erc20 --bounty-id 123 --winner 0xWinner --token 0x... --amount 100
+```
+
+---
+
+## SBT Commands (Soulbound Badges)
+
+The `sage sbt` command group manages soulbound badges for reputation and achievements.
+
+### `sage sbt doctor`
+Check SBT contract configuration.
+
+```bash
+sage sbt doctor
+```
+
+---
+
+### `sage sbt mint`
+Mint a soulbound badge to an address.
+
+```bash
+sage sbt mint --to 0xRecipient --reason contributor --uri ipfs://...
+```
+
+---
+
+### `sage sbt revoke`
+Revoke a soulbound badge.
+
+```bash
+sage sbt revoke --token-id 123
+```
+
+---
+
+### `sage sbt propose-mint`
+Create governance proposal to mint a badge.
+
+```bash
+sage sbt propose-mint --to 0xRecipient --reason contributor --subdao 0xDAO
+```
+
+---
+
+### `sage sbt list-reasons`
+List valid badge reasons.
+
+```bash
+sage sbt list-reasons
+```
+
+---
+
+## Council Commands
+
+The `sage council` command group manages the approver council for fast-track governance.
+
+### `sage council doctor`
+Check council configuration.
+
+```bash
+sage council doctor
+```
+
+---
+
+### `sage council set-config`
+Configure council parameters.
+
+```bash
+sage council set-config --threshold 3 --members 5
+```
+
+---
+
+### `sage council allow`
+Add an address to the council allowlist.
+
+```bash
+sage council allow --address 0xMember
+```
+
+---
+
+### `sage council show`
+Show current council configuration.
+
+```bash
+sage council show
+```
+
+---
+
+### `sage council exec`
+Execute an action as council.
+
+```bash
+sage council exec --target 0x... --data 0x...
+```
+
+---
+
+## Safe Commands (Multisig)
+
+The `sage safe` command group manages Gnosis Safe multisig operations.
+
+### `sage safe propose`
+Create a Safe transaction proposal.
+
+```bash
+sage safe propose \
+  --safe 0xSafeAddress \
+  --to 0xTarget \
+  --data 0x... \
+  --value 0
+```
+
+---
+
+### `sage safe status`
+Check Safe transaction status.
+
+```bash
+sage safe status --safe 0xSafeAddress
+```
+
+---
+
+### `sage safe doctor`
+Check Safe configuration.
+
+```bash
+sage safe doctor --safe 0xSafeAddress
+```
+
+---
+
+### `sage safe propose-bounty`
+Create a bounty payout proposal via Safe.
+
+```bash
+sage safe propose-bounty \
+  --safe 0xSafeAddress \
+  --bounty-id 123 \
+  --winner 0xWinner
+```
+
+---
+
+## Timelock Commands
+
+The `sage timelock` command group manages governance timelock operations.
+
+### `sage timelock doctor`
+Check timelock configuration and pending operations.
+
+```bash
+sage timelock doctor --subdao 0xDAO
+```
+
+---
+
+### `sage timelock schedule`
+Schedule an operation in the timelock.
+
+```bash
+sage timelock schedule \
+  --subdao 0xDAO \
+  --target 0xTarget \
+  --data 0x... \
+  --delay 86400
+```
+
+---
+
+### `sage timelock execute`
+Execute a ready timelock operation.
+
+```bash
+sage timelock execute \
+  --subdao 0xDAO \
+  --operation-id 0x...
+```
+
+---
+
+### `sage timelock list`
+List pending timelock operations.
+
+```bash
+sage timelock list --subdao 0xDAO
+```
+
+---
+
+### `sage timelock cancel`
+Cancel a pending timelock operation.
+
+```bash
+sage timelock cancel \
+  --subdao 0xDAO \
+  --operation-id 0x...
+```
+
+---
+
+### `sage timelock fix-roles`
+Fix missing timelock roles.
+
+```bash
+sage timelock fix-roles --subdao 0xDAO
+```
+
+---
+
+### `sage timelock execute-batch`
+Execute multiple timelock operations in batch.
+
+```bash
+sage timelock execute-batch \
+  --subdao 0xDAO \
+  --operations operations.json
+```
+
+---
+
+## SXXX Token Commands
+
+The `sage sxxx` command group manages SXXX governance token operations.
+
+### `sage sxxx balance`
+Check SXXX balance.
+
+```bash
+sage sxxx balance
+sage sxxx balance --account 0xAddress
+```
+
+---
+
+### `sage sxxx delegate`
+Delegate voting power.
+
+```bash
+sage sxxx delegate --to 0xDelegate
+sage sxxx delegate --self
+```
+
+---
+
+### `sage sxxx approve`
+Approve SXXX spending.
+
+```bash
+sage sxxx approve --spender 0xAddress --amount 1000
+```
+
+---
+
+### `sage sxxx transfer`
+Transfer SXXX tokens.
+
+```bash
+sage sxxx transfer --to 0xRecipient --amount 100
+```
+
+---
+
+## Stake Status Commands
+
+The `sage stake-status` command shows staking and voting power status.
+
+```bash
+sage stake-status --subdao 0xDAO
+sage stake-status --account 0xAddress
+```
+
+**Returns:**
+- Staked amount
+- Voting power
+- Delegation status
+- Pending rewards
+
+---
+
 ## MCP Server Commands
 
 ### `sage mcp start`
