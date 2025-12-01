@@ -272,7 +272,8 @@ sage dao create \
   --name "DeFi Intelligence" \
   --symbol "DEFI" \
   --token-type fork \
-  --initial-supply 1000000
+  --initial-supply 1000000 \
+  --profile-cid QmYourProfileCID
 ```
 
 **Options:**
@@ -284,6 +285,7 @@ sage dao create \
 - `--voting-period <blocks>` - Blocks for voting duration
 - `--proposal-threshold <tokens>` - Tokens required to propose
 - `--quorum <percentage>` - Quorum percentage required
+- `--profile-cid <cid>` - IPFS CID for DAO profile metadata (avatar, description, socials)
 
 **Note:** For most use cases, `dao create-playbook` is recommended over this command.
 
@@ -317,6 +319,52 @@ sage dao info 0xDAOAddress
 - Treasury balance
 - Active proposals count
 - Library count
+
+---
+
+### `sage dao profile get`
+Get the profile metadata for a DAO.
+
+```bash
+sage dao profile get 0xDAOAddress
+sage dao profile get 0xDAOAddress --json
+```
+
+**Returns:**
+- Profile CID and gateway URL
+- DAO name, description, avatar
+- Social links
+
+---
+
+### `sage dao profile set`
+Update DAO profile metadata (requires GOVERNANCE_ROLE).
+
+```bash
+sage dao profile set 0xDAOAddress --cid QmNewProfileCID
+```
+
+**Note:** This creates a governance proposal to update the profileCID on-chain.
+
+---
+
+### `sage dao profile upload`
+Upload DAO profile JSON to IPFS.
+
+```bash
+sage dao profile upload 0xDAOAddress --file dao-profile.json
+sage dao profile upload 0xDAOAddress --name "My DAO" --description "DAO description" --avatar ipfs://...
+```
+
+**Options:**
+- `-f, --file <path>` - Path to profile JSON file
+- `--name <name>` - DAO name
+- `--description <desc>` - DAO description
+- `--avatar <url>` - Avatar URL or IPFS CID
+- `--website <url>` - Website URL
+- `--twitter <handle>` - Twitter handle
+- `--discord <url>` - Discord invite URL
+- `--apply` - Also submit governance proposal to set the CID
 
 ---
 
@@ -406,6 +454,76 @@ sage proposals status --dao 0xCommunityDAO
   - "Vote on proposal #X" (if active)
   - "Queue proposal #X" (if succeeded)
   - "Execute proposal #X" (if queued and delay passed)
+
+---
+
+## Profile Commands
+
+The `sage profile` command group manages personal wallet profiles (off-chain, signature-verified).
+
+### `sage profile get`
+Get profile for a wallet address.
+
+```bash
+sage profile get [address]
+sage profile get --json
+```
+
+**Options:**
+- `[address]` - Wallet address (defaults to your connected wallet)
+- `--json` - Output as JSON
+
+---
+
+### `sage profile set`
+Set your wallet profile.
+
+```bash
+sage profile set --name "Alice" --bio "Web3 developer" --avatar ipfs://...
+sage profile set --twitter aliceweb3 --github alice
+```
+
+**Options:**
+- `--name <name>` - Display name (max 50 chars)
+- `--bio <bio>` - Bio/description (max 160 chars)
+- `--avatar <url>` - Avatar URL or IPFS CID
+- `--twitter <handle>` - Twitter handle (without @)
+- `--github <handle>` - GitHub username
+- `--farcaster <handle>` - Farcaster handle
+- `--website <url>` - Website URL
+- `--clear` - Clear all profile fields
+
+---
+
+### `sage profile upload`
+Upload a profile JSON file to IPFS.
+
+```bash
+sage profile upload --file profile.json
+sage profile upload --name "My DAO" --bio "Description" --type dao
+```
+
+**Options:**
+- `-f, --file <path>` - Path to profile JSON file
+- `--name <name>` - Display name (used if no file provided)
+- `--bio <bio>` - Bio/description
+- `--avatar <url>` - Avatar URL or CID
+- `--type <type>` - Profile type: `personal` or `dao` (default: personal)
+
+**Returns:**
+- IPFS CID for use with DAO creation or profile updates
+
+---
+
+### `sage profile interactive`
+Interactive profile setup wizard.
+
+```bash
+sage profile interactive
+sage profile wizard  # alias
+```
+
+Guides you through setting up your profile with prompts for name, bio, avatar, and social links.
 
 ---
 
@@ -559,6 +677,215 @@ sage ipfs fetch <cid> --output file.json
 **Options:**
 - `--output <path>` - Save to file instead of stdout
 - `--timeout <seconds>` - Request timeout (default: 30)
+
+---
+
+## NFT Commands (Voting Multipliers)
+
+The `sage nft` command group manages VotingMultiplierNFT contracts that boost voting power in DAOs.
+
+### `sage nft doctor`
+Check NFT contract configuration and your permissions.
+
+```bash
+sage nft doctor
+```
+
+**Returns:**
+- Contract status and address
+- Your roles (ADMIN, MINTER)
+- Total tiers configured
+
+---
+
+### `sage nft list-tiers`
+List all NFT tiers for a specific DAO.
+
+```bash
+sage nft list-tiers --dao 0xYourDAO
+```
+
+**Returns:**
+- Tier ID, name, multiplier
+- Supply (minted/max)
+- Price (ETH for public mint, or admin-only)
+
+---
+
+### `sage nft my-multiplier`
+Check your voting multiplier for a DAO.
+
+```bash
+sage nft my-multiplier --dao 0xYourDAO
+sage nft my-multiplier --dao 0xYourDAO --account 0xOtherAddress
+```
+
+**Returns:**
+- Your current voting multiplier (e.g., 1.5x)
+- Effective voting power calculation
+
+---
+
+### `sage nft tier create`
+Create a new NFT tier (requires ADMIN role).
+
+```bash
+sage nft tier create \
+  --dao 0xYourDAO \
+  --name "Founding Member" \
+  --multiplier 200 \
+  --max-supply 100 \
+  --price 0.1
+```
+
+**Options:**
+- `--dao <address>` - DAO this tier belongs to
+- `--name <name>` - Tier name
+- `--multiplier <number>` - Voting multiplier (100=1x, 150=1.5x, 200=2x)
+- `--max-supply <number>` - Maximum supply (0 = unlimited)
+- `--price <eth>` - Price in ETH for public mint (0 = admin-only)
+
+---
+
+### `sage nft mint`
+Mint an NFT to an address (requires MINTER role).
+
+```bash
+sage nft mint --tier 0 --to 0xRecipient --uri ipfs://...
+```
+
+---
+
+### `sage nft public-mint`
+Public mint an NFT (requires tier to have price > 0).
+
+```bash
+sage nft public-mint --tier 1 --uri ipfs://...
+```
+
+---
+
+### `sage nft grant-role`
+Grant MINTER role to an address (requires ADMIN).
+
+```bash
+sage nft grant-role --to 0xAddress --role MINTER
+```
+
+---
+
+## Auction Commands
+
+The `sage auction` command group interacts with the Sage Auction House for NFT auctions.
+
+### `sage auction status`
+View current auction status.
+
+```bash
+sage auction status
+```
+
+**Returns:**
+- Current auction state (Active, Paused, Needs Settlement)
+- Current NFT ID and bid amount
+- Configuration (reserve price, duration, min increment)
+
+---
+
+### `sage auction bid`
+Place a bid on the current auction.
+
+```bash
+sage auction bid 0.5
+```
+
+---
+
+### `sage auction settle`
+Settle the current auction and start a new one.
+
+```bash
+sage auction settle
+```
+
+---
+
+## Boost Commands (Vote Incentives)
+
+The `sage boost` command group manages USDC governance boosts to incentivize voting.
+
+### `sage boost create`
+Create a boost with USDC rewards for voters.
+
+```bash
+sage boost create \
+  --proposal-id 123 \
+  --governor 0xGovernor \
+  --per-voter 5_000000 \
+  --max-voters 100 \
+  --kind direct
+```
+
+**Options:**
+- `--proposal-id <id>` - Proposal ID to boost
+- `--governor <address>` - Governor address
+- `--per-voter <usdc>` - USDC per voter (6 decimals, e.g., 5_000000 = 5 USDC)
+- `--max-voters <count>` - Maximum eligible voters
+- `--kind <kind>` - Eligibility: `direct`, `merkle`, or `custom`
+- `--policy <address>` - Eligibility policy contract (for merkle/custom)
+- `--min-votes <amount>` - Minimum voting power required
+- `--payout-mode <mode>` - `fixed` or `variable`
+- `--support <support>` - `any` or `for` (only For voters eligible)
+- `--start-at <unix>` - Start timestamp
+- `--expires-at <unix>` - Expiry timestamp
+
+---
+
+### `sage boost status`
+Show boost status for a proposal.
+
+```bash
+sage boost status --proposal-id 123
+```
+
+---
+
+### `sage boost claim`
+Claim a boost rebate with Merkle proof.
+
+```bash
+sage boost claim \
+  --proposal-id 123 \
+  --amount 5_000000 \
+  --proof '[\"0x...\", \"0x...\"]'
+```
+
+---
+
+### `sage boost set-root`
+Set Merkle root for airdrop eligibility.
+
+```bash
+sage boost set-root --proposal-id 123 --root 0x... --policy 0xPolicyAddress
+```
+
+---
+
+### `sage boost fund`
+Fund a Merkle boost pool.
+
+```bash
+sage boost fund --proposal-id 123 --amount 1000_000000
+```
+
+---
+
+### `sage boost finalize`
+Finalize a boost and refund unclaimed to creator.
+
+```bash
+sage boost finalize --proposal-id 123
+```
 
 ---
 

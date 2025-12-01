@@ -117,6 +117,44 @@ sage dao create-playbook \
 
 ---
 
+## Adding a DAO Profile
+
+You can set up a DAO profile with avatar, description, and social links at creation time or later.
+
+### Option 1: At Creation Time
+
+First, create and upload your profile:
+
+```bash
+# Create a profile JSON and upload to IPFS
+sage profile upload --name "My DAO" --bio "A community for..." --type dao
+# Returns: CID: QmYourProfileCID
+
+# Then create DAO with profile
+sage dao create \
+  --name "My DAO" \
+  --symbol "MYDAO" \
+  --profile-cid QmYourProfileCID
+```
+
+Or use the wizard which prompts for profile CID:
+
+```bash
+sage dao wizard
+```
+
+### Option 2: After DAO Creation
+
+```bash
+# Upload profile and get CID
+sage dao profile upload 0xYourDAO --name "My DAO" --description "Description" --avatar ipfs://...
+
+# Set the profile CID (creates governance proposal)
+sage dao profile set 0xYourDAO --cid QmNewProfileCID
+```
+
+---
+
 ## Advanced: Custom Parameters
 
 For full control, use `sage dao create` directly:
@@ -130,7 +168,8 @@ sage dao create \
   --voting-delay 1 \
   --voting-period 5 \
   --proposal-threshold 10000 \
-  --quorum 4
+  --quorum 4 \
+  --profile-cid QmYourProfileCID
 ```
 
 **Note:** Playbooks are recommended for most use cases to avoid configuration drift.

@@ -21,6 +21,8 @@ The following contracts are deployed on Base Sepolia testnet for testing and dev
 | **Premium Prompts** | `0xbECd6a4f2c267455052ad14D9463d988aA964675` | Marketplace | Paid prompt access and revenue splits |
 | **Safe Master Copy** | `0xD83ad4A56900A4Aa65d20FC0746D58a939F8B352` | Treasury | Gnosis Safe template for treasuries |
 | **Template Module** | `0x0732b8b4fB55BC2A16955a5932dbB61188a3d970` | Configuration | DAO configuration templates |
+| **VotingMultiplierNFT** | *(Set via VOTING_MULTIPLIER_NFT_ADDRESS)* | NFT | Voting power multiplier NFTs |
+| **SageAuctionHouse** | *(Set via SAGE_AUCTION_HOUSE_ADDRESS)* | Auction | Nouns-style NFT auctions |
 
 ### Network Information
 
@@ -265,6 +267,58 @@ const sdk = new SageSDK({
 const library = await sdk.getLibrary('my-prompts')
 console.log(library.manifestCid)
 ```
+
+---
+
+---
+
+## Contract Address Runbook
+
+When deploying or upgrading contracts, update addresses in the following locations:
+
+### Documentation Files
+| File | Contracts Listed |
+|------|------------------|
+| `litepaper/docs/contracts/deployments.md` | All contracts (this file) |
+| `litepaper/docs/cli/command-reference.md` | Factory, LibraryRegistry, SXXX (in examples) |
+
+### Configuration Files
+| File | Contracts Listed |
+|------|------------------|
+| `packages/shared/src/contracts.ts` | All contract addresses by network |
+| `packages/cli/.env.example` | Environment variable templates |
+| `packages/sage-web-app/.env.example` | Web app environment templates |
+
+### Environment Variables
+| Variable | Contract |
+|----------|----------|
+| `SUBDAO_FACTORY_ADDRESS` | SubDAO Factory |
+| `LIBRARY_REGISTRY_ADDRESS` | Library Registry |
+| `PROMPT_REGISTRY_ADDRESS` | Prompt Registry |
+| `SXXX_TOKEN_ADDRESS` | SXXX Token |
+| `PREMIUM_PROMPTS_ADDRESS` | Premium Prompts |
+| `BOOST_MANAGER_ADDRESS` | Boost Manager (Merkle) |
+| `BOOST_MANAGER_DIRECT_ADDRESS` | Boost Manager (Direct) |
+| `VOTING_MULTIPLIER_NFT_ADDRESS` | VotingMultiplierNFT |
+| `SAGE_AUCTION_HOUSE_ADDRESS` | SageAuctionHouse |
+| `USDC_ADDRESS` | USDC Token |
+
+### Subgraph Configuration
+| File | Updates Required |
+|------|------------------|
+| `packages/subgraph/subgraph.yaml` | Contract addresses and start blocks |
+| `packages/subgraph/networks.json` | Per-network address mapping |
+
+### Deployment Checklist
+
+1. **Deploy new contracts** via Foundry/Hardhat scripts
+2. **Update `packages/shared/src/contracts.ts`** with new addresses
+3. **Update this document** (`deployments.md`) with new addresses
+4. **Update subgraph configuration** if indexed contracts changed
+5. **Redeploy subgraph** to The Graph
+6. **Verify contracts** on Basescan
+7. **Update `.env.example` files** if new env vars added
+8. **Test CLI commands** against new contracts
 
 ---
 
