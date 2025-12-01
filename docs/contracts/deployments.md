@@ -288,6 +288,15 @@ When deploying or upgrading contracts, update addresses in the following locatio
 | `packages/shared/src/contracts.ts` | All contract addresses by network |
 | `packages/cli/.env.example` | Environment variable templates |
 | `packages/sage-web-app/.env.example` | Web app environment templates |
+| `packages/cli/src/mcp-server-stdio.js` | MCP server contract references |
+| `packages/discord-monitor/.env.example` | Discord monitoring service addresses |
+
+### Services Configuration
+| Service | Files to Update |
+|---------|-----------------|
+| MCP Server | `packages/cli/src/mcp-server-stdio.js`, env vars |
+| Discord Monitor | `packages/discord-monitor/.env`, `packages/discord-monitor/config.json` |
+| IPFS Worker | Worker deployment config, `SAGE_IPFS_WORKER_URL` |
 
 ### Environment Variables
 | Variable | Contract |
