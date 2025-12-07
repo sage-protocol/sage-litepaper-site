@@ -33,24 +33,12 @@ Contract names such as `SubDAOFactoryOptimized` and `SubDAO` are retained for co
 
 ## Voting Power & Multipliers
 
-- **Base Voting Token (SXXX / StakeToken)**  
-  Each DAO derives raw voting power from a base ERC20Votes‑compatible token (for example, SXXX or a SubDAO stake token). Governance parameters such as quorum, proposal thresholds, and vote weights are defined in terms of this base voting supply.
+Sage separates the question “who can vote?” from “how much weight should each voter have?”:
 
-- **VotingMultiplierNFT (`VotingMultiplierNFT.sol`)**  
-  A shared NFT contract provides per‑DAO multiplier tiers. Each tier encodes:
-  - A human‑readable name (e.g., “Founding Member”).  
-  - A multiplier (e.g., 150 = 1.5x, 200 = 2x) with an enforced `MAX_MULTIPLIER` cap.  
-  - Supply controls (minted / maxSupply) and an associated DAO address.  
-  Tiers can be created directly by admins via `createTier` or, more importantly, via DAO governance using `createTierViaGovernance(subdao, ...)`. The contract validates that `subdao` is a registered DAO and enforces per‑account limits such as `MAX_NFTS_PER_ACCOUNT` to keep multiplier calculations bounded.
-
-- **MultipliedVotes (`MultipliedVotes.sol`)**  
-  For DAOs that enable multipliers, a per‑DAO `MultipliedVotes` wrapper is deployed. It implements `IVotes` and:
-  - Multiplies `getVotes` and `getPastVotes` by the DAO‑scoped multiplier returned from `VotingMultiplierNFT`.  
-  - Uses the same clock domain as the base token (block‑number or timestamp) to keep historical lookups consistent.  
-  - Always expects delegation to happen on the base token; the wrapper is read‑only for vote accounting and does not hold tokens itself.
-
-- **Factory & Runtime Wiring**  
-  The DAO factory and runtime orchestration glue derive a single `baseToken` for each DAO (SXXX for free‑access communities, or the DAO’s stake token for stake‑gated models). When multipliers are enabled, they deploy a `MultipliedVotes` instance and set it as the Governor’s voting token. When multipliers are disabled, `Governor.token()` is left as the base token. This ensures that for any DAO, `Governor.token()` is either the base voting token or a valid wrapper whose `baseToken()` and `dao()` match the DAO’s stake token and address.
+- At the base layer, each DAO uses a standard votes‑enabled token (for example, SXXX or a stake token) to define total supply, quorum, and proposal thresholds.
+- On top of that, DAOs can opt into **per‑DAO voting multipliers** that boost the voting weight of specific participants (such as early contributors or long‑term supporters) without changing the global token supply.
+- Multipliers are implemented with transferable NFTs that are scoped to a single DAO, and a lightweight votes wrapper that combines base token votes with the appropriate multiplier for that DAO.
+- Delegation still happens on the base token; the multiplier layer only affects how much voting power a delegated balance represents.
 
 ---
 
