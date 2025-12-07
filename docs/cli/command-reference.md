@@ -682,7 +682,7 @@ sage ipfs fetch <cid> --output file.json
 
 ## NFT Commands (Voting Multipliers)
 
-The `sage nft` command group manages VotingMultiplierNFT contracts that boost voting power in DAOs.
+The `sage nft` command group is the **admin/operator surface** for the VotingMultiplierNFT system. It manages contract configuration, tier definitions, minting, and roles for NFT‑based voting multipliers.
 
 ### `sage nft doctor`
 Check NFT contract configuration and your permissions.
@@ -774,9 +774,92 @@ sage nft grant-role --to 0xAddress --role MINTER
 
 ---
 
+## Multiplier Commands (End‑User Voting Multipliers)
+
+The `sage multiplier` command group is the **end‑user and DAO maintainer interface** for multiplier‑aware voting. It works on top of `MultipliedVotes` wrappers and the shared VotingMultiplierNFT contract.
+
+### `sage multiplier status`
+Check whether a DAO uses NFT voting multipliers and how its voting tokens are wired.
+
+```bash
+sage multiplier status --dao 0xYourDAO
+```
+
+**Returns:**
+- Whether multipliers are enabled.  
+- Governor voting token and base token addresses.  
+- Associated VotingMultiplierNFT contract and basic tier summary.
+
+---
+
+### `sage multiplier calculate`
+Show voting power breakdown for an account in a multiplier‑enabled DAO.
+
+```bash
+sage multiplier calculate 0xYourAddress --dao 0xYourDAO
+```
+
+**Returns:**
+- Base votes from the underlying ERC20Votes token.  
+- Effective multiplier for this DAO.  
+- Effective voting power after applying multipliers.  
+- Per‑NFT tier information where applicable.
+
+---
+
+### `sage multiplier describe`
+Show detailed multiplier configuration, tiers, and (optionally) auction information.
+
+```bash
+sage multiplier describe --dao 0xYourDAO --nft 0xVotingMultiplierNFT
+```
+
+**Returns:**
+- Global VotingMultiplierNFT configuration (max multiplier, total tiers).  
+- Tiers scoped to the selected DAO (name, multiplier, supply, price, DAO).  
+- Optional auction configuration if a SageAuctionHouse address is provided.
+
+---
+
+### `sage multiplier propose-tier`
+Create a governance payload to add a new multiplier tier for a DAO via `createTierViaGovernance`.
+
+```bash
+sage multiplier propose-tier \
+  --name "Founding Member" \
+  --multiplier 150 \
+  --max-supply 100 \
+  --price 0.1 \
+  --nft 0xVotingMultiplierNFT \
+  --dao 0xYourDAO
+```
+
+This command encodes a call to:
+
+```solidity
+createTierViaGovernance(subdao, name, multiplier, maxSupply, price)
+```
+
+and prints the calldata and `sage gov propose` invocation so DAOs can add tiers permissionlessly via timelock‑executed governance.
+
+---
+
+### `sage multiplier auction ...` (Multiplier‑Focused Auction UX)
+
+The `sage multiplier auction` subcommands provide a multiplier‑focused view over the global Sage Auction House:
+
+- `sage multiplier auction status` – Show current multiplier NFT auction status and tier details.  
+- `sage multiplier auction bid <amount>` – Place a bid on the current multiplier NFT.  
+- `sage multiplier auction settle` – Settle the current auction and start the next one.
+
+These commands share the same underlying `SageAuctionHouse` and VotingMultiplierNFT contracts documented in the Auction Commands section below, but present them in the context of voting multipliers for DAOs.
+
+---
+
 ## Auction Commands
 
-The `sage auction` command group interacts with the Sage Auction House for NFT auctions.
+The `sage auction` command group interacts with the global `SageAuctionHouse` contract for NFT auctions.
+Where voting multipliers are enabled, these auctions typically mint new multiplier NFTs from the shared VotingMultiplierNFT contract. For multiplier‑specific UX, see the `sage multiplier auction` commands above, which wrap the same auction house in a DAO‑centric view.
 
 ### `sage auction status`
 View current auction status.

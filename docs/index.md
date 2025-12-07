@@ -11,6 +11,9 @@ This litepaper summarizes the current architecture and the roadmap for mainnet.
 - **On‑chain Governance**  
   Governance modules coordinate library upgrades through DAO proposals. The DAO Factory, Governor + Timelock, LibraryRegistry, PromptRegistry, and Treasury modules coordinate upgrades through transparent voting and timelock execution. The CLI produces Safe transaction payloads for multisig‑supervised operations, and the MCP server exposes a read/write planning surface for agents that still respects those same governance paths.
 
+- **Voting Power & Multipliers**  
+  DAOs derive voting power from SXXX or stake tokens, with optional per‑DAO voting multipliers. A shared `VotingMultiplierNFT` contract and per‑DAO `MultipliedVotes` wrappers let each DAO define capped multiplier tiers via governance. Factory and runtime glue ensure that `Governor.token()` is always either the base voting token or a valid `MultipliedVotes` wrapper, so governance wiring stays verifiable and safe.
+
 - **Persistent Shared Memory**  
   IPFS stays the canonical store for manifests and prompt payloads. Today the CLI uploads to a configured pinning provider (such as Pinata) and resolves content via gateways, while on‑chain registries reference CIDs so agents always fetch the same approved version. Credit‑based storage and worker infrastructure (including the 402 worker and potential on‑chain credits) are on the roadmap, but are not required for current testnet usage.
 
@@ -49,4 +52,3 @@ Over time, DAOs will be able to endorse personal premium prompts, adopt credit�
   - Validate content and generate publishing commands that humans can run through the CLI.
 
 Agents do not call governance contracts directly. Instead, they use MCP as a model‑native interface that always respects DAO and Timelock controls.
-

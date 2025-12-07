@@ -31,6 +31,29 @@ Contract names such as `SubDAOFactoryOptimized` and `SubDAO` are retained for co
 
 ---
 
+## Voting Power & Multipliers
+
+- **Base Voting Token (SXXX / StakeToken)**  
+  Each DAO derives raw voting power from a base ERC20Votes‑compatible token (for example, SXXX or a SubDAO stake token). Governance parameters such as quorum, proposal thresholds, and vote weights are defined in terms of this base voting supply.
+
+- **VotingMultiplierNFT (`VotingMultiplierNFT.sol`)**  
+  A shared NFT contract provides per‑DAO multiplier tiers. Each tier encodes:
+  - A human‑readable name (e.g., “Founding Member”).  
+  - A multiplier (e.g., 150 = 1.5x, 200 = 2x) with an enforced `MAX_MULTIPLIER` cap.  
+  - Supply controls (minted / maxSupply) and an associated DAO address.  
+  Tiers can be created directly by admins via `createTier` or, more importantly, via DAO governance using `createTierViaGovernance(subdao, ...)`. The contract validates that `subdao` is a registered DAO and enforces per‑account limits such as `MAX_NFTS_PER_ACCOUNT` to keep multiplier calculations bounded.
+
+- **MultipliedVotes (`MultipliedVotes.sol`)**  
+  For DAOs that enable multipliers, a per‑DAO `MultipliedVotes` wrapper is deployed. It implements `IVotes` and:
+  - Multiplies `getVotes` and `getPastVotes` by the DAO‑scoped multiplier returned from `VotingMultiplierNFT`.  
+  - Uses the same clock domain as the base token (block‑number or timestamp) to keep historical lookups consistent.  
+  - Always expects delegation to happen on the base token; the wrapper is read‑only for vote accounting and does not hold tokens itself.
+
+- **Factory & Runtime Wiring**  
+  The DAO factory and runtime orchestration glue derive a single `baseToken` for each DAO (SXXX for free‑access communities, or the DAO’s stake token for stake‑gated models). When multipliers are enabled, they deploy a `MultipliedVotes` instance and set it as the Governor’s voting token. When multipliers are disabled, `Governor.token()` is left as the base token. This ensures that for any DAO, `Governor.token()` is either the base voting token or a valid wrapper whose `baseToken()` and `dao()` match the DAO’s stake token and address.
+
+---
+
 ## Governance Flow
 
 The typical governance flow for library updates and related actions is:
@@ -118,4 +141,3 @@ This pattern is intended to cover library updates, premium endorsement flows (fu
     - Be visible in the subgraph for auditability.
 
 This architecture aims to keep the on‑chain surface small, composable, and compatible with existing DeFi/NFT infrastructure, while letting Sage evolve its premium and credit systems over time without changing the core trust assumptions.
-

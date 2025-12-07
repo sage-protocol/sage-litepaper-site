@@ -56,7 +56,7 @@ sage prompts init
 
 # Add .md files to prompts/skills/, then publish
 sage prompts publish --dest personal   # Personal library (IPFS)
-sage prompts publish --subdao 0xDAO    # DAO library (governance)
+sage prompts publish --dao 0xDAO       # DAO library (governance; --subdao is a legacy alias)
 
 # Preview changes first
 sage prompts status
@@ -80,8 +80,8 @@ sage personal list --creator $(sage wallet address)
 ## 6. Create a DAO (Optional)
 
 ```bash
-# Wizard guides you through playbook selection
-sage dao create --wizard
+# Wizard guides you through playbook selection and safe defaults
+sage dao create-playbook --wizard
 
 # Playbooks:
 # - Creator: Solo publisher, direct control
@@ -99,5 +99,5 @@ sage project scaffold ./my-prompts
 
 # Validate and push
 sage project validate manifest.json
-sage project push manifest.json --subdao 0xDAO
+sage project push manifest.json --dao 0xDAO    # (--subdao remains a legacy alias)
 ```
