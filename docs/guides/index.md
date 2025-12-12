@@ -1,36 +1,113 @@
-# Sage User Guides
+# Workflows
 
-Welcome to the Sage User Guides. This section provides practical, step-by-step instructions for different user personas interacting with the Sage protocol.
+Step-by-step guides for common Sage Protocol operations. Each workflow covers the CLI commands, SDK calls, and contract interactions involved.
 
-Find the guides relevant to your role below.
+---
 
-## For Prompt Creators
+## Publishing
 
-Learn how to create, publish, and monetize your prompt libraries.
+Get content from your local workspace to an on-chain governed library.
 
-- [Creating Your First Prompt Library](./creating-your-first-prompt-library.md)
-- [Publishing and Versioning Prompts](./publishing-and-versioning-prompts.md)
-- [Creating and Selling Premium Prompts](./creating-and-selling-premium-prompts.md)
+| Guide | Description |
+|-------|-------------|
+| [First Library](./creating-your-first-prompt-library.md) | Wallet setup, workspace init, first publish |
+| [Publishing & Versioning](./publishing-and-versioning-prompts.md) | IPFS pinning, governance proposals, version management |
+| [Premium Prompts](./creating-and-selling-premium-prompts.md) | Pricing, Lit Protocol access, SXXX payments |
 
-## For Community Members
+**Quick path:**
+```bash
+sage prompts init                              # Create workspace
+# Add prompts to prompts/
+sage project push                              # Pin to IPFS
+sage project propose manifest.json --dao 0x...  # Create proposal
+```
 
-Discover how to participate in the Sage ecosystem, from joining DAOs to shaping their future through governance.
+---
 
-- [Joining a DAO](./joining-a-subdao.md)
-- [Staking and Governance](./staking-and-governance.md)
-- [Voting on Proposals](./voting-on-proposals.md)
+## DAO Setup
 
-## For DAO Admins
+Deploy and configure a DAO for your team or community.
 
-Get the knowledge you need to launch and manage your own decentralized community.
+| Guide | Description |
+|-------|-------------|
+| [Creating a DAO](./creating-a-subdao.md) | Playbook selection, deployment, initial config |
+| [Managing Members](./managing-subdao-members.md) | Roles, permissions, Safe multisig |
+| [Creating Bounties](./creating-bounties.md) | Posting rewards, reviewing submissions |
 
-- [Creating and Configuring a DAO](./creating-a-subdao.md)
-- [Managing Members and Permissions](./managing-subdao-members.md)
-- [Creating Bounties for Your Community](./creating-bounties.md)
+**Quick path:**
+```bash
+sage dao create-playbook --playbook council-closed \
+  --name "Team Library" \
+  --owners "0xAlice,0xBob,0xCarol" \
+  --threshold 2
 
-## For Agent Builders
+sage dao doctor --subdao 0x...   # Verify wiring
+```
 
-Integrate the power of Sage into your AI agents.
+---
 
-- [Using the MCP Server to Discover and Consume Prompts](./using-the-mcp-server.md)
-- [Integrating the Sage SDK into Your Agent](./integrating-the-sage-sdk.md)
+## Governance
+
+Participate in DAO decision-making.
+
+| Guide | Description |
+|-------|-------------|
+| [Joining a DAO](./joining-a-subdao.md) | Discovery, membership, staking |
+| [Staking & Voting Power](./staking-and-governance.md) | SXXX delegation, multipliers |
+| [Voting on Proposals](./voting-on-proposals.md) | Casting votes, queue/execute |
+
+**Quick path:**
+```bash
+sage sxxx delegate-self                    # Enable voting power
+sage governance vote <proposal> --support for
+sage governance queue <proposal>           # After vote passes
+sage governance execute <proposal>         # After timelock delay
+```
+
+---
+
+## Agent Integration
+
+Build AI agents that discover and use governed content.
+
+| Guide | Description |
+|-------|-------------|
+| [Agent Workflows](./agent-prompt-workflows.md) | End-to-end agent patterns, sage-skill |
+| [MCP Server](./using-the-mcp-server.md) | Starting server, available endpoints |
+| [Subgraph & Discovery](./subgraph-and-discovery.md) | GraphQL queries, indexing events |
+| [SDK Integration](./integrating-the-sage-sdk.md) | Node.js and browser SDK usage |
+
+**Quick path:**
+```bash
+sage mcp start                             # Start MCP server
+
+# Agent queries
+GET /libraries/{dao}                       # Current manifest CID
+GET /prompts/{key}                         # Fetch prompt content
+POST /propose                              # Generate CLI command
+```
+
+---
+
+## Workflow Comparison
+
+| Task | CLI Command | SDK Method |
+|------|-------------|------------|
+| Get library info | `sage project status` | `sdk.library.getLibrary(dao)` |
+| Push to IPFS | `sage project push` | `sdk.ipfs.pin(manifest)` |
+| Create proposal | `sage project propose` | `sdk.governance.propose(...)` |
+| Vote | `sage governance vote` | `sdk.governance.vote(...)` |
+| Execute | `sage governance execute` | `sdk.governance.execute(...)` |
+
+---
+
+## Prerequisites
+
+All workflows assume:
+
+1. **CLI installed**: `npm install -g @sage-protocol/cli`
+2. **Wallet connected**: `sage wallet init`
+3. **Test SXXX**: `sage sxxx faucet` (Base Sepolia)
+4. **DAO selected**: `sage dao use 0x...` or `--dao` flag
+
+See [CLI Quick Start](../cli/get-started.md) for setup details.

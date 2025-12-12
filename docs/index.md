@@ -1,138 +1,25 @@
 # Sage Protocol
 
-**Governance infrastructure for AI prompts, skills, and knowledge.**
+**On-chain governance for prompt libraries.**
 
-Sage lets communities collaboratively maintain prompt libraries through transparent on-chain governance. Authors publish prompts to IPFS, DAOs vote on which versions to adopt, and agents discover approved content through the MCP server.
-
----
-
-## Key Concepts
-
-### Prompts
-
-The foundational unit. A prompt is a markdown file with YAML frontmatter that defines an AI instruction, persona, or workflow. Prompts are versioned, attributed, and discoverable.
-
-```yaml
----
-name: Code Review Assistant
-key: dev/code-review
-tags: [development, review]
----
-You are a senior engineer reviewing code for clarity, correctness, and maintainability...
-```
-
-[Publishing & Versioning →](guides/publishing-and-versioning-prompts.md)
+Sage provides the infrastructure for communities to collaboratively maintain, version, and distribute AI prompts through transparent DAO governance. Content lives on IPFS; the blockchain records which versions each DAO has approved.
 
 ---
 
-### Skills
+## Why Sage?
 
-Skills are Claude Code compatible prompt packages. They bundle multiple prompts, workflows, and documentation into a coherent capability that agents can adopt.
+Without governance, prompt libraries are either:
+- **Centralized**: One person controls what ships
+- **Chaotic**: Anyone can push anything, no quality control
+- **Static**: No incentive structure for improvements
 
-```bash
-sage prompts import-skill pdf            # Import existing skill
-sage prompts publish-skill ./my-skill    # Publish to DAO
-```
-
-Skills live in `prompts/skills/` and follow the [Claude Code skill format](guides/agent-prompt-workflows.md#the-sage-skill-for-claude-code).
-
----
-
-### Prompt Libraries
-
-A **library** is a governed collection of prompts maintained by a DAO. Each DAO has one canonical library stored on IPFS and referenced on-chain via the `LibraryRegistry`.
+Sage adds a governance layer:
 
 ```
-manifest.json → IPFS (CID) → LibraryRegistry → DAO Governance
+Author → Proposal → DAO Vote → Timelock → On-chain Registry → Agent Discovery
 ```
 
-Libraries are updated through governance proposals. The `updateLibrary(dao, manifestCID, version)` call records a new version only when the DAO approves.
-
-[Creating Your First Library →](guides/creating-your-first-prompt-library.md)
-
----
-
-### Playbooks
-
-Playbooks are pre-configured governance templates that let you deploy a DAO with sensible defaults in one command.
-
-| Playbook | Best For | Governance |
-|----------|----------|------------|
-| **personal** | Solo creators | Single wallet, instant updates |
-| **council-closed** | Small teams (3-10) | Safe multisig, threshold signatures |
-| **community** | Open communities (50+) | Token voting, timelock delays |
-| **council-drafts** | Hybrid | Community votes, council executes |
-
-```bash
-sage dao create-playbook --playbook personal --name "My Library"
-sage dao create-playbook --playbook council-closed --owners "0xAlice,0xBob" --threshold 2
-```
-
-[Governance Models →](concepts/governance-models.md)
-
----
-
-### Governance Types
-
-Three axes define how your DAO operates:
-
-| Axis | Options | What It Controls |
-|------|---------|------------------|
-| **Governance Kind** | `OPERATOR` / `TOKEN` | Single controller or token-weighted voting |
-| **Proposal Access** | `COUNCIL_ONLY` / `COMMUNITY_THRESHOLD` | Who can create proposals |
-| **Execution Access** | `COUNCIL_ONLY` / `ANYONE` | Who can execute passed proposals |
-
-**OPERATOR** mode gives a controller (wallet or Safe) direct authority. **TOKEN** mode requires SXXX-weighted voting with configurable quorum, voting period, and timelock delays.
-
-[Full Governance Reference →](concepts/governance-models.md)
-
----
-
-## For Creators
-
-1. **Initialize** a workspace: `sage prompts init`
-2. **Author** prompts in `prompts/` as markdown with frontmatter
-3. **Test** locally: `sage prompts try my-prompt`
-4. **Publish** through governance: `sage prompts publish --dao 0x...`
-
-Premium prompts let you monetize expertise via SXXX payments and ERC1155 license receipts.
-
-[Creating Premium Prompts →](guides/creating-and-selling-premium-prompts.md)
-
----
-
-## For DAOs
-
-1. **Deploy** with a playbook: `sage dao create-playbook --playbook council-closed`
-2. **Diagnose** governance wiring: `sage dao doctor`, `sage timelock doctor`
-3. **Propose** library updates: `sage project propose manifest.json`
-4. **Incentivize** with bounties: `sage bounty post "Improve summarization prompts"`
-
-[Creating a DAO →](guides/creating-a-subdao.md) · [Creating Bounties →](guides/creating-bounties.md)
-
----
-
-## For Agents
-
-Agents interact through the **MCP server**, not raw contracts:
-
-- **Discover** libraries via subgraph queries
-- **Fetch** prompts by key or CID
-- **Propose** changes that humans execute through governance
-
-```bash
-# Start MCP server
-sage mcp start
-
-# Agents can now query
-GET /libraries/{dao}
-GET /prompts/{key}
-POST /propose (generates CLI command)
-```
-
-The [sage-skill](guides/agent-prompt-workflows.md#the-sage-skill-for-claude-code) gives Claude Code deep knowledge of Sage workflows.
-
-[Agent Workflows →](guides/agent-prompt-workflows.md) · [MCP Server →](guides/using-the-mcp-server.md)
+Every library update goes through the DAO's governance process. Contributors get on-chain attribution. Agents can trust that content was community-approved.
 
 ---
 
@@ -140,37 +27,200 @@ The [sage-skill](guides/agent-prompt-workflows.md#the-sage-skill-for-claude-code
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  IPFS                                                           │
-│  Manifests and prompts stored as content-addressed payloads     │
+│  Content Layer (IPFS)                                           │
+│  manifest.json + prompt files pinned to IPFS                    │
+│  Content-addressed: same CID = same content                     │
 └──────────────────────────────┬──────────────────────────────────┘
-                               │ CID
+                               │ CID reference
 ┌──────────────────────────────▼──────────────────────────────────┐
 │  LibraryRegistry                                                │
-│  Maps each DAO to its current manifest CID                      │
-│  updateLibrary(dao, manifestCID, version)                       │
+│  mapping(address dao => LibraryInfo)                            │
+│  updateLibrary(dao, manifestCID, version) — timelock-gated      │
 └──────────────────────────────┬──────────────────────────────────┘
-                               │ via Timelock
+                               │ EXECUTOR_ROLE
 ┌──────────────────────────────▼──────────────────────────────────┐
-│  Governor + Timelock                                            │
-│  Proposals → Voting → Delay → Execution                         │
+│  Timelock Controller                                            │
+│  Enforces delay between vote passing and execution              │
+│  Gives community time to react to malicious proposals           │
 └──────────────────────────────┬──────────────────────────────────┘
-                               │
+                               │ proposal queue
+┌──────────────────────────────▼──────────────────────────────────┐
+│  Governor (OpenZeppelin)                                        │
+│  Proposals, voting, quorum, thresholds                          │
+│  Token-weighted or operator-controlled                          │
+└──────────────────────────────┬──────────────────────────────────┘
+                               │ deployed by
 ┌──────────────────────────────▼──────────────────────────────────┐
 │  DAO Factory                                                    │
-│  Deploys DAOs with playbook-defined governance parameters       │
+│  Deploys Governor + Timelock + Registry wiring                  │
+│  Playbooks define governance parameters                         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-[Full Architecture →](contracts/architecture.md) · [Deployments →](contracts/deployments.md)
+[Contract Architecture →](contracts/architecture.md) · [Deployments →](contracts/deployments.md)
 
 ---
 
-## Next Steps
+## Governance Models
 
-| Goal | Start Here |
-|------|------------|
-| Publish my first prompt | [Creating Your First Library](guides/creating-your-first-prompt-library.md) |
-| Launch a DAO | [Creating a DAO](guides/creating-a-subdao.md) |
-| Build an agent integration | [Agent Workflows](guides/agent-prompt-workflows.md) |
-| Understand governance options | [Governance Models](concepts/governance-models.md) |
-| Monetize prompts | [Premium Prompts](concepts/premium-prompts.md) |
+Three axes define how a DAO operates:
+
+| Axis | Options | Controls |
+|------|---------|----------|
+| **Kind** | `OPERATOR` / `TOKEN` | Single controller vs token-weighted voting |
+| **Proposal** | `COUNCIL_ONLY` / `COMMUNITY` | Who can create proposals |
+| **Execution** | `COUNCIL_ONLY` / `ANYONE` | Who can execute passed proposals |
+
+### Playbooks
+
+Pre-configured governance templates:
+
+| Playbook | Use Case | Flow |
+|----------|----------|------|
+| `personal` | Solo creator | Wallet → instant update |
+| `council-closed` | Small team | Safe multisig → threshold → update |
+| `community` | Open DAO | Proposal → vote → timelock → update |
+| `council-drafts` | Hybrid | Community votes → council executes |
+
+```bash
+# Deploy a team DAO with 2-of-3 multisig
+sage dao create-playbook --playbook council-closed \
+  --name "Team Library" \
+  --owners "0xAlice,0xBob,0xCarol" \
+  --threshold 2
+```
+
+[Governance Models →](concepts/governance-models.md) · [Creating a DAO →](guides/creating-a-subdao.md)
+
+---
+
+## Core Workflows
+
+### Publishing Content
+
+```bash
+# 1. Initialize workspace
+sage prompts init
+
+# 2. Add prompts to prompts/ directory
+# 3. Build and propose
+sage project push                           # Pin to IPFS
+sage project propose manifest.json --dao 0x...  # Create proposal
+
+# 4. Vote passes → Timelock delay → Execution
+# 5. LibraryRegistry now points to new CID
+```
+
+[Publishing Guide →](guides/publishing-and-versioning-prompts.md)
+
+### Agent Integration
+
+Agents discover content through the **MCP server**, not raw contracts:
+
+```bash
+sage mcp start   # Exposes read/write planning surface
+```
+
+MCP endpoints:
+- `GET /libraries/{dao}` — Current manifest CID
+- `GET /prompts/{key}` — Fetch prompt by key
+- `POST /propose` — Generate CLI command for human execution
+
+Agents can propose changes but cannot execute governance actions directly. The human-in-the-loop ensures DAO controls are respected.
+
+[MCP Server →](guides/using-the-mcp-server.md) · [Agent Workflows →](guides/agent-prompt-workflows.md)
+
+### Incentivizing Contributors
+
+**Bounties** let DAOs fund specific improvements:
+
+```bash
+sage bounty post "Improve code review prompts" --reward 1000
+sage bounty submit <id> --cid <manifest>
+sage bounty pick-winner <id> <submission>
+```
+
+**Premium Prompts** let creators monetize via SXXX payments:
+
+```bash
+sage premium list --author 0x...
+sage premium purchase <cid> --price 100
+```
+
+[Bounties →](concepts/bounties.md) · [Premium Prompts →](concepts/premium-prompts.md)
+
+---
+
+## Key Contracts
+
+| Contract | Purpose |
+|----------|---------|
+| `LibraryRegistry` | Maps DAOs to manifest CIDs, gated by timelock |
+| `PromptGovernor` | OpenZeppelin Governor with Sage extensions |
+| `SubDAOFactory` | Deploys DAOs with playbook parameters |
+| `VotingMultiplierNFT` | Boosts voting power for top contributors |
+| `SimpleBountySystem` | Escrow and winner selection for bounties |
+
+[Full Contract Reference →](contracts/architecture.md)
+
+---
+
+## Quick Reference
+
+### CLI Commands
+
+```bash
+# DAO Management
+sage dao create-playbook --playbook <type>
+sage dao doctor --subdao 0x...
+sage dao info 0x...
+
+# Publishing
+sage prompts init
+sage project push
+sage project propose <manifest>
+sage project status
+
+# Governance
+sage governance vote <proposal> --support for
+sage governance queue <proposal>
+sage governance execute <proposal>
+
+# Diagnostics
+sage timelock doctor --subdao 0x...
+sage governance preflight --subdao 0x...
+```
+
+[Full CLI Reference →](cli/command-reference.md)
+
+### SDK
+
+```javascript
+import { SageSDK } from '@sage-protocol/sdk';
+
+const sdk = new SageSDK({ provider, signer });
+
+// Read library
+const info = await sdk.library.getLibrary(daoAddress);
+
+// Build proposal
+const tx = await sdk.governance.buildUpdateLibraryTx({
+  dao: daoAddress,
+  manifestCID: 'Qm...',
+  version: '1.2.0'
+});
+```
+
+[SDK Guide →](sdk/index.md)
+
+---
+
+## Getting Started
+
+| Goal | Guide |
+|------|-------|
+| Deploy a DAO | [Creating a DAO](guides/creating-a-subdao.md) |
+| Publish prompts | [Publishing & Versioning](guides/publishing-and-versioning-prompts.md) |
+| Build agent integration | [Agent Workflows](guides/agent-prompt-workflows.md) |
+| Run governance | [Voting on Proposals](guides/voting-on-proposals.md) |
+| Set up incentives | [Creating Bounties](guides/creating-bounties.md) |

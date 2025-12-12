@@ -88,39 +88,39 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Concepts:
+  - Protocol:
       - Overview: concepts/index.md
       - Governance Models: concepts/governance-models.md
       - Voting Multipliers: concepts/voting-multipliers.md
-      - Bounties & Incentives: concepts/bounties.md
+      - Bounties: concepts/bounties.md
       - Premium Prompts: concepts/premium-prompts.md
-  - Guides:
-      - Getting Started: guides/index.md
-      - Prompt Creators:
-          - First Prompt Library: guides/creating-your-first-prompt-library.md
+  - Workflows:
+      - Overview: guides/index.md
+      - Publishing:
+          - First Library: guides/creating-your-first-prompt-library.md
           - Publishing & Versioning: guides/publishing-and-versioning-prompts.md
           - Premium Prompts: guides/creating-and-selling-premium-prompts.md
-      - Community Members:
-          - Discovering DAOs: guides/joining-a-subdao.md
-          - Staking & Governance: guides/staking-and-governance.md
-          - Voting: guides/voting-on-proposals.md
-      - DAO Admins:
+      - DAO Setup:
           - Creating a DAO: guides/creating-a-subdao.md
           - Managing Members: guides/managing-subdao-members.md
           - Creating Bounties: guides/creating-bounties.md
-      - Agent Builders:
-          - Agent Prompt Workflows: guides/agent-prompt-workflows.md
+      - Governance:
+          - Joining a DAO: guides/joining-a-subdao.md
+          - Staking & Voting Power: guides/staking-and-governance.md
+          - Voting on Proposals: guides/voting-on-proposals.md
+      - Agent Integration:
+          - Agent Workflows: guides/agent-prompt-workflows.md
           - MCP Server: guides/using-the-mcp-server.md
           - Subgraph & Discovery: guides/subgraph-and-discovery.md
-          - Sage SDK: guides/integrating-the-sage-sdk.md
+          - SDK Integration: guides/integrating-the-sage-sdk.md
   - CLI:
-      - Getting Started: cli/get-started.md
+      - Quick Start: cli/get-started.md
       - Command Reference: cli/command-reference.md
       - IPFS & Pinning: cli/ipfs.md
   - SDK:
-      - Introduction: sdk/index.md
+      - Overview: sdk/index.md
   - Reference:
-      - Architecture: contracts/architecture.md
+      - Contract Architecture: contracts/architecture.md
       - Deployments: contracts/deployments.md
 
 plugins:

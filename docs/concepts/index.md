@@ -1,83 +1,162 @@
-# Core Concepts
+# Protocol Deep Dive
 
-Before diving into guides and commands, it helps to understand **why** Sage Protocol exists and how its core systems work together.
+This section covers the technical details of Sage Protocol's core systems. For a high-level overview, see the [home page](../index.md).
 
-## The Problem
+---
 
-Prompts are trapped. They're scattered across chat histories, stuck in individual tools, and can't benefit from collective intelligence. A single author working alone can't match what a community of contributors could build together.
+## How It Works
 
-## The Solution
-
-Sage Protocol provides infrastructure for **permissionless prompt collaboration**:
+Sage coordinates library updates through a standard governance flow:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  PUBLISH                                                     │
-│  Get prompts into the open where they can be discovered      │
-│  and improved by anyone                                      │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│  GOVERN                                                      │
-│  Communities decide which changes get adopted                │
-│  through transparent on-chain voting                         │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│  INCENTIVIZE                                                 │
-│  Bounties reward contributors for improvements               │
-│  Attribution tracks who contributed what                     │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│  DISCOVER                                                    │
-│  Agents can crawl the protocol, find prompts,               │
-│  and propose improvements automatically                      │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│  1. CONTENT PREPARATION                                          │
+│                                                                  │
+│  Author creates/updates prompts locally                          │
+│  CLI builds manifest.json with prompt metadata                   │
+│  Content pinned to IPFS → returns CID                            │
+└────────────────────────────┬─────────────────────────────────────┘
+                             │
+                             ▼
+┌──────────────────────────────────────────────────────────────────┐
+│  2. PROPOSAL CREATION                                            │
+│                                                                  │
+│  CLI encodes updateLibrary(dao, cid, version) calldata           │
+│  Proposal submitted to Governor contract                         │
+│  ProposalCreated event emitted with targets/calldatas            │
+└────────────────────────────┬─────────────────────────────────────┘
+                             │
+                             ▼
+┌──────────────────────────────────────────────────────────────────┐
+│  3. VOTING PERIOD                                                │
+│                                                                  │
+│  Token holders cast votes (for/against/abstain)                  │
+│  Voting power = SXXX balance × multiplier (if applicable)        │
+│  Proposal passes if quorum met and majority support              │
+└────────────────────────────┬─────────────────────────────────────┘
+                             │
+                             ▼
+┌──────────────────────────────────────────────────────────────────┐
+│  4. TIMELOCK QUEUE                                               │
+│                                                                  │
+│  Passed proposals queued in TimelockController                   │
+│  Minimum delay (e.g., 24h) before execution                      │
+│  Community can react to malicious proposals                      │
+└────────────────────────────┬─────────────────────────────────────┘
+                             │
+                             ▼
+┌──────────────────────────────────────────────────────────────────┐
+│  5. EXECUTION                                                    │
+│                                                                  │
+│  After delay, anyone can execute (or council only)               │
+│  Timelock calls LibraryRegistry.updateLibrary(...)               │
+│  LibraryUpdated event emitted, subgraph indexes                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-## Key Principles
+---
 
-### Prompts as Living Documents
+## Protocol Components
 
-The best prompts emerge from iteration, not isolation. Every prompt in Sage can be improved, forked, or extended by anyone - subject to community governance.
+| Component | Contract | Purpose |
+|-----------|----------|---------|
+| **Registry** | `LibraryRegistry` | Stores current manifest CID per DAO |
+| **Governor** | `PromptGovernorCloneable` | Manages proposals and voting |
+| **Timelock** | `TimelockController` | Enforces execution delay |
+| **Factory** | `SubDAOFactory` | Deploys new DAOs with wiring |
+| **Multipliers** | `VotingMultiplierNFT` | Boosts voting power |
+| **Bounties** | `SimpleBountySystem` | Escrow for contributor rewards |
+| **Premium** | `PremiumPrompts` | Gated content licensing |
 
-### Governance, Not Gatekeeping
+---
 
-Anyone can propose changes. Communities decide what gets adopted. This means:
-- No single authority controls what prompts exist
-- Changes require community consensus
-- Different DAOs can have different governance rules
+## Sections
 
-### On-Chain Provenance
+### [Governance Models](./governance-models.md)
 
-Every contribution is recorded on-chain:
-- Who authored which prompt
-- When changes were made
-- How the community voted
-- Attribution flows to original creators
+How the three governance axes (Kind, Proposal Access, Execution Access) combine to create different DAO configurations. Covers playbooks, parameter tuning, and governance evolution.
 
-### Agent-First Design
+### [Voting Multipliers](./voting-multipliers.md)
 
-Sage is built for agents as first-class participants:
-- MCP server for programmatic access
-- Structured data for machine consumption
-- Bounties agents can claim and complete
+How `VotingMultiplierNFT` and `MultipliedVotes` wrappers boost voting power for top contributors. Includes tier configuration and factory integration.
 
-## Core Systems
+### [Bounties & Incentives](./bounties.md)
 
-| System | Purpose | Learn More |
-|--------|---------|------------|
-| **DAOs** | Govern prompt libraries and treasuries | [Governance Models](./governance-models.md) |
-| **Voting Multipliers** | Recognize top contributors with boosted voting | [Voting Multipliers](./voting-multipliers.md) |
-| **Bounties** | Incentivize specific improvements | [Bounties & Incentives](./bounties.md) |
-| **Premium Prompts** | Monetize expertise with gated content | [Premium Prompts](./premium-prompts.md) |
+How `SimpleBountySystem` coordinates contributor rewards. Covers posting, submission, winner selection, and fund release.
+
+### [Premium Prompts](./premium-prompts.md)
+
+How `PremiumPrompts` and ERC1155 receipts enable gated content. Covers pricing, purchasing, and access verification with Lit Protocol.
+
+---
+
+## Key Patterns
+
+### Content Addressing
+
+All prompt content is stored on IPFS. The blockchain only stores CID references:
+
+```solidity
+struct LibraryInfo {
+    string manifestCID;      // IPFS CID of manifest.json
+    address lastUpdater;     // Who submitted the update
+    uint256 lastUpdated;     // Block timestamp
+    string version;          // Semantic version
+    address forkedFromDAO;   // If forked, source DAO
+    uint256 sxxxForkFee;     // Fork licensing fee
+}
+
+mapping(address dao => LibraryInfo) public libraryByDAO;
+```
+
+### Timelock Gating
+
+Only the Timelock can call registry write functions:
+
+```solidity
+function updateLibrary(address dao, string calldata manifestCID, string calldata version)
+    external
+    onlyRole(EXECUTOR_ROLE)  // Granted only to Timelock
+{
+    // Update storage
+}
+```
+
+### Proposal Encoding
+
+CLI encodes governance proposals as target/value/calldata arrays:
+
+```javascript
+const calldata = iface.encodeFunctionData('updateLibrary', [
+    daoAddress,
+    manifestCID,
+    version
+]);
+
+// Proposal targets LibraryRegistry
+const targets = [LIBRARY_REGISTRY_ADDRESS];
+const values = [0];
+const calldatas = [calldata];
+```
+
+---
+
+## Events for Indexing
+
+Key events the subgraph indexes:
+
+| Event | Contract | Data |
+|-------|----------|------|
+| `LibraryUpdated` | LibraryRegistry | dao, cid, version, updater |
+| `ProposalCreated` | Governor | proposalId, proposer, targets, calldatas |
+| `VoteCast` | Governor | voter, proposalId, support, weight |
+| `CallExecuted` | Timelock | target, value, data |
+| `BountyPosted` | SimpleBountySystem | id, poster, reward, description |
+
+---
 
 ## Next Steps
 
-- **New to Sage?** Start with [Creating Your First Prompt Library](../guides/creating-your-first-prompt-library.md)
-- **Building an agent?** See [Agent Prompt Workflows](../guides/agent-prompt-workflows.md)
-- **Running a DAO?** Check [Creating a DAO](../guides/creating-a-subdao.md)
+- [Governance Models](./governance-models.md) — Understand the three axes
+- [Contract Architecture](../contracts/architecture.md) — Full contract reference
+- [Deployments](../contracts/deployments.md) — Live contract addresses
