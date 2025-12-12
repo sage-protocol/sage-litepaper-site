@@ -1,30 +1,29 @@
-# Sage Protocol
+# What is Sage?
 
-**On-chain governance for prompt libraries.**
+Sage is infrastructure for collaborative prompt development. It lets you:
+
+1. **Publish** prompts to IPFS where anyone can discover them
+2. **Govern** which versions get adopted through DAO voting
+3. **Incentivize** improvements with bounties
+4. **Monetize** expertise with premium content
+
+The typical journey:
+
+```
+Solo creator → Personal library → Team DAO → Community governance
+```
+
+**Start simple**: Publish prompts under your own wallet. You control everything.
+
+**Add collaboration**: Create a council DAO. Your team votes on changes together.
+
+**Scale up**: Open governance to token holders. Anyone can propose improvements.
+
+At each stage, the protocol handles versioning, attribution, and access control. You focus on the content.
 
 ---
 
-## What is Sage?
-
-Sage is a set of smart contracts, a CLI, and an SDK that let communities govern prompt libraries through DAOs. The protocol handles:
-
-| Component | What It Does |
-|-----------|--------------|
-| **LibraryRegistry** | Stores the current manifest CID for each DAO |
-| **Governor + Timelock** | Manages proposals, voting, and delayed execution |
-| **DAO Factory** | Deploys new DAOs with pre-configured governance |
-| **Bounty System** | Escrows rewards for contributor improvements |
-| **Premium Prompts** | Encrypts and licenses gated content |
-
-Content lives on IPFS. The blockchain records which versions each DAO has approved. Agents discover content through the MCP server or subgraph.
-
-```
-Content (IPFS) ←── CID ──→ LibraryRegistry ←── Timelock ──→ Governor ←── Factory
-```
-
----
-
-## Architecture
+## How It Works
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
