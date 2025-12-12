@@ -88,6 +88,12 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Concepts:
+      - Overview: concepts/index.md
+      - Governance Models: concepts/governance-models.md
+      - Voting Multipliers: concepts/voting-multipliers.md
+      - Bounties & Incentives: concepts/bounties.md
+      - Premium Prompts: concepts/premium-prompts.md
   - Guides:
       - Getting Started: guides/index.md
       - Prompt Creators:
@@ -112,6 +118,9 @@ nav:
       - IPFS & Pinning: cli/ipfs.md
   - SDK:
       - Introduction: sdk/index.md
+  - Reference:
+      - Architecture: contracts/architecture.md
+      - Deployments: contracts/deployments.md
 
 plugins:
   - search
