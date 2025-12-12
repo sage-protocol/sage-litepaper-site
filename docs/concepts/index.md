@@ -2,6 +2,10 @@
 
 This section covers the technical details of Sage Protocol's core systems. For a high-level overview, see the [home page](../index.md).
 
+If you’re looking for “why this matters” rather than internals:
+- [Economic Thesis](./economic-thesis.md)
+- [Tooling & Surfaces](./tooling-and-surfaces.md)
+
 ---
 
 ## How It Works
@@ -71,6 +75,14 @@ Sage coordinates library updates through a standard governance flow:
 ---
 
 ## Sections
+
+### [Economic Thesis](./economic-thesis.md)
+
+Why Sage’s claim is fundamentally economic: prompt decay, governed acceptance, and incentives for maintainers (humans + agents).
+
+### [Tooling & Surfaces](./tooling-and-surfaces.md)
+
+What exists today (contracts, IPFS, subgraph, SDK, CLI, MCP, web app) and why each surface matters.
 
 ### [Governance Models](./governance-models.md)
 

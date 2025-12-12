@@ -75,11 +75,17 @@ Each step up adds more collaboration. You decide when (or if) to grow.
 
 ## Why This Matters
 
-**Prompts improve through use**. Edge cases surface. Better examples emerge. New use cases appear. Sage captures this iteration so prompts get better over time.
+**Prompts are production assets — and they decay.** Models change, tooling changes, and edge cases accumulate. A prompt that “worked last month” can silently stop working.
 
-**Communities outperform individuals**. A group of contributors will find improvements you'd never think of. Sage gives you the infrastructure to harness that.
+Sage is built around a simple economic claim: **the highest-value work is keeping prompts aligned over time** (not writing them once). To do that, you need:
 
-**Attribution creates incentives**. When contributions are tracked on-chain, people get credit for their work. This encourages participation and builds trust.
+- **A canonical acceptance function** (governance decides what becomes “the” version)
+- **Incentives for maintainers** (bounties, premium sales, voter boosts)
+- **Discoverability and provenance** (so agents and apps can prefer governed content)
+
+Read more:
+- [Economic Thesis](concepts/economic-thesis.md)
+- [Tooling & Surfaces](concepts/tooling-and-surfaces.md)
 
 ---
 

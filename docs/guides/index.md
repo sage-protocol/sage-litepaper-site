@@ -81,23 +81,23 @@ Build AI agents that discover and use governed content.
 ```bash
 sage mcp start                             # Start MCP server
 
-# Agent queries
-GET /libraries/{dao}                       # Current manifest CID
-GET /prompts/{key}                         # Fetch prompt content
-POST /propose                              # Generate CLI command
+# Agents should prefer MCP tools over inventing custom endpoints:
+# - search_prompts / search_onchain_prompts
+# - get_prompt
+# - generate_publishing_commands
 ```
 
 ---
 
 ## Workflow Comparison
 
-| Task | CLI Command | SDK Method |
+| Task | CLI Command | SDK surface |
 |------|-------------|------------|
-| Get library info | `sage project status` | `sdk.library.getLibrary(dao)` |
-| Push to IPFS | `sage project push` | `sdk.ipfs.pin(manifest)` |
-| Create proposal | `sage project propose` | `sdk.governance.propose(...)` |
-| Vote | `sage governance vote` | `sdk.governance.vote(...)` |
-| Execute | `sage governance execute` | `sdk.governance.execute(...)` |
+| Discover libraries | `sage dao list`, `sage prompts search` | `sdk.subgraph.*`, `sdk.DiscoveryClient` |
+| Fetch manifest/prompt by CID | `sage ipfs fetch <cid>` | `sdk.services.IPFSService.fetchByCID` |
+| Build a proposal transaction | `sage project propose` | `sdk.governance.buildProposeTx` |
+| Build a vote transaction | `sage governance vote` | `sdk.governance.buildCastVoteTx` |
+| Build queue/execute transactions | `sage governance queue|execute` | `sdk.governance.buildQueueTx`, `sdk.governance.buildExecuteTx` |
 
 ---
 

@@ -128,4 +128,15 @@ This pattern is intended to cover library updates, premium endorsement flows (fu
     - Be controlled by the DAO’s Timelock or dedicated upgrade council.
     - Be visible in the subgraph for auditability.
 
+---
+
+## Architectural Notes (Tradeoffs)
+
+Sage optimizes for an agent-first, production-usable workflow, and that comes with explicit tradeoffs:
+
+- **Indexing dependency**: the subgraph is not the trust anchor, but it becomes a practical dependency for discovery UX.
+- **Operational “front doors”**: an IPFS worker improves reliability and enables paid storage models, but it introduces operational risk even if content addressing preserves integrity.
+- **Atomic manifest updates**: treating the manifest CID as the library “version” is auditable and composable, but it makes updates coarse and requires care around concurrent updates.
+- **Evolving library views**: some flows (especially bounties) can introduce “multiple views” of a library (manifest pointer vs. auxiliary signals). The long-term direction is to keep the manifest as the canonical source of truth.
+
 This architecture aims to keep the on‑chain surface small, composable, and compatible with existing DeFi/NFT infrastructure, while letting Sage evolve its premium and credit systems over time without changing the core trust assumptions.

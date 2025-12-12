@@ -2,6 +2,31 @@
 
 Staking SXXX tokens is the primary way to participate in governance on Sage Protocol. This guide covers staking, voting power, delegation, and NFT voting multipliers.
 
+---
+
+## Understanding Governance Steps
+
+Sage governance is designed to scale from solo creators to large communities. The steps you take depend on what kind of DAO you're participating in.
+
+### Personal DAOs (Solo Creators)
+You control everything. No staking, delegation, or voting required—just propose and execute.
+
+### Team DAOs (Small Groups)
+A trusted group shares control via multisig. Members sign off on changes together, but there's no token voting.
+
+### Community DAOs (Token Governance)
+Open participation requires a few setup steps:
+
+| Step | What It Does |
+|------|--------------|
+| **Stake** | Join the DAO by depositing tokens. This gives you a voice in that specific community. |
+| **Delegate** | Activate your voting power. You can vote yourself or let someone you trust vote on your behalf. |
+| **Approve** | Grant permission for contracts to move your tokens when you stake or deposit. A one-time safety step. |
+
+These steps ensure you explicitly choose where to participate and who represents your interests. The CLI guides you through each one.
+
+---
+
 ## Why Stake?
 
 Staking serves multiple purposes:

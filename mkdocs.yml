@@ -90,6 +90,8 @@ nav:
   - Home: index.md
   - Protocol:
       - Overview: concepts/index.md
+      - Economic Thesis: concepts/economic-thesis.md
+      - Tooling & Surfaces: concepts/tooling-and-surfaces.md
       - Governance Models: concepts/governance-models.md
       - Voting Multipliers: concepts/voting-multipliers.md
       - Bounties: concepts/bounties.md
