@@ -2,24 +2,25 @@
 
 **On-chain governance for prompt libraries.**
 
-Sage provides the infrastructure for communities to collaboratively maintain, version, and distribute AI prompts through transparent DAO governance. Content lives on IPFS; the blockchain records which versions each DAO has approved.
-
 ---
 
-## Why Sage?
+## What is Sage?
 
-Without governance, prompt libraries are either:
-- **Centralized**: One person controls what ships
-- **Chaotic**: Anyone can push anything, no quality control
-- **Static**: No incentive structure for improvements
+Sage is a set of smart contracts, a CLI, and an SDK that let communities govern prompt libraries through DAOs. The protocol handles:
 
-Sage adds a governance layer:
+| Component | What It Does |
+|-----------|--------------|
+| **LibraryRegistry** | Stores the current manifest CID for each DAO |
+| **Governor + Timelock** | Manages proposals, voting, and delayed execution |
+| **DAO Factory** | Deploys new DAOs with pre-configured governance |
+| **Bounty System** | Escrows rewards for contributor improvements |
+| **Premium Prompts** | Encrypts and licenses gated content |
+
+Content lives on IPFS. The blockchain records which versions each DAO has approved. Agents discover content through the MCP server or subgraph.
 
 ```
-Author → Proposal → DAO Vote → Timelock → On-chain Registry → Agent Discovery
+Content (IPFS) ←── CID ──→ LibraryRegistry ←── Timelock ──→ Governor ←── Factory
 ```
-
-Every library update goes through the DAO's governance process. Contributors get on-chain attribution. Agents can trust that content was community-approved.
 
 ---
 
