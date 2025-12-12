@@ -164,13 +164,15 @@ Minimum participation required for a vote to be valid.
 
 ### Proposal Threshold
 
-Tokens required to create a proposal.
+SXXX tokens required to create a proposal. Note: This checks **raw wallet balance**, not voting power.
 
 | Setting | Amount | Use Case |
 |---------|--------|----------|
 | Zero | 0 | Anyone can propose |
 | Low | 100-1,000 | Filter spam, low barrier |
 | High | 10,000+ | Serious proposals only |
+
+See [Proposal Threshold](./proposal-threshold.md) for detailed semantics including cancel rules and balance vs voting power.
 
 ### Timelock Delay
 
@@ -208,6 +210,7 @@ All governance changes go through the existing governance process - you can't by
 
 ## Related
 
+- [Proposal Threshold](./proposal-threshold.md) - Anti-spam requirements for proposing
 - [Creating a DAO](../guides/creating-a-subdao.md) - Step-by-step DAO creation
 - [Voting on Proposals](../guides/voting-on-proposals.md) - How to participate
 - [Staking & Governance](../guides/staking-and-governance.md) - Getting voting power

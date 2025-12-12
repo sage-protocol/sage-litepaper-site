@@ -113,17 +113,39 @@ sage governance voting-power 0xYourAddress --subdao 0xYourDAO
 
 ## Proposal Thresholds
 
-To create proposals, you need sufficient voting power. Check your DAO's threshold:
+To create proposals, you must **hold sufficient SXXX tokens** in your wallet. This is different from voting power.
+
+### Threshold vs Voting Power
+
+| What You Need | For | Checked Against |
+|---------------|-----|-----------------|
+| **SXXX balance** | Creating proposals | `proposalThreshold` |
+| **Voting power** | Voting on proposals | Delegated stake + multipliers |
+
+**Key distinction**: Proposal threshold checks your raw SXXX wallet balance, not your voting power. This means:
+
+- Delegated votes don't help you propose (they help you vote)
+- NFT multipliers don't help you propose (they boost voting)
+- Staked tokens don't count toward threshold (they give voting power)
+
+### Check Your Status
 
 ```bash
-sage governance threshold --subdao 0xYourDAO
+# See threshold and your balance
+sage governance threshold-status --subdao 0xYourDAO
+
+# Full readiness check
+sage governance proposer-ready --subdao 0xYourDAO
 ```
+
+### Meeting the Threshold
 
 If you don't meet the threshold, you can:
 
-1. **Stake more SXXX** - Increase your stake
-2. **Get delegation** - Ask other token holders to delegate to you
-3. **Acquire multiplier NFTs** - Boost your effective voting power
+1. **Hold more SXXX** - Keep sufficient SXXX in your wallet (don't stake it all)
+2. **Ask someone else to propose** - If you've staked heavily, delegate proposal creation
+
+Note: Delegation and multipliers boost your *voting* power but don't affect proposal eligibility. See [Proposal Threshold](../concepts/proposal-threshold.md) for details.
 
 ---
 
