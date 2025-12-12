@@ -111,6 +111,7 @@ nav:
       - Agent Builders:
           - Agent Prompt Workflows: guides/agent-prompt-workflows.md
           - MCP Server: guides/using-the-mcp-server.md
+          - Subgraph & Discovery: guides/subgraph-and-discovery.md
           - Sage SDK: guides/integrating-the-sage-sdk.md
   - CLI:
       - Getting Started: cli/get-started.md
