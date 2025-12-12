@@ -1,34 +1,32 @@
 # Publishing and Versioning Prompts
 
-This guide explains how to publish new versions of your prompt library and manage them on-chain.
+This guide explains how to publish prompt libraries and manage versions on-chain. Sage provides two complementary workflows depending on your needs.
 
 ## Two Publishing Workflows
 
-Sage provides two complementary workflows for publishing:
+### Prompts Workflow (Workspace-Based)
 
-### Skills Workflow (Workspace-Based)
-
-**Use when:** You have a workspace (`prompts/skills/`) and want the CLI to handle manifest creation.
+**Use when:** You have a local workspace and want the CLI to handle manifest creation automatically.
 
 ```bash
 # Initialize workspace
 sage prompts init
 
-# Create and edit skills
+# Create and edit prompts
+sage prompts new --name my-prompt --content "You are a helpful assistant..."
 sage prompts list
-sage prompts variant my-skill v2
 
 # Publish (builds manifest automatically)
-sage prompts publish my-skill --dest personal
+sage prompts publish --dest personal --dao 0xYourDAO
 ```
 
-### Library Workflow (Manifest-Based)
+### Project Workflow (Manifest-Based)
 
 **Use when:** You want fine-grained control over manifest structure or are composing prompts programmatically.
 
 ```bash
-# Create manifest template
-sage project template --type basic --out ./manifest.json
+# Generate manifest template
+sage project template basic --out ./manifest.json
 
 # Add prompts to manifest
 sage project add-prompt \
@@ -41,59 +39,143 @@ sage project add-prompt \
 # Preview before publishing
 sage project preview ./manifest.json
 
-# Publish
-sage project push ./manifest.json --subdao 0xYourSubDAO --pin
+# Push to IPFS and create proposal
+sage project push ./manifest.json --dao 0xYourDAO --pin
 ```
 
-**Both workflows** end at the same place: a versioned library update in the registry.
+**Both workflows** result in a versioned library update registered on-chain.
 
 ---
 
-## Skills Workflow Details
+## Prompts Workflow Details
 
-### 1. Make Your Changes
+### 1. Initialize Workspace
 
-Edit skill files in your workspace's `prompts/skills/` directory. Add, modify, or remove markdown files as needed.
-
-### 2. Check Status
-
-See what has changed:
+Create a Sage workspace in your project:
 
 ```bash
-sage prompts list
+sage prompts init
 ```
 
-### 3. Publish Updates
+This creates:
+- `.sage/workspace.json` - Workspace configuration
+- `prompts/` - Directory for your prompt files
 
-The `publish` command builds a manifest, uploads to IPFS, and creates a governance proposal:
+Optionally bind to a DAO:
 
 ```bash
-sage prompts publish my-skill --dest personal --pin
+sage prompts init --subdao 0xYourDAO
 ```
 
-This generates a new CID and proposes it to your SubDAO in one step.
+### 2. Create and Edit Prompts
 
-### Preview First
-
-See what will be published without executing:
+Create a new prompt:
 
 ```bash
-sage prompts try my-skill --as cursor
+sage prompts new --name code-review --content "Review this code for bugs and improvements..."
+```
+
+Or create files directly in `prompts/`:
+
+```bash
+cat > prompts/code-review.md << 'EOF'
+---
+title: Code Review
+description: Review code for bugs and improvements
+tags: [code, review, quality]
+---
+
+You are an expert code reviewer. Analyze the provided code for:
+- Bugs and potential issues
+- Performance improvements
+- Code style and readability
+EOF
+```
+
+### 3. Check Status
+
+See what's changed:
+
+```bash
+sage prompts status
+```
+
+View differences from last sync:
+
+```bash
+sage prompts diff
+```
+
+### 4. Test Locally
+
+Preview a prompt before publishing:
+
+```bash
+sage prompts try code-review --input "function add(a,b) { return a + b }"
+```
+
+### 5. Publish
+
+One command builds manifest, uploads to IPFS, and creates a proposal:
+
+```bash
+sage prompts publish --dest personal --dao 0xYourDAO --pin
+```
+
+**Destination options:**
+- `personal` - Your personal library (direct update)
+- `team` - Team DAO (Safe multisig approval)
+- `community` - Community DAO (token voting)
+
+### 6. Follow Governance
+
+After publishing to a team or community DAO:
+
+```bash
+sage proposals inbox --dao 0xYourDAO
+sage proposals vote <id> for --dao 0xYourDAO
+sage proposals execute <id> --dao 0xYourDAO
 ```
 
 ---
 
-## Library Workflow Details
+## Project Workflow Details
 
-### 1. Check Library Status
-
-See the current state of your library:
+### 1. Generate Template
 
 ```bash
-sage project status --subdao 0xYourSubDAO
+# Basic template
+sage project template basic --out ./manifest.json
+
+# Advanced template with more fields
+sage project template advanced --out ./manifest.json
 ```
 
-### 2. Preview Changes
+### 2. Add Prompts
+
+Add prompts to your manifest one at a time:
+
+```bash
+sage project add-prompt \
+  --manifest ./manifest.json \
+  --file ./prompts/sql-helper.md \
+  --key tools/sql-helper \
+  --name "SQL Helper" \
+  --description "Generate and explain SQL queries" \
+  --upload
+```
+
+The `--upload` flag automatically uploads the file to IPFS and sets the CID.
+
+### 3. Generate From Directory
+
+Auto-generate a manifest from a directory of prompts:
+
+```bash
+sage project generate ./prompts --out ./manifest.json --upload
+```
+
+### 4. Preview
 
 Before publishing, preview your manifest:
 
@@ -101,25 +183,155 @@ Before publishing, preview your manifest:
 sage project preview ./manifest.json
 ```
 
-### 3. Publish
+### 5. Validate
 
-Push your manifest to IPFS and create a proposal:
+Check for issues:
 
 ```bash
-# For team (Safe multisig)
-sage project push ./manifest.json --subdao 0xTeamSubDAO --pin --exec
-
-# For community (token voting)
-sage project push ./manifest.json --subdao 0xCommunitySubDAO --pin
+sage project validate ./manifest.json
 ```
+
+### 6. Push
+
+Upload to IPFS and create a proposal:
+
+```bash
+# Team mode (Safe multisig)
+sage project push ./manifest.json --dao 0xTeamDAO --pin --exec
+
+# Community mode (token voting)
+sage project push ./manifest.json --dao 0xCommunityDAO --pin
+```
+
+**Options:**
+- `--pin` - Pin manifest to IPFS providers
+- `--wait` - Wait for pin confirmation
+- `--warm` - Warm public gateways
+- `--exec` - Auto-execute if delay permits (team mode)
+
+---
 
 ## How Versioning Works
 
-Sage uses IPFS for content-addressed versioning. Each time you `push` your manifest, you get a new, unique CID that represents that specific version of your library.
+Sage uses IPFS for content-addressed versioning:
 
-The on-chain `PromptRegistry` contract in each SubDAO stores a pointer to the **latest approved** manifest CID for each library. Governance proposals are used to update this pointer.
+1. **Each publish creates a new CID** - A unique identifier for that exact content
+2. **Registry stores the pointer** - On-chain registry points to the current approved CID
+3. **All versions persist** - Previous versions remain on IPFS forever
+4. **Governance controls updates** - Only approved proposals update the pointer
 
-This means:
-*   **All previous versions** of your library remain permanently available on IPFS.
-*   **The SubDAO's members** have control over which version is considered the "official" one.
-*   **Agents and users** can choose to consume the latest approved version or pin a specific older version by its CID.
+```
+Version 1: QmABC... (approved)
+Version 2: QmDEF... (proposed) → Vote → (approved) → QmDEF... is now current
+Version 3: QmGHI... (proposed)
+```
+
+### View Version History
+
+```bash
+sage project log --dao 0xYourDAO
+```
+
+### Rollback to Previous Version
+
+```bash
+sage project rollback QmPreviousCID --dao 0xYourDAO
+```
+
+---
+
+## Manifest Structure
+
+A library manifest looks like:
+
+```json
+{
+  "name": "My Prompt Library",
+  "description": "Collection of useful prompts",
+  "version": "1.0.0",
+  "previous": "QmPreviousManifestCID",
+  "prompts": [
+    {
+      "key": "tools/sql-helper",
+      "name": "SQL Helper",
+      "description": "Generate and explain SQL queries",
+      "cid": "QmPromptContentCID",
+      "tags": ["sql", "database", "query"]
+    }
+  ]
+}
+```
+
+---
+
+## Working with Skills
+
+Skills are Claude Code compatible prompt packages. Publish them with:
+
+```bash
+sage prompts publish-skill ./my-skill \
+  --key skills/my-skill \
+  --pin \
+  --register
+```
+
+Create a variant of an existing skill:
+
+```bash
+sage prompts variant my-skill v2
+```
+
+---
+
+## Pinning and IPFS
+
+### Manual Pinning
+
+```bash
+sage ipfs pin QmYourCID
+```
+
+### Check Pin Status
+
+```bash
+sage ipfs pin-status QmYourCID
+```
+
+### Provider Options
+
+```bash
+sage prompts publish --provider pinata --dao 0xYourDAO
+```
+
+Providers: `auto`, `worker`, `pinata`, `w3s`
+
+---
+
+## Quick Reference
+
+```bash
+# Prompts workflow
+sage prompts init
+sage prompts new --name my-prompt
+sage prompts status
+sage prompts publish --dest personal --dao 0xDAO --pin
+
+# Project workflow
+sage project template basic --out ./manifest.json
+sage project add-prompt --manifest ./manifest.json --file ./prompt.md --upload
+sage project preview ./manifest.json
+sage project push ./manifest.json --dao 0xDAO --pin
+
+# Versioning
+sage project log --dao 0xDAO
+sage project status --dao 0xDAO
+sage project rollback QmOldCID --dao 0xDAO
+```
+
+---
+
+## Related
+
+- [Creating Your First Prompt Library](./creating-your-first-prompt-library.md) - Getting started
+- [Agent Prompt Workflows](./agent-prompt-workflows.md) - Agent integration
+- [IPFS & Pinning](../cli/ipfs.md) - IPFS details

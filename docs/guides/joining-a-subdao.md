@@ -1,45 +1,122 @@
-# Joining a DAO
+# Discovering and Using DAOs
 
-Joining a DAO allows you to participate in its governance and, depending on its configuration, get access to its prompt libraries.
+This guide covers how to find DAOs, explore their libraries, and participate in governance.
 
-## 1. Discover DAOs
+## Discover DAOs
 
-First, find a DAO you're interested in. You can list all available DAOs:
-
-```bash
-sage dao list
-```
-
-This will show you the addresses and names of deployed DAOs.
-
-## 2. Check the Access Model
-
-Each DAO has an access model:
-*   **FREE**: Anyone can read prompts.
-*   **GOVERNANCE**: You must stake SXXX tokens in the DAO to access prompts.
-*   **HYBRID**: A mix of free and governance-gated content.
-
-You can check a DAO's info:
-```bash
-sage dao info <dao-address>
-```
-
-## 3. Stake SXXX Tokens
-
-If the DAO requires a stake for access or governance participation, you'll need to stake SXXX tokens.
+### List Available DAOs
 
 ```bash
-sage dao stake <dao-address> <amount>
+sage dao discover
 ```
 
-Replace `<dao-address>` with the address of the DAO and `<amount>` with the number of SXXX tokens you wish to stake.
+This shows deployed DAOs with:
+- DAO address
+- Name and description
+- Governor and registry addresses
 
-## 4. Verify Membership
-
-After staking, you can check your membership status:
+### Search by Name
 
 ```bash
-sage dao members check --dao <dao-address> --address <your-address>
+sage dao search "prompt"
 ```
 
-This will confirm if you are now considered a member and eligible to participate.
+### View DAO Details
+
+```bash
+sage dao info 0xDAOAddress
+```
+
+Shows:
+- Governance mode (Personal, Council, Community)
+- Current library CID
+- Governor and Timelock addresses
+- Membership configuration
+
+---
+
+## Explore Libraries
+
+### View a DAO's Library
+
+```bash
+sage project view-current --dao 0xDAOAddress
+```
+
+This fetches the current approved manifest and lists all prompts.
+
+### Search for Prompts
+
+```bash
+sage project search "sql" --dao 0xDAOAddress
+```
+
+Or search across all pinned libraries:
+
+```bash
+sage prompts search "code review"
+```
+
+### Pin a Library Locally
+
+For faster access, pin a library:
+
+```bash
+sage project pin QmManifestCID
+```
+
+---
+
+## Participate in Governance
+
+To vote on proposals and contribute to a DAO, you need voting power.
+
+### 1. Stake SXXX
+
+```bash
+sage dao stake 0xDAOAddress 1000
+```
+
+This gives you the DAO's stake tokens, representing your voting power.
+
+### 2. Enable Voting Power
+
+Delegate to yourself:
+
+```bash
+sage sxxx delegate-self
+sage governance delegate-stake --subdao 0xDAOAddress
+```
+
+### 3. Check Your Status
+
+```bash
+sage governance doctor --subdao 0xDAOAddress
+```
+
+Now you can:
+- Vote on proposals
+- Create proposals (if you meet the threshold)
+- Claim bounties and contribute
+
+For full details, see [Staking and Governance](./staking-and-governance.md).
+
+---
+
+## Governance Participation Summary
+
+| Action | Command |
+|--------|---------|
+| Stake tokens | `sage dao stake 0xDAO 1000` |
+| Self-delegate | `sage sxxx delegate-self` |
+| View proposals | `sage proposals inbox --dao 0xDAO` |
+| Vote | `sage proposals vote <id> for --dao 0xDAO` |
+| Execute | `sage proposals execute <id> --dao 0xDAO` |
+
+---
+
+## Related
+
+- [Staking and Governance](./staking-and-governance.md) - Full staking guide
+- [Voting on Proposals](./voting-on-proposals.md) - Voting workflow
+- [Governance Models](../concepts/governance-models.md) - How DAOs work
