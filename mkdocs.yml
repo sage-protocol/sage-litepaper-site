@@ -103,6 +103,7 @@ nav:
           - Managing Members: guides/managing-subdao-members.md
           - Creating Bounties: guides/creating-bounties.md
       - Agent Builders:
+          - Agent Prompt Workflows: guides/agent-prompt-workflows.md
           - MCP Server: guides/using-the-mcp-server.md
           - Sage SDK: guides/integrating-the-sage-sdk.md
   - CLI:
