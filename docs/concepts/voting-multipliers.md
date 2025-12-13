@@ -16,7 +16,7 @@ Multipliers solve this by letting DAOs boost the voting power of:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  Base Votes (from SXXX or stake tokens)                     │
+│  Base Votes (from delegated SXXX)                           │
 │  User has 1,000 tokens delegated to self                    │
 └─────────────────────────────────────────────────────────────┘
                               ×
@@ -181,8 +181,8 @@ sage multiplier calculate --dao 0x...
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  SXXX or Stake Token                                        │
-│  - Base governance token                                    │
+│  SXXX (ERC20Votes)                                          │
+│  - Base governance token (delegated voting power)           │
 │  - Delegate here to enable voting                           │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -190,5 +190,5 @@ sage multiplier calculate --dao 0x...
 ## Related
 
 - [Governance Models](./governance-models.md) - How governance works
-- [Staking & Governance](../guides/staking-and-governance.md) - Getting voting power
+- [Delegation & Voting Power](../guides/delegation-and-governance.md) - Getting voting power
 - [Creating a DAO](../guides/creating-a-subdao.md) - Setting up multipliers at creation

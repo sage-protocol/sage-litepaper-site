@@ -168,7 +168,6 @@ sage dao create \
 - `--voting-period <duration>` - E.g., "3 days", "36 hours", "720 minutes"
 - `--quorum-bps <bps>` - Quorum in basis points (200 = 2%)
 - `--proposal-threshold <amount>` - Tokens needed to propose
-- `--min-stake <amount>` - Minimum stake for membership
 - `--manifest <pathOrCID>` - Initial library manifest
 
 ---
@@ -230,13 +229,9 @@ sage dao members batch-add 0xA,0xB,0xC --subdao 0xYourDAO --exec
 
 ### Adjust Parameters
 
-```bash
-# Change stake requirements via governance
-sage governance propose-params \
-  --stake 100 \
-  --cooldown 3600 \
-  --subdao 0xYourDAO
-```
+Governance parameters are updated via governance proposals targeting the Governor.
+
+Common examples include `proposalThreshold`, `minVotesToVote`, quorum, and proposer cooldown.
 
 ---
 
@@ -313,5 +308,5 @@ After creating your DAO:
 ## Related
 
 - [Governance Models](../concepts/governance-models.md) - Governance types explained
-- [Staking and Governance](./staking-and-governance.md) - Participating in governance
+- [Delegation and Governance](./delegation-and-governance.md) - Participating in governance
 - [Publishing and Versioning Prompts](./publishing-and-versioning-prompts.md) - Publishing to your DAO

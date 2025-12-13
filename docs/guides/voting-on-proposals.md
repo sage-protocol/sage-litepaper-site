@@ -6,13 +6,13 @@ This guide covers how to participate in governance by voting on proposals. You'l
 
 Before voting, ensure you have:
 
-1. **Staked tokens** - SXXX staked in the DAO
-2. **Delegated voting power** - Self-delegation enabled
+1. **Delegated voting power** - tokens have 0 voting power until delegated
+2. **Vote gate satisfied** - your effective votes at the proposal snapshot are ≥ `minVotesToVote` (default: 1 SXXX)
 
 Check your status:
 
 ```bash
-sage governance doctor --subdao 0xYourDAO
+sage governance preflight --subdao 0xYourDAO
 ```
 
 ---
@@ -193,7 +193,7 @@ sage governance state <proposal-id> --subdao 0xYourDAO
 
 ## Understanding Voting Power
 
-Your vote is weighted by your stake token balance at the proposal's **snapshot block** (when the proposal was created).
+Your vote is weighted by your **effective votes** at the proposal’s **snapshot** (delegated SXXX votes, optionally multiplied by DAO‑scoped NFT multipliers).
 
 ### Check Your Voting Power
 
@@ -260,6 +260,6 @@ sage governance state <id> --subdao 0xDAO
 
 ## Related
 
-- [Staking and Governance](./staking-and-governance.md) - Getting voting power
+- [Delegation and Governance](./delegation-and-governance.md) - Getting voting power
 - [Governance Models](../concepts/governance-models.md) - How different DAOs work
 - [Creating a DAO](./creating-a-subdao.md) - Setting up governance

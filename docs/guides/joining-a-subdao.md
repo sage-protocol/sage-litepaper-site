@@ -71,27 +71,20 @@ sage project pin QmManifestCID
 
 To vote on proposals and contribute to a DAO, you need voting power.
 
-### 1. Stake SXXX
+### 1. Hold SXXX
 
-```bash
-sage dao stake 0xDAOAddress 1000
-```
+Token‑governed DAOs use **delegation (ERC20Votes)**. There is **no stake‑to‑vote** flow.
 
-This gives you the DAO's stake tokens, representing your voting power.
-
-### 2. Enable Voting Power
-
-Delegate to yourself:
+### 2. Enable Voting Power (Delegate)
 
 ```bash
 sage sxxx delegate-self
-sage governance delegate-stake --subdao 0xDAOAddress
 ```
 
-### 3. Check Your Status
+### 3. Check Readiness
 
 ```bash
-sage governance doctor --subdao 0xDAOAddress
+sage governance preflight --subdao 0xDAOAddress
 ```
 
 Now you can:
@@ -99,7 +92,7 @@ Now you can:
 - Create proposals (if you meet the threshold)
 - Claim bounties and contribute
 
-For full details, see [Staking and Governance](./staking-and-governance.md).
+For full details, see [Delegation and Governance](./delegation-and-governance.md).
 
 ---
 
@@ -107,8 +100,8 @@ For full details, see [Staking and Governance](./staking-and-governance.md).
 
 | Action | Command |
 |--------|---------|
-| Stake tokens | `sage dao stake 0xDAO 1000` |
 | Self-delegate | `sage sxxx delegate-self` |
+| Check readiness | `sage governance preflight --subdao 0xDAO` |
 | View proposals | `sage proposals inbox --dao 0xDAO` |
 | Vote | `sage proposals vote <id> for --dao 0xDAO` |
 | Execute | `sage proposals execute <id> --dao 0xDAO` |
@@ -117,6 +110,6 @@ For full details, see [Staking and Governance](./staking-and-governance.md).
 
 ## Related
 
-- [Staking and Governance](./staking-and-governance.md) - Full staking guide
+- [Delegation and Governance](./delegation-and-governance.md) - Voting power setup and gates
 - [Voting on Proposals](./voting-on-proposals.md) - Voting workflow
 - [Governance Models](../concepts/governance-models.md) - How DAOs work

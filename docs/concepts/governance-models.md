@@ -80,14 +80,14 @@ sage dao create-playbook --playbook council-closed \
 
 ```
 Anyone ──propose──▶ Governor ──vote──▶ Timelock ──delay──▶ Registry
-        (stake)            (3-7 days)         (24h)
+   (proposalThreshold)     (3-7 days)         (24h)
 ```
 
 **Best for:** Open communities with 50+ participants.
 
 **Characteristics:**
-- Anyone with enough stake can propose
-- Token-weighted voting
+- Anyone with enough effective votes can propose (`proposalThreshold`)
+- Token-weighted voting (requires delegation; `minVotesToVote` prevents 0-weight vote spam)
 - Time delays for review
 - Permissionless execution after delay
 
@@ -95,7 +95,6 @@ Anyone ──propose──▶ Governor ──vote──▶ Timelock ──delay�
 ```bash
 sage dao create-playbook --playbook community \
   --name "Community Library" \
-  --min-stake 0 \
   --voting-period "3 days" \
   --quorum-bps 400 \
   --yes
@@ -109,7 +108,7 @@ sage dao create-playbook --playbook community \
 
 ```
 Anyone ──propose──▶ Governor ──vote──▶ Council ──execute──▶ Registry
-        (stake)            (voting)     (review)
+   (proposalThreshold)   (token voting)  (review)
 ```
 
 **Best for:** Communities that want input but controlled execution.
@@ -125,7 +124,6 @@ Anyone ──propose──▶ Governor ──vote──▶ Council ──execute
 sage dao create-playbook --playbook council-drafts \
   --name "Hybrid DAO" \
   --owners "0xAlice,0xBob" \
-  --min-stake 0 \
   --yes
 ```
 
@@ -213,4 +211,4 @@ All governance changes go through the existing governance process - you can't by
 - [Proposal Threshold](./proposal-threshold.md) - Anti-spam requirements for proposing
 - [Creating a DAO](../guides/creating-a-subdao.md) - Step-by-step DAO creation
 - [Voting on Proposals](../guides/voting-on-proposals.md) - How to participate
-- [Staking & Governance](../guides/staking-and-governance.md) - Getting voting power
+- [Delegation & Voting Power](../guides/delegation-and-governance.md) - Getting voting power

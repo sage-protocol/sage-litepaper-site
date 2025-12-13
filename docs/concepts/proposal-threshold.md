@@ -1,22 +1,22 @@
 # Proposal Threshold
 
-Proposal threshold is Sage Protocol's anti-spam mechanism for governance. It ensures proposers have meaningful stake in the outcome before creating proposals.
+Proposal threshold is Sage Protocol's anti-spam mechanism for governance. It ensures proposers have meaningful skin‑in‑the‑game (voting power) before creating proposals.
 
 ## How It Works
 
-To create a proposal, you must **hold** sufficient SXXX tokens in your wallet:
+To create a proposal, you must have sufficient **effective votes** at the proposal snapshot (ERC20Votes; delegation required):
 
 ```
-Your SXXX Balance >= Proposal Threshold
+Your Effective Votes at Snapshot >= Proposal Threshold
 ```
 
-Tokens stay in your wallet—no approve, no escrow, no claim. Just hold and propose.
+Tokens stay in your wallet—no approve, no escrow, no claim. Just delegate voting power and propose.
 
 ### Example
 
 ```
 DAO Proposal Threshold: 50 SXXX
-Your SXXX Balance: 150 SXXX
+Your Effective Votes: 150 SXXX
 Status: Can propose
 ```
 
@@ -24,32 +24,31 @@ Status: Can propose
 
 | Term | Definition |
 |------|------------|
-| **Proposal Threshold** | Minimum SXXX balance required to create a proposal |
-| **Holding Requirement** | Proposers must maintain balance while proposal is active |
-| **Cancel-if-Below** | Anyone can cancel if proposer's balance drops below threshold |
+| **Proposal Threshold** | Minimum effective votes required to create a proposal |
+| **Snapshot Requirement** | Proposers must meet the threshold at the proposal snapshot |
+| **Cancel-if-Below** | Anyone can cancel if proposer's votes drop below the snapshotted threshold (Pending/Active) |
 | **Cooldown** | Optional rate limit between proposals (per-proposer) |
 
-## Balance vs Voting Power
+## Voting Power vs Raw Balance
 
-Proposal threshold checks your **raw SXXX balance**, not your voting power:
+Proposal threshold checks your **effective votes** (ERC20Votes), not just your raw token balance.
 
 | What Counts | What Doesn't |
 |-------------|--------------|
-| SXXX in your wallet | Delegated votes from others |
-| | NFT voting multipliers |
-| | Staked tokens (stake receipt tokens) |
+| Delegated votes to you (including self-delegation) | Undelegated SXXX balance |
+| DAO-scoped NFT multipliers (when enabled) | Tokens you delegated away |
 
 This means:
-- **Delegation doesn't help proposing** - if you delegate your votes to Bob, Bob's proposal eligibility doesn't increase
-- **Multipliers don't help proposing** - NFT multipliers boost voting power, not proposal eligibility
-- **Staking is orthogonal** - stake receipt tokens give voting power but don't count toward threshold
+- **Delegation matters** - you must delegate (often to self) to have any voting power
+- **Multipliers matter (when enabled)** - your effective votes (and proposal eligibility) reflect NFT multipliers at the snapshot
+- **Holding without delegation is 0 votes** - raw balance alone does not grant proposal rights
 
-### Why Raw Balance?
+### Why Voting Power?
 
-Raw balance provides a simpler, more predictable anti-spam mechanism:
-- Clear requirement: "hold X SXXX to propose"
-- No complex delegation math
-- Proposers have direct skin-in-the-game (their own tokens)
+Votes-based threshold aligns proposing with the same “effective power” used for voting:
+- Matches how token governance is actually measured (`getVotes(...)` at a snapshot)
+- Avoids confusing “I hold tokens but can’t propose” cases (because delegation is explicit)
+- Supports DAO-scoped voting multipliers when enabled
 
 ## Minimum Voting Power to Vote (`minVotesToVote`)
 
@@ -66,11 +65,11 @@ Key details:
 
 ## Cancellation Rules
 
-If your SXXX balance drops below the threshold while your proposal is active, **anyone can cancel it**.
+If your effective votes drop below the threshold while your proposal is active, **anyone can cancel it**.
 
 ### Cancel Window
 
-| Proposal State | Can Be Canceled for Low Balance? |
+| Proposal State | Can Be Canceled for Low Votes? |
 |----------------|----------------------------------|
 | Pending | Yes |
 | Active (voting) | Yes |
@@ -82,7 +81,7 @@ If your SXXX balance drops below the threshold while your proposal is active, **
 
 ### The "Safe Point"
 
-Once your proposal reaches **Succeeded** state (voting ended, passed), your balance no longer affects it. This is intentional:
+Once your proposal reaches **Succeeded** state (voting ended, passed), your votes no longer affect it. This is intentional:
 
 - Prevents post-vote manipulation (bribing proposer to dump tokens)
 - Provides certainty once community has voted
@@ -94,7 +93,6 @@ Once your proposal reaches **Succeeded** state (voting ended, passed), your bala
 |----------|---------------|
 | Proposer wants to cancel | Proposer (while Pending) |
 | Proposer below threshold | Anyone (while Pending/Active) |
-| Council emergency | Council members (TOKEN DAOs) |
 
 ### Threshold Snapshot
 
@@ -113,7 +111,7 @@ This prevents mid-flight threshold changes from invalidating existing proposals.
 Proposal threshold works alongside an optional **cooldown** period:
 
 ```
-Check 1: Do you have enough SXXX? (threshold)
+Check 1: Do you have enough effective votes? (proposalThreshold)
 Check 2: Has enough time passed since your last proposal? (cooldown)
 ```
 
@@ -169,7 +167,7 @@ Example output:
 Proposal Threshold Status
 -------------------------
 Threshold:        50 SXXX
-Your Balance:     150 SXXX
+Your Effective Votes: 150 SXXX
 Status:           Ready to propose
 Cooldown:         None active
 ```
@@ -184,7 +182,7 @@ sage governance propose \
 ```
 
 The CLI will:
-1. Check your SXXX balance vs threshold
+1. Check your effective votes vs threshold (delegation required)
 2. Check cooldown status
 3. Warn if you're close to threshold
 4. Submit proposal if all checks pass
@@ -255,7 +253,7 @@ Threshold filters *proposers*. Quorum ensures *voter participation*.
 
 ### Threshold vs Voting Delay
 
-Voting delay gives voters time to review proposals before voting starts. Threshold ensures proposers have stake. They work together:
+Voting delay gives voters time to review proposals before voting starts. Threshold ensures proposers have enough voting power. They work together:
 
 ```
 Propose → [Voting Delay] → Voting Starts → [Voting Period] → Result
@@ -275,10 +273,10 @@ If your DAO previously used the escrow/deposit model:
 **New flow:**
 1. Propose (tokens stay in wallet)
 
-No migration needed—just hold your tokens. The old `claimDeposit()` function is deprecated.
+No migration needed—just delegate voting power. The old `claimDeposit()` function is deprecated.
 
 ## Related
 
 - [Governance Models](./governance-models.md) - Overview of governance types
-- [Staking & Governance](../guides/staking-and-governance.md) - Getting voting power
+- [Delegation & Voting Power](../guides/delegation-and-governance.md) - Getting voting power
 - [Voting on Proposals](../guides/voting-on-proposals.md) - How to vote

@@ -63,7 +63,7 @@ sage dao create-playbook --playbook council-closed \
 
 ### 3. Community Governance
 
-You open governance to a wider group. Anyone with stake can propose changes. The community votes. Passed proposals go live after a review period.
+You open governance to a wider group. Anyone with enough delegated voting power can propose changes (`proposalThreshold`). The community votes. Passed proposals go live after a review period.
 
 ```bash
 sage dao create-playbook --playbook community --name "Community Prompts"

@@ -51,7 +51,7 @@ Crucially, this market is **agent-native**: agents can discover governed prompts
 
 Sage’s token is a coordination primitive. It is used to:
 
-- **Allocate attention**: staking and voting turn “this should be improved” into an explicit decision process.
+- **Allocate attention**: delegation and voting turn “this should be improved” into an explicit decision process.
 - **Fund work**: bounties pay contributors for concrete upgrades.
 - **Reward participation**: boosts can pay voters on high‑stakes proposals to raise turnout.
 - **Tie influence to contribution**: voting multipliers let communities weight long-term contributors more than pure capital.
@@ -92,4 +92,3 @@ Some adjacent systems are still evolving:
 - Ongoing simplification of “source of truth” for library views as bounty flows mature
 
 This document focuses on framing the thesis; see the [Tooling & Surfaces](tooling-and-surfaces.md) page for how the pieces fit together in practice.
-

@@ -35,7 +35,7 @@ Contract names such as `SubDAOFactoryOptimized` and `SubDAO` are retained for co
 
 Sage separates the question “who can vote?” from “how much weight should each voter have?”:
 
-- At the base layer, each DAO uses a standard votes‑enabled token (for example, SXXX or a stake token) to define total supply, quorum, and proposal thresholds.
+- At the base layer, each DAO uses a votes‑enabled token (for example, SXXX via ERC20Votes) to define voting power, quorum, and proposal thresholds.
 - On top of that, DAOs can opt into **per‑DAO voting multipliers** that boost the voting weight of specific participants (such as early contributors or long‑term supporters) without changing the global token supply.
 - Multipliers are implemented with transferable NFTs that are scoped to a single DAO, and a lightweight votes wrapper that combines base token votes with the appropriate multiplier for that DAO.
 - Delegation still happens on the base token; the multiplier layer only affects how much voting power a delegated balance represents.
@@ -54,7 +54,7 @@ The typical governance flow for library updates and related actions is:
    - The CLI helps construct proposal calldata and payloads, but does not execute them directly.
 
 2. **Voting**  
-   - DAO token or stake holders vote through the Governor.
+   - Token holders vote through the Governor.
    - Voting parameters (delay, period, quorum, threshold) are configured per DAO.
 
 3. **Queue & Timelock**  

@@ -34,7 +34,7 @@ Sage CLI defaults to a Privy-backed wallet on Base Sepolia in recent versions.
    ```bash
    sage sxxx delegate-self
    ```
-   This ensures your SXXX stake counts for voting in DAOs that use SXXX-weighted governance.
+   This ensures your SXXX voting power counts for voting in DAOs that use SXXX‑weighted governance.
 
 ---
 
@@ -137,4 +137,3 @@ In practice, this means you can:
 - Let agents use MCP to read from and suggest changes to your library, without bypassing timelocks, Safe approvals, or DAO voting.
 
 With this flow in place, you have a complete path from local markdown prompts to governed, agent-ready libraries on Base Sepolia.
-

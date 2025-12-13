@@ -1365,20 +1365,20 @@ sage sxxx transfer --to 0xRecipient --amount 100
 
 ---
 
-## Stake Status Commands
+## Governance Status Commands
 
-The `sage stake-status` command shows staking and voting power status.
+Use these commands to verify delegation and governance gates.
 
 ```bash
-sage stake-status --subdao 0xDAO
-sage stake-status --account 0xAddress
+sage governance preflight --subdao 0xDAO
+sage governance diag --subdao 0xDAO
 ```
 
-**Returns:**
-- Staked amount
-- Voting power
-- Delegation status
-- Pending rewards
+**Covers:**
+- Delegation status (ERC20Votes)
+- Vote gate (`minVotesToVote`)
+- Proposal gate (`proposalThreshold`)
+- Execution mode hints (timelock vs council/operator)
 
 ---
 

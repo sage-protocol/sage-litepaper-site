@@ -108,7 +108,7 @@ nav:
           - Creating Bounties: guides/creating-bounties.md
       - Governance:
           - Joining a DAO: guides/joining-a-subdao.md
-          - Staking & Voting Power: guides/staking-and-governance.md
+          - Delegation & Voting Power: guides/delegation-and-governance.md
           - Voting on Proposals: guides/voting-on-proposals.md
       - Agent Integration:
           - Agent Workflows: guides/agent-prompt-workflows.md

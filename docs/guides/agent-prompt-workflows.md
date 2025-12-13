@@ -481,8 +481,8 @@ If not ready, help user fix each issue:
 | No testnet ETH | Direct to [Base Sepolia faucet](https://www.alchemy.com/faucets/base-sepolia) |
 | No SXXX | `sage sxxx faucet` (testnet only) |
 | SXXX not delegated | `sage sxxx delegate-self` |
-| Not staked in DAO | `sage dao stake 1000 -y` |
-| Stake not delegated | `sage governance self-delegate-stake --subdao 0x...` |
+| Below `minVotesToVote` | Acquire + delegate at least 1 SXXX (default vote gate) |
+| Below `proposalThreshold` | Acquire/delegate more votes (or use a delegate proposer) |
 
 ---
 

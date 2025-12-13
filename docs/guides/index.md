@@ -52,8 +52,8 @@ Participate in DAO decision-making.
 
 | Guide | Description |
 |-------|-------------|
-| [Joining a DAO](./joining-a-subdao.md) | Discovery, membership, staking |
-| [Staking & Voting Power](./staking-and-governance.md) | SXXX delegation, multipliers |
+| [Joining a DAO](./joining-a-subdao.md) | Discovery, membership, governance |
+| [Delegation & Voting Power](./delegation-and-governance.md) | Delegation, vote gates, multipliers |
 | [Voting on Proposals](./voting-on-proposals.md) | Casting votes, queue/execute |
 
 **Quick path:**
