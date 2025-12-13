@@ -51,6 +51,19 @@ Raw balance provides a simpler, more predictable anti-spam mechanism:
 - No complex delegation math
 - Proposers have direct skin-in-the-game (their own tokens)
 
+## Minimum Voting Power to Vote (`minVotesToVote`)
+
+Proposal threshold is about **who can propose**. Separately, token-governed DAOs enforce a minimum effective voting power to **cast a vote**:
+
+```
+Your Effective Votes at Snapshot >= minVotesToVote
+```
+
+Key details:
+- **Default**: 1 SXXX effective vote (low-friction, blocks 0-weight vote spam)
+- **Effective votes** include NFT multipliers when enabled
+- **Why it matters**: makes it more expensive to split voting power across many wallets for “per-voter” incentives
+
 ## Cancellation Rules
 
 If your SXXX balance drops below the threshold while your proposal is active, **anyone can cancel it**.
@@ -194,6 +207,7 @@ sage governance cancel <proposal-id> --subdao 0xYourDAO
 |-----------|---------|-------|
 | `proposalThreshold` | 50 SXXX | Meaningful but accessible |
 | `proposalCooldown` | 300 seconds (5 min) | Rate limiting |
+| `minVotesToVote` | 1 SXXX | Minimum effective votes to cast a vote |
 | `votingDelay` | 1 block | Allow immediate voting |
 | `votingPeriod` | 50,400 blocks (~7 days) | Standard voting window |
 | `quorum` | 4% | Standard OZ default |

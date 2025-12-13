@@ -36,6 +36,7 @@ Sage coordinates library updates through a standard governance flow:
 │                                                                  │
 │  Token holders cast votes (for/against/abstain)                  │
 │  Voting power = SXXX balance × multiplier (if applicable)        │
+│  Optional vote gate: require ≥ 1 SXXX effective votes to vote    │
 │  Proposal passes if quorum met and majority support              │
 └────────────────────────────┬─────────────────────────────────────┘
                              │
