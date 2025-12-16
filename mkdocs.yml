@@ -88,14 +88,6 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Protocol:
-      - Overview: concepts/index.md
-      - Economic Thesis: concepts/economic-thesis.md
-      - Tooling & Surfaces: concepts/tooling-and-surfaces.md
-      - Governance Models: concepts/governance-models.md
-      - Voting Multipliers: concepts/voting-multipliers.md
-      - Bounties: concepts/bounties.md
-      - Premium Prompts: concepts/premium-prompts.md
   - Workflows:
       - Overview: guides/index.md
       - Publishing:
@@ -121,9 +113,6 @@ nav:
       - IPFS & Pinning: cli/ipfs.md
   - SDK:
       - Overview: sdk/index.md
-  - Reference:
-      - Contract Architecture: contracts/architecture.md
-      - Deployments: contracts/deployments.md
 
 plugins:
   - search
