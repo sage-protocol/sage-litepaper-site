@@ -4,37 +4,40 @@ Complete reference for all Sage CLI commands, organized by category.
 
 ---
 
-## Wallet & Setup Commands
+## Command Aliases
 
-### `sage wizard`
-Interactive setup wizard to configure your Sage CLI environment.
+Common commands have short aliases for convenience:
 
-```bash
-sage wizard
-```
-
-**What it does:**
-- Prompts for wallet configuration (private key, mnemonic, or Cast integration)
-- Sets up RPC endpoints and network configuration
-- Configures IPFS worker URLs and API keys
-- Tests connectivity to all services
-
-**Options:**
-- `--network <name>` - Specify network (base-mainnet, base-sepolia)
-- `--skip-tests` - Skip connectivity tests
+| Full Command | Aliases |
+|--------------|---------|
+| `sage library` | `lib`, `l` |
+| `sage governance` | `gov`, `g` |
+| `sage subdao` | `sd`, `sub` |
+| `sage treasury` | `treas`, `t` |
+| `sage timelock` | `tl` |
+| `sage sxxx` | `sx`, `token` |
+| `sage wallet` | `w` |
+| `sage config` | `cfg` |
+| `sage context` | `ctx` |
 
 ---
 
-### `sage wallet connect`
-Connect a wallet for signing transactions.
+## Library Commands
+
+The `library` command is the recommended entry point for creating DAOs with prompts.
+
+### `sage library quickstart`
+
+Create a new library with prompts in one command: scan directory, upload to IPFS, create DAO, register manifest.
 
 ```bash
-sage wallet connect --type cast
-sage wallet connect --type private-key
-sage wallet connect --type mnemonic
+sage library quickstart --name "My Library" --from-dir ./prompts
+sage library quickstart --name "My Library" --from-dir ./prompts --governance team
+sage library quickstart --name "My Library" --from-dir ./prompts --governance community
 ```
 
 **Options:**
+<<<<<<< Updated upstream
 - `--type <method>` - Wallet connection method (cast, private-key, mnemonic)
 - `--path <derivation>` - HD derivation path (for mnemonic)
 - `--index <number>` - Account index (for mnemonic)
@@ -296,15 +299,204 @@ List DAOs from the registry.
 
 ```bash
 sage dao list
-```
-
-**Options:**
-- `--filter <status>` - Filter by status (all, active, inactive)
-- `--creator <address>` - Filter by creator address
-- `--format <type>` - Output format (json, table)
+=======
+- `-n, --name <name>` - Library/DAO name (required)
+- `-d, --description <desc>` - Library description
+- `--from-dir <path>` - Directory to scan for prompts (default: `./prompts`)
+- `--governance <type>` - Governance type: `personal`, `team`, or `community` (default: `personal`)
+- `--alias <name>` - Override auto-generated alias
+- `--dry-run` - Show what would happen without executing
+- `--yes` - Skip confirmations
+- `--json` - Output JSON
 
 ---
 
+### `sage library info`
+
+Show library info for a DAO.
+
+```bash
+sage library info --subdao 0xYourSubDAO
+sage library info --subdao my-alias --verbose
+```
+
+**Options:**
+- `--subdao <address>` - SubDAO address (default: from context)
+- `--json` - Output JSON
+- `-v, --verbose` - Show detailed output including manifest content
+
+---
+
+### `sage library fork`
+
+Fork a library to a new DAO.
+
+```bash
+sage library fork 0xSourceDAO --name "My Fork"
+```
+
+---
+
+## DAO Commands
+
+Manage SubDAOs, governance settings, and context.
+
+### `sage dao create-playbook`
+
+Create a new DAO using a governance playbook.
+
+```bash
+# Personal (solo creator)
+sage dao create-playbook --playbook personal --name "My Library" --yes
+
+# Council (team with Safe multisig)
+sage dao create-playbook --playbook council-closed --name "Team" \
+  --owners "0xAlice,0xBob,0xCarol" --threshold 2 --yes
+
+# Community (token voting)
+sage dao create-playbook --playbook community --name "Community DAO" --yes
+```
+
+**Playbooks:**
+- `personal` - Solo creator with EOA control (OPERATOR mode)
+- `council-closed` - Team Safe multisig, no token voting (OPERATOR mode)
+- `council-drafts` - Community proposes, council executes (TOKEN + COUNCIL_ONLY)
+- `community` - Full token democracy (TOKEN + ANYONE)
+- `community-long` - 7-day voting, lower quorum
+
+**Options:**
+- `--playbook <id>` - Playbook ID (required)
+- `--name <name>` - DAO name (required)
+- `--description <desc>` - DAO description
+- `--owners <addresses>` - Safe owners for council (comma-separated)
+- `--threshold <n>` - Safe threshold for council
+- `--voting-period <duration>` - Voting period (e.g., "3 days")
+- `--quorum-votes <amount>` - Quorum in SXXX tokens
+- `--proposal-threshold <amount>` - Tokens required to propose
+- `--manifest <pathOrCID>` - Initial manifest file or IPFS CID
+- `--yes` - Skip confirmations
+- `--dry-run` - Generate plan only
+
+---
+
+### `sage dao use`
+
+Set the working DAO for your current profile.
+
+```bash
+sage dao use 0xSubDAOAddress
+sage dao use my-alias
+```
+
+---
+
+### `sage dao save`
+
+Save a DAO address with an alias for quick selection.
+
+```bash
+sage dao save 0xSubDAOAddress --alias my-dao
+```
+
+---
+
+### `sage dao list`
+
+List saved DAOs and recent selections.
+
+```bash
+sage dao list
+sage dao list --json
+```
+
+---
+
+### `sage dao info`
+
+Show DAO info (governor, timelock, governance mode).
+
+```bash
+sage dao info 0xSubDAOAddress
+sage dao info my-alias --json
+```
+
+---
+
+### `sage dao doctor`
+
+Diagnose DAO wiring: governor/timelock roles, delays, registry connections.
+
+```bash
+sage dao doctor --subdao 0xSubDAO
+```
+
+---
+
+### `sage dao fork`
+
+Fork an existing SubDAO to create a new one.
+
+```bash
+sage dao fork 0xSourceDAO --name "My Fork" --yes
+```
+
+---
+
+## Prompts Commands
+
+Manage prompt workspaces and publishing.
+
+### `sage prompts init`
+
+Initialize a prompts workspace in the current directory.
+
+```bash
+sage prompts init
+sage prompts init --import-from ./existing-prompts
+```
+
+---
+
+### `sage prompts new`
+
+Create a new prompt file.
+
+```bash
+sage prompts new --name "my-prompt"
+sage prompts new --type skill --name "my-skill"
+```
+
+---
+
+### `sage prompts publish`
+
+Build manifest, upload to IPFS, and create governance proposal.
+
+```bash
+sage prompts publish --yes
+sage prompts publish --yes --exec  # Auto-execute after timelock
+```
+
+**Options:**
+- `--yes` - Skip confirmations
+- `--exec` - Auto-execute proposal after timelock delay
+- `--pin` - Pin content to IPFS
+
+---
+
+### `sage prompts pull`
+
+Pull a prompt from the DAO's library.
+
+```bash
+sage prompts pull <key>
+sage prompts pull <key> --from 0xDAO
+>>>>>>> Stashed changes
+```
+
+---
+
+<<<<<<< Updated upstream
 ### `sage dao info`
 Get detailed information about a DAO.
 
@@ -579,10 +771,151 @@ List all premium licenses you own.
 
 ```bash
 sage personal my-licenses
+=======
+### `sage prompts sync`
+
+Synchronize local workspace with on-chain state.
+
+```bash
+sage prompts sync
+sage prompts sync --pull  # Pull all prompts
 ```
 
 ---
 
+### `sage prompts status`
+
+Check what would change (local vs on-chain).
+
+```bash
+sage prompts status
+```
+
+---
+
+### `sage prompts diff`
+
+Show detailed diff between local and on-chain.
+
+```bash
+sage prompts diff
+```
+
+---
+
+## Governance Commands
+
+Manage proposals, voting, and execution.
+
+### `sage governance info`
+
+Get detailed information about a proposal.
+
+```bash
+sage governance info <proposal-id> --subdao 0xSubDAO
+```
+
+---
+
+### `sage governance vote`
+
+Cast a vote on a proposal.
+
+```bash
+sage governance vote <proposal-id> 1  # 1=For, 0=Against, 2=Abstain
+```
+
+---
+
+### `sage governance vote-with-reason`
+
+Cast a vote with an on-chain reason.
+
+```bash
+sage governance vote-with-reason <proposal-id> 1 "Supporting this change"
+```
+
+---
+
+### `sage governance queue`
+
+Queue a passed proposal for execution.
+
+```bash
+sage governance queue <proposal-id> --subdao 0xSubDAO
+```
+
+---
+
+### `sage governance execute`
+
+Execute a queued proposal after timelock delay.
+
+```bash
+sage governance execute <proposal-id> --subdao 0xSubDAO
+```
+
+---
+
+### `sage governance watch`
+
+Watch a proposal until it succeeds, then auto-queue and execute.
+
+```bash
+sage governance watch <proposal-id>
+```
+
+---
+
+### `sage governance preflight`
+
+Check readiness to propose (voting power, delegation, thresholds).
+
+```bash
+sage governance preflight --subdao 0xSubDAO
+```
+
+---
+
+### `sage governance diag`
+
+One-shot governance diagnostics: mode, quorum, voting power, profile.
+
+```bash
+sage governance diag --subdao 0xSubDAO
+```
+
+---
+
+### `sage governance propose-custom`
+
+Create a custom governance proposal.
+
+```bash
+sage governance propose-custom \
+  --description "Update configuration" \
+  --target 0xContract \
+  --calldata 0x...
+```
+
+---
+
+## Proposals Commands
+
+Navigate and manage proposals (alias: `gov`).
+
+### `sage proposals inbox`
+
+List active proposals for a DAO.
+
+```bash
+sage proposals inbox --subdao 0xSubDAO
+>>>>>>> Stashed changes
+```
+
+---
+
+<<<<<<< Updated upstream
 ### `sage personal list`
 List premium prompts available for sale.
 
@@ -601,75 +934,251 @@ Update the price of your premium prompt.
 
 ```bash
 sage personal price --id <prompt-id> --new-price 10.0
+=======
+## Treasury Commands
+
+Manage DAO treasury operations.
+
+### `sage treasury info`
+
+Display reserves, POL, and pending withdrawals.
+
+```bash
+sage treasury info
+sage treasury info --subdao 0xSubDAO
+>>>>>>> Stashed changes
 ```
 
 ---
 
+<<<<<<< Updated upstream
 ### `sage personal unlist`
 Unlist a premium prompt, preventing new purchases.
 
 ```bash
 sage personal unlist --id <prompt-id>
+=======
+### `sage treasury balance`
+
+Alias for `treasury info`.
+
+```bash
+sage treasury balance --subdao 0xSubDAO
+```
+
+---
+
+### `sage treasury deposit`
+
+Deposit assets into the treasury.
+
+```bash
+sage treasury deposit ETH 0.1 --subdao 0xSubDAO
+sage treasury deposit USDC 100 --subdao 0xSubDAO
+```
+
+---
+
+## Token Commands (SXXX)
+
+Manage SXXX governance tokens.
+
+### `sage sxxx balance`
+
+Check your SXXX token balance.
+
+```bash
+sage sxxx balance
+```
+
+---
+
+### `sage sxxx delegate-self`
+
+Delegate voting power to yourself (required for token governance).
+
+```bash
+sage sxxx delegate-self
+```
+
+---
+
+### `sage sxxx delegation`
+
+Check delegation status and voting power.
+
+```bash
+sage sxxx delegation
+```
+
+---
+
+### `sage sxxx faucet`
+
+Get testnet SXXX tokens.
+
+```bash
+sage sxxx faucet
+```
+
+---
+
+### `sage sxxx transfer`
+
+Transfer SXXX tokens.
+
+```bash
+sage sxxx transfer 0xRecipient 100
+```
+
+---
+
+## Bounty Commands
+
+Manage bounties for contributions.
+
+### `sage bounty create`
+
+Create a new bounty.
+
+```bash
+sage bounty create \
+  --title "Fix authentication bug" \
+  --description "Users cannot log in with OAuth" \
+  --reward 100 \
+  --deadline 30 \
+  --subdao 0xSubDAO \
+  -y
+```
+
+---
+
+### `sage bounty list`
+
+List bounties for a DAO.
+
+```bash
+sage bounty list --subdao 0xSubDAO
+```
+
+---
+
+### `sage bounty claim`
+
+Claim a bounty to work on it.
+
+```bash
+sage bounty claim --id <bounty-id>
+```
+
+---
+
+### `sage bounty submit`
+
+Submit work for a claimed bounty.
+
+```bash
+sage bounty submit --id <bounty-id> --deliverable <cid>
+```
+
+---
+
+### `sage bounty doctor`
+
+Diagnose bounty system configuration.
+
+```bash
+sage bounty doctor --subdao 0xSubDAO
+```
+
+---
+
+## Wallet Commands
+
+Manage wallet connections and diagnostics.
+
+### `sage wallet connect`
+
+Connect a wallet for signing transactions.
+
+```bash
+sage wallet connect
+```
+
+---
+
+### `sage wallet doctor`
+
+Verify wallet configuration and connectivity.
+
+```bash
+sage wallet doctor
+```
+
+---
+
+### `sage wallet balance`
+
+Check wallet balances (ETH, SXXX).
+
+```bash
+sage wallet balance
+>>>>>>> Stashed changes
 ```
 
 ---
 
 ## IPFS Commands
 
-### `sage ipfs credits`
-Check your IPFS credit balance.
+Interact with the Sage IPFS worker.
+
+### `sage ipfs upload`
+
+Upload a file to IPFS.
 
 ```bash
-sage ipfs credits
+sage ipfs upload ./my-prompt.md
 ```
-
-**Returns:**
-- Available credits (in bytes)
-- Used credits
-- Credit expiration dates
-- Pinned content count
 
 ---
 
-### `sage ipfs buy-credits`
-Purchase IPFS storage credits.
+### `sage ipfs download`
+
+Download content from IPFS.
 
 ```bash
-sage ipfs buy-credits --amount 1000000000
+sage ipfs download <cid>
+sage ipfs download <cid> --output ./file.md
 ```
-
-**Options:**
-- `--amount <bytes>` - Credit amount in bytes
-- `--payment-token <address>` - ERC20 token for payment (default: ETH)
 
 ---
 
 ### `sage ipfs pin`
+
 Pin content to IPFS.
 
 ```bash
 sage ipfs pin <cid>
 ```
 
-**Options:**
-- `--name <string>` - Human-readable pin name
-- `--metadata <json>` - Additional metadata
-
 ---
 
-### `sage ipfs unpin`
-Unpin content from IPFS.
+### `sage ipfs credits`
+
+Check your IPFS worker credit balance.
 
 ```bash
-sage ipfs unpin <cid>
+sage ipfs credits
 ```
 
 ---
 
-### `sage ipfs fetch`
-Fetch content from IPFS by CID.
+### `sage ipfs setup`
+
+Configure IPFS gateway/worker.
 
 ```bash
+<<<<<<< Updated upstream
 sage ipfs fetch <cid>
 sage ipfs fetch <cid> --output file.json
 ```
@@ -1445,13 +1954,20 @@ For the complete tool list, see the MCP configuration guide.
     }
   }
 }
+=======
+sage ipfs setup
+sage ipfs setup --use-pinata
+>>>>>>> Stashed changes
 ```
 
 ---
 
-## Utility Commands
+## Config Commands
+
+Manage CLI configuration.
 
 ### `sage config show`
+
 Display current configuration.
 
 ```bash
@@ -1461,39 +1977,43 @@ sage config show
 ---
 
 ### `sage config set`
+
 Update configuration values.
 
 ```bash
-sage config set rpc.url https://mainnet.base.org
-sage config set ipfs.worker https://ipfs-worker.example.com
+sage config set rpc.url https://base-sepolia.publicnode.com
 ```
 
 ---
 
-### `sage version`
-Show CLI version information.
+### `sage context show`
+
+Show current working context (DAO, governor, timelock).
 
 ```bash
-sage version
+sage context show
 ```
 
 ---
 
-### `sage help`
-Display help information.
+## Utility Commands
+
+### `sage wizard`
+
+Interactive setup wizard.
 
 ```bash
-sage help
-sage help <command>
+sage wizard
 ```
 
 ---
 
-## Advanced Workflows
+### `sage doctor`
 
-### Publishing a Complete Library
+Run diagnostic checks on your setup.
 
 ```bash
+<<<<<<< Updated upstream
 # 1. Initialize workspace
 sage prompts init
 
@@ -1539,37 +2059,62 @@ sage mcp start --port 3000
 # - Query: POST http://localhost:3000/mcp/search
 # - Fetch: POST http://localhost:3000/mcp/fetch
 # - Validate: POST http://localhost:3000/mcp/validate
+=======
+sage doctor
+```
+
+---
+
+### `sage help workflow`
+
+Interactive workflow guide.
+
+```bash
+sage help workflow
+sage help workflow dao-launch
+sage help workflow prompts
+>>>>>>> Stashed changes
 ```
 
 ---
 
 ## Environment Variables
 
-The Sage CLI respects the following environment variables:
-
-- `SAGE_RPC_URL` - Blockchain RPC endpoint
-- `SAGE_PRIVATE_KEY` - Wallet private key (not recommended for production)
-- `SAGE_IPFS_WORKER_URL` - IPFS worker API endpoint
-- `SAGE_IPFS_API_KEY` - IPFS worker authentication
-- `SAGE_NETWORK` - Network name (base-mainnet, base-sepolia)
-- `SAGE_SUBGRAPH_URL` - Custom subgraph endpoint
+| Variable | Description |
+|----------|-------------|
+| `RPC_URL` | Blockchain RPC endpoint |
+| `PRIVATE_KEY` | Wallet private key (not recommended) |
+| `WALLET_TYPE` | Wallet type: `privy`, `cast`, `local` |
+| `IPFS_WORKER_URL` | IPFS worker API endpoint |
+| `IPFS_API_KEY` | IPFS worker authentication |
+| `SUBDAO` | Default SubDAO address |
+| `SAGE_YES` | Auto-confirm prompts (`1` to enable) |
+| `SAGE_FORCE` | Skip confirmations (`1` to enable) |
+| `SAGE_NO_UPDATE_CHECK` | Disable update notifications |
 
 ---
 
 ## Exit Codes
 
-- `0` - Success
-- `1` - General error
-- `2` - Configuration error
-- `3` - Network error
-- `4` - Validation error
-- `5` - Permission denied
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | General error |
+| `2` | Configuration error |
+| `3` | Network error |
+| `4` | Validation error |
+| `5` | Permission denied |
 
 ---
 
 ## Getting Help
 
+```bash
+sage --help
+sage <command> --help
+sage help workflow
+```
+
 - **Documentation**: [https://docs.sageprotocol.io](https://docs.sageprotocol.io)
-- **Discord**: [https://discord.gg/GWr73Z4qtT](https://discord.gg/GWr73Z4qtT)
 - **Twitter**: [@VelinusSage](https://x.com/VelinusSage)
 - **GitHub**: [https://github.com/sage-protocol](https://github.com/sage-protocol)
