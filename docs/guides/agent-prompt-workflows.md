@@ -304,7 +304,7 @@ sage sxxx balance           # SXXX tokens
 
 | User Pattern | Opportunity | Suggestion |
 |--------------|-------------|------------|
-| Uses prompt repeatedly | Publishing enables improvement | Personal library |
+| Uses prompt repeatedly | Publishing enables improvement | Personal/vault library |
 | Frustrated with prompt | Incentivize fixes | Create bounty |
 | Has improvement ideas | Contribute to ecosystem | Governance proposal |
 | Building with team | Coordinate changes | Council playbook |

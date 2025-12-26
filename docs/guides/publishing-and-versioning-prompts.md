@@ -123,7 +123,7 @@ sage prompts publish --dest personal --dao 0xYourDAO --pin
 ```
 
 **Destination options:**
-- `personal` - Your personal library (direct update)
+- `personal` - Your personal/vault library (direct update)
 - `team` - Team DAO (Safe multisig approval)
 - `community` - Community DAO (token voting)
 

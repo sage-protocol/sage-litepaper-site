@@ -201,5 +201,5 @@ sage personal list --creator 0x...
 ## Related
 
 - [Creating and Selling Premium Prompts](../guides/creating-and-selling-premium-prompts.md) - Full guide
-- [Personal Library](../guides/creating-your-first-prompt-library.md) - Free publishing
+- [Personal/Vault Library](../guides/creating-your-first-prompt-library.md) - Free publishing
 - [Bounties](./bounties.md) - Earning through contributions
